@@ -1,0 +1,27 @@
+.carousel-item img {
+    max-height: 500px; /* o la altura que prefieras */
+    object-fit: cover; /* recorta imagen para que encaje */
+    width: 100%;
+  }
+  
+
+  /* ----------------------- Navar ----------------------- */
+
+  .navbar {
+    font-family: 'Segoe UI', sans-serif;
+  }
+  
+  .navbar .nav-link:hover {
+    color: #198754; /* verde Bootstrap */
+    transition: 0.3s;
+  }
+  
+  .navbar .btn-success {
+    background-color: #198754;
+    border: none;
+  }
+  
+  .navbar .btn-success:hover {
+    background-color: #157347;
+  }
+  
