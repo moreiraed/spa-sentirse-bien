@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Spa Sentirse Bien</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
+  <link rel="stylesheet" href="/public/css/main.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=MonteCarlo&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+  <!-- ----------------------- Nav ----------------------- -->
+  <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm py-3">
+    <div class="container">
+      <!-- Logo -->
+      <a class="navbar-brand d-flex align-items-center" href="/public/index.html">
+        <img src="/public/assets/icon/icon.png" alt="Spa Logo" width="40" height="40" class="me-2">
+        <span class="fw-bold text-success fs-4 montecarlo-regular">Spa Sentirse Bien</span>
+      </a>
+
+      <!-- Botón hamburguesa para móviles -->
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSpa"
+        aria-controls="navbarSpa" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <!-- Enlaces -->
+      <div class="collapse navbar-collapse justify-content-end" id="navbarSpa">
+        <ul class="navbar-nav mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link px-3 fw-semibold text-dark" href="/public/pages/servicios.html">Servicios</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link px-3 fw-semibold text-dark" href="#contacto">Contacto</a>
+          </li>
+          <li class="nav-item" id="SigInHidden">
+            <a class="nav-link px-3 fw-semibold text-dark" href="#" data-bs-toggle="modal"
+              data-bs-target="#SigInModal">Iniciar sesión</a>
+          </li>
+          <li class="nav-item" id="SigUpHidden">
+            <a class="btn btn-success ms-2 px-4 rounded-pill" href="#" data-bs-toggle="modal"
+              data-bs-target="#SigUpModal">Crear cuenta</a>
+          </li>
+          <li id="userMenu" class="dropdown d-none">
+            <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+              <i class="bi bi-person-circle"></i>
+            </button>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="perfil.html">Mi Perfil</a></li>
+              <li><a class="dropdown-item" href="turnos.html">Mis Turnos</a></li>
+              <li><a class="dropdown-item" href="#" onclick="logout()">Cerrar sesión</a></li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ----------------------- Servicios Individuales----------------------- -->
+  <div class="container my-5 bg-light">
+    <h2>Servicios Individuales</h2>
+
+    <!-- Pestañas de navegación -->
+    <ul class="nav nav-tabs" id="myTab" role="tablist">
+      <li class="nav-item">
+        <a class="nav-link active" id="masajes-tab" data-toggle="tab" href="#masajes" role="tab" aria-controls="masajes"
+          aria-selected="true">Masajes</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" id="belleza-tab" data-toggle="tab" href="#belleza" role="tab" aria-controls="belleza"
+          aria-selected="false">Belleza</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" id="tratamientos-faciales-tab" data-toggle="tab" href="#tratamientos-faciales" role="tab"
+          aria-controls="tratamientos-faciales" aria-selected="false">Tratamientos Faciales</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" id="tratamientos-corporales-tab" data-toggle="tab" href="#tratamientos-corporales"
+          role="tab" aria-controls="tratamientos-corporales" aria-selected="false">Tratamientos Corporales</a>
+      </li>
+    </ul>
+
+    <!-- Contenido de las pestañas -->
+    <div class="tab-content" id="myTabContent">
+
+      <!-- Pestaña Masajes -->
+      <div class="tab-pane fade show active" id="masajes" role="tabpanel" aria-labelledby="masajes-tab">
+
+        <div class="row justify-content-start g-4 py-3">
+
+          <!-- Masaje Antiestrés -->
+          <div class="col-md-3">
+            <div class="card h-100 shadow-sm border-0">
+              <img src="https://picsum.photos/200/201" class="card-img-top" alt="Masaje Antiestrés">
+              <div class="card-body d-flex flex-column">
+                <h5 class="card-title text-success">Masaje Antiestrés</h5>
+                <p class="card-text">Terapia relajante para liberar tensiones y renovar energías, ideal para desconectar cuerpo y mente.</p>
+                <a href="#reserva" class="btn btn-outline-success mt-auto" onclick="selectService('Masaje Antiestrés')" data-bs-toggle="modal" data-bs-target="#modalTurno">
+                  Reservar turno
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Masaje Descontracturante -->
+          <div class="col-md-3">
+            <div class="card h-100 shadow-sm border-0">
+              <img src="https://picsum.photos/200/202" class="card-img-top" alt="Masaje Descontracturante">
+              <div class="card-body d-flex flex-column">
+                <h5 class="card-title text-success">Masaje Descontracturante</h5>
+                <p class="card-text">Alivio de tensiones musculares profundas, ideal para quienes sufren contracturas y fatiga física.</p>
+                <a href="#reserva" class="btn btn-outline-success mt-auto" onclick="selectService('Masaje Descontracturante')" data-bs-toggle="modal" data-bs-target="#modalTurno">
+                  Reservar turno
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Piedras Calientes -->
+          <div class="col-md-3">
+            <div class="card h-100 shadow-sm border-0">
+              <img src="https://picsum.photos/200/203" class="card-img-top" alt="Masaje con Piedras Calientes">
+              <div class="card-body d-flex flex-column">
+                <h5 class="card-title text-success">Piedras Calientes</h5>
+                <p class="card-text">Masaje terapéutico que combina calor y presión para relajar los músculos y armonizar la energía corporal.</p>
+                <a href="#reserva" class="btn btn-outline-success mt-auto" onclick="selectService('Masaje con Piedras Calientes')" data-bs-toggle="modal" data-bs-target="#modalTurno">
+                  Reservar turno
+                </a>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Masaje Circulatorio -->
+          <div class="col-md-3">
+            <div class="card h-100 shadow-sm border-0">
+              <img src="https://picsum.photos/200/204" class="card-img-top" alt="Masaje Circulatorio">
+              <div class="card-body d-flex flex-column">
+                <h5 class="card-title text-success">Masaje Circulatorio</h5>
+                <p class="card-text">Estimula la circulación sanguínea, favoreciendo la oxigenación de los tejidos y el bienestar general.</p>
+                <a href="#reserva" class="btn btn-outline-success mt-auto" onclick="selectService('Masaje Circulatorio')" data-bs-toggle="modal" data-bs-target="#modalTurno">
+                  Reservar turno
+                </a>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Pestaña Belleza -->
+      <div class="tab-pane fade" id="belleza" role="tabpanel" aria-labelledby="belleza-tab">
+        <div class="row justify-content-start g-4 py-3">
+          
+          <!-- Lifting de Pestañas -->
+          <div class="col-md-3">
+            <div class="card h-100 shadow-sm border-0">
+              <img src="https://picsum.photos/200/205" class="card-img-top" alt="Lifting de pestaña">
+              <div class="card-body d-flex flex-column">
+                <h5 class="card-title text-success">Lifting de Pestañas</h5>
+                <p class="card-text">Realza y curva tus pestañas naturales sin necesidad de extensiones. ¡Mirada impactante al instante!</p>
+                <a href="#reserva" class="btn btn-outline-success mt-auto" onclick="selectService('Lifting de Pestañas')" data-bs-toggle="modal" data-bs-target="#modalTurno">
+                  Reservar turno
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Depilación Facial -->
+          <div class="col-md-3">
+            <div class="card h-100 shadow-sm border-0">
+              <img src="https://picsum.photos/200/206" class="card-img-top" alt="Depilación Facial">
+              <div class="card-body d-flex flex-column">
+                <h5 class="card-title text-success">Depilación Facial</h5>
+                <p class="card-text">Eliminación suave y efectiva del vello facial para una piel suave, lisa y libre de impurezas.</p>
+                <a href="#reserva" class="btn btn-outline-success mt-auto" onclick="selectService('Depilación Facial')" data-bs-toggle="modal" data-bs-target="#modalTurno">
+                  Reservar turno
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Manos y Pies -->
+          <div class="col-md-3">
+            <div class="card h-100 shadow-sm border-0">
+              <img src="https://picsum.photos/200/207" class="card-img-top" alt="Belleza de manos y pies">
+              <div class="card-body d-flex flex-column">
+                <h5 class="card-title text-success">Manos y Pies</h5>
+                <p class="card-text">Cuidado integral de manos y pies: limpieza, hidratación, limado y esmaltado para lucir impecable.</p>
+                <a href="#reserva" class="btn btn-outline-success mt-auto" onclick="selectService('Belleza de manos y pies')" data-bs-toggle="modal" data-bs-target="#modalTurno">
+                  Reservar turno
+                </a>
+              </div>
+            </div>
+          </div>
+
+        </div>
+        
+      </div>
+
+      <!-- Pestaña Tratamientos Faciales -->
+      <div class="tab-pane fade" id="tratamientos-faciales" role="tabpanel" aria-labelledby="tratamientos-faciales-tab">
+        <div class="row justify-content-start g-4 py-3">
+
+          <!-- Punta de Diamante -->
+          <div class="col-md-3">
+            <div class="card h-100 shadow-sm border-0">
+              <img src="https://picsum.photos/200/208" class="card-img-top" alt="Punta de Diamante">
+              <div class="card-body d-flex flex-column">
+                <h5 class="card-title text-success">Punta de Diamante</h5>
+                <p class="card-text">Microexfoliación profunda que remueve impurezas y células muertas, dejando la piel suave y renovada.</p>
+                <a href="#reserva" class="btn btn-outline-success mt-auto" onclick="selectService('Punta de Diamante')" data-bs-toggle="modal" data-bs-target="#modalTurno">
+                  Reservar turno
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Limpieza + Hidratación -->
+          <div class="col-md-3">
+            <div class="card h-100 shadow-sm border-0">
+              <img src="https://picsum.photos/200/209" class="card-img-top" alt="Limpieza profunda e hidratación">
+              <div class="card-body d-flex flex-column">
+                <h5 class="card-title text-success">Limpieza + Hidratación</h5>
+                <p class="card-text">Limpieza profunda seguida de hidratación intensa para revitalizar y equilibrar tu piel.</p>
+                <a href="#reserva" class="btn btn-outline-success mt-auto" onclick="selectService('Limpieza profunda + Hidratación')" data-bs-toggle="modal" data-bs-target="#modalTurno">
+                  Reservar turno
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Criofrecuencia Facial -->
+          <div class="col-md-3">
+            <div class="card h-100 shadow-sm border-0">
+              <img src="https://picsum.photos/200/210" class="card-img-top" alt="Criofrecuencia facial">
+              <div class="card-body d-flex flex-column">
+                <h5 class="card-title text-success">Criofrecuencia Facial</h5>
+                <p class="card-text">Técnica avanzada que genera un "shock térmico" para un lifting facial inmediato y visible.</p>
+                <a href="#reserva" class="btn btn-outline-success mt-auto" onclick="selectService('Criofrecuencia Facial')" data-bs-toggle="modal" data-bs-target="#modalTurno">
+                  Reservar turno
+                </a>
+              </div>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+
+      <!-- Pestaña Tratamientos Corporales -->
+      <div class="tab-pane fade" id="tratamientos-corporales" role="tabpanel" aria-labelledby="tratamientos-corporales-tab">
+        <div class="row justify-content-start g-4 py-3">
+
+          <!-- VelaSlim -->
+          <div class="col-md-3">
+            <div class="card h-100 shadow-sm border-0">
+              <img src="https://picsum.photos/200/211" class="card-img-top" alt="VelaSlim">
+              <div class="card-body d-flex flex-column">
+                <h5 class="card-title text-success">VelaSlim</h5>
+                <p class="card-text">Tratamiento modelador que reduce medidas y celulitis, mejorando la firmeza de la piel.</p>
+                <a href="#reserva" class="btn btn-outline-success mt-auto" onclick="selectService('VelaSlim')" data-bs-toggle="modal" data-bs-target="#modalTurno">
+                  Reservar turno
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <!-- DermoHealth -->
+          <div class="col-md-3">
+            <div class="card h-100 shadow-sm border-0">
+              <img src="https://picsum.photos/200/212" class="card-img-top" alt="DermoHealth">
+              <div class="card-body d-flex flex-column">
+                <h5 class="card-title text-success">DermoHealth</h5>
+                <p class="card-text">Estimulación de la piel y la circulación mediante tecnología avanzada para un drenaje linfático efectivo.</p>
+                <a href="#reserva" class="btn btn-outline-success mt-auto" onclick="selectService('DermoHealth')" data-bs-toggle="modal" data-bs-target="#modalTurno">
+                  Reservar turno
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Criofrecuencia Corporal -->
+          <div class="col-md-3">
+            <div class="card h-100 shadow-sm border-0">
+              <img src="https://picsum.photos/200/213" class="card-img-top" alt="Criofrecuencia corporal">
+              <div class="card-body d-flex flex-column">
+                <h5 class="card-title text-success">Criofrecuencia Corporal</h5>
+                <p class="card-text">Técnica innovadora que combina frío y calor para reafirmar la piel y reducir la flacidez.</p>
+                <a href="#reserva" class="btn btn-outline-success mt-auto" onclick="selectService('Criofrecuencia Corporal')" data-bs-toggle="modal" data-bs-target="#modalTurno">
+                  Reservar turno
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Ultracavitación -->
+          <div class="col-md-3">
+            <div class="card h-100 shadow-sm border-0">
+              <img src="https://picsum.photos/200/214" class="card-img-top" alt="Ultracavitación">
+              <div class="card-body d-flex flex-column">
+                <h5 class="card-title text-success">Ultracavitación</h5>
+                <p class="card-text">Tecnología no invasiva que ayuda a reducir grasa localizada y moldear el contorno corporal.</p>
+                <a href="#reserva" class="btn btn-outline-success mt-auto" onclick="selectService('Ultracavitación')" data-bs-toggle="modal" data-bs-target="#modalTurno">
+                  Reservar turno
+                </a>
+              </div>
+            </div>
+          </div>
+          
+        </div>
+        
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ----------------------- Modal para pedir turno----------------------- -->
+  <div class="modal fade" id="modalTurno" tabindex="-1" aria-labelledby="modalTurnoLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <form>
+          <div class="modal-header">
+            <h5 class="modal-title" id="modalTurnoLabel">Pedir turno para <span id="service-name"></span></h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+          </div>
+          <div class="modal-body">
+            <div class="mb-3">
+              <label for="fecha" class="form-label">Selecciona la fecha</label>
+              <input type="date" class="form-control" id="fecha" required />
+              <div id="aviso-dia" class="alert alert-warning mt-2 d-none" role="alert">
+                Solo se pueden seleccionar días hábiles (lunes a viernes).
+              </div>
+            </div>
+            <div class="mb-3">
+              <label for="hora" class="form-label">Selecciona la hora</label>
+              <select class="form-select" id="hora" required>
+                <option value="">Selecciona una hora</option>
+                <option value="08:00">08:00</option>
+                <option value="09:00">09:00</option>
+                <option value="10:00">10:00</option>
+                <option value="11:00">11:00</option>
+                <option value="12:00">12:00</option>
+                <option value="16:00">16:00</option>
+                <option value="17:00">17:00</option>
+                <option value="18:00">18:00</option>
+                <option value="19:00">19:00</option>
+                <option value="20:00">20:00</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label for="comentario" class="form-label">Aclaración o comentario (opcional)</label>
+              <textarea class="form-control" id="comentario" rows="3"
+                placeholder="Por ejemplo: 'Quiero el masaje con piedras calientes', 'Tengo alergia al aceite de coco', etc."></textarea>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-success">Confirmar turno</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ----------------------- Footer ----------------------- -->
+  <footer class="bg-dark text-light pt-5 pb-3">
+    <div class="container">
+      <div class="row text-center text-md-start">
+
+        <!-- Logo e información -->
+        <div class="col-md-4 mb-4">
+          <h4 class="text-success fw-bold">Spa Sentirse Bien</h4>
+          <p>
+            Tu lugar de relajación y bienestar en la ciudad. Te ayudamos a encontrar el equilibrio que merecés.
+          </p>
+        </div>
+
+        <!-- Información de contacto -->
+        <div class="col-md-4 mb-4">
+          <h5 class="fw-bold">Contacto</h5>
+          <ul class="list-unstyled">
+            <li><i class="bi bi-geo-alt-fill"></i> Av. Tranquilidad 123, Resistencia, Chaco</li>
+            <li><i class="bi bi-envelope-fill"></i> contacto@armoniaspa.com</li>
+            <li><i class="bi bi-telephone-fill"></i> +54 362 123 4567</li>
+          </ul>
+        </div>
+
+        <!-- Redes sociales -->
+        <div class="col-md-4 mb-4">
+          <h5 class="fw-bold">Seguinos</h5>
+          <a href="#" class="text-light me-3 fs-5"><i class="bi bi-facebook"></i></a>
+          <a href="#" class="text-light me-3 fs-5"><i class="bi bi-instagram"></i></a>
+          <a href="#" class="text-light me-3 fs-5"><i class="bi bi-whatsapp"></i></a>
+        </div>
+
+      </div>
+      <hr class="border-light">
+      <div class="text-center small">
+        © 2025 Spa Sentirse Bien. Todos los derechos reservados.
+      </div>
+    </div>
+  </footer>
+
+  <!-- ----------------------- Scripts ----------------------- -->
+  <script type="module" src="src/firebase-config.js"></script>
+  <script type="module" src="src/SigUpRegister.js"></script>
+  <script type="module" src="src/SigInRegister.js"></script>
+
+  <!-- Booststrap Script  -->
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!--  Modal Script  -->
+  <script>
+    function selectService(serviceName) {
+      document.getElementById("service-name").textContent = serviceName;
+
+      const fechaInput = document.getElementById("fecha");
+      const hoy = new Date();
+      const fechaMin = hoy.toISOString().split('T')[0];
+      fechaInput.value = '';
+      fechaInput.setAttribute("min", fechaMin);
+
+      // Oculta el aviso si estaba visible
+      document.getElementById("aviso-dia").classList.add("d-none");
+    }
+
+    document.getElementById("fecha").addEventListener("input", function () {
+      const fechaSeleccionada = new Date(this.value);
+      const dia = fechaSeleccionada.getDay(); // 0 = domingo, 6 = sábado
+      const aviso = document.getElementById("aviso-dia");
+
+      if (dia === 0 || dia === 6) {
+        this.value = "";
+        aviso.classList.remove("d-none");
+      } else {
+        aviso.classList.add("d-none");
+      }
+    });
+  </script>
+</body>
+
+</html>

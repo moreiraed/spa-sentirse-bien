@@ -5,8 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Spa Sentirse Bien</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="/public/css/main.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=MonteCarlo&display=swap" rel="stylesheet">
   </head>
   <body>
 
@@ -14,9 +18,9 @@
     <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm py-3">
       <div class="container">
         <!-- Logo -->
-        <a class="navbar-brand d-flex align-items-center" href="#">
-          <img src="../public/img/logo-spa.png" alt="Spa Logo" width="40" height="40" class="me-2">
-          <span class="fw-bold text-success fs-4">Spa Sentirse Bien</span>
+        <a class="navbar-brand d-flex align-items-center" href="/public/index.html">
+          <img src="/public/assets/icon/icon.png" alt="Spa Logo" width="40" height="40" class="me-2">
+          <span class="fw-bold text-success fs-4 montecarlo-regular">Spa Sentirse Bien</span>
         </a>
     
         <!-- Botón hamburguesa para móviles -->
@@ -29,7 +33,7 @@
         <div class="collapse navbar-collapse justify-content-end" id="navbarSpa">
           <ul class="navbar-nav mb-2 mb-lg-0">
             <li class="nav-item">
-              <a class="nav-link px-3 fw-semibold text-dark" href="#servicios">Servicios</a>
+              <a class="nav-link px-3 fw-semibold text-dark" href="/public/pages/servicios.html">Servicios</a>
             </li>
             <li class="nav-item">
               <a class="nav-link px-3 fw-semibold text-dark" href="#contacto">Contacto</a>
@@ -78,6 +82,7 @@
         </div>
       </div>
     </div>
+    
     <!-- ----------------------- Modal Registrarse ----------------------- -->
     <div class="modal fade" id="SigUpModal" tabindex="-1" aria-labelledby="modalRegistroLabel" aria-hidden="true">
       <div class="modal-dialog">
@@ -105,40 +110,39 @@
         </div>
       </div>
     </div>
-    </div>
 
-  <!-- Modal de cuenta creada y verificación -->
-  <div class="modal fade" id="modalCuentaCreada" tabindex="-1" aria-labelledby="modalCuentaCreadaLabel"
-    aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content">
-        <div class="modal-header bg-success text-white">
-          <h5 class="modal-title" id="modalCuentaCreadaLabel">🎉 ¡Cuenta creada!</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-        </div>
-        <div class="modal-body">
-          <p>Hemos creado tu cuenta y enviado un correo de verificación a <strong id="emailVerificacionTexto"
-              class="text-dark"></strong>.</p>
-  
-          <p class="mb-3">
-            ¿No te llegó el correo? <a href="#" id="reenviarVerificacion">Haz clic aquí para reenviarlo</a>.
-          </p>
-  
-          <div id="estadoVerificacion" class="mt-2 text-secondary">Esperando verificación...</div>
-  
-          <div class="alert alert-warning mt-4" role="alert" id="alertaRestriccion">
-            <strong>Importante:</strong> si no verificás tu correo, <span class="text-danger fw-bold">no vas a poder
-              reservar turnos</span> en la sección de <strong class="text-primary">Servicios</strong>.
-            Podés verificar tu cuenta más tarde desde tu <strong class="text-primary">Perfil</strong>.
+    <!-- Modal de cuenta creada y verificación -->
+    <div class="modal fade" id="modalCuentaCreada" tabindex="-1" aria-labelledby="modalCuentaCreadaLabel"
+      aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header bg-success text-white">
+            <h5 class="modal-title" id="modalCuentaCreadaLabel">🎉 ¡Cuenta creada!</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
           </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Entendido</button>
-          <button type="button" class="btn btn-primary" id="btnVerificarYContinuar">Ya verifiqué, continuar</button>
+          <div class="modal-body">
+            <p>Hemos creado tu cuenta y enviado un correo de verificación a <strong id="emailVerificacionTexto"
+                class="text-dark"></strong>.</p>
+    
+            <p class="mb-3">
+              ¿No te llegó el correo? <a href="#" id="reenviarVerificacion">Haz clic aquí para reenviarlo</a>.
+            </p>
+    
+            <div id="estadoVerificacion" class="mt-2 text-secondary">Esperando verificación...</div>
+    
+            <div class="alert alert-warning mt-4" role="alert" id="alertaRestriccion">
+              <strong>Importante:</strong> si no verificás tu correo, <span class="text-danger fw-bold">no vas a poder
+                reservar turnos</span> en la sección de <strong class="text-primary">Servicios</strong>.
+              Podés verificar tu cuenta más tarde desde tu <strong class="text-primary">Perfil</strong>.
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Entendido</button>
+            <button type="button" class="btn btn-primary" id="btnVerificarYContinuar">Ya verifiqué, continuar</button>
+          </div>
         </div>
       </div>
     </div>
-  </div>
 
     <!-- ----------------------- Carrousel ----------------------- -->
     <div id="carouselServicios" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="5000">
@@ -146,7 +150,7 @@
     
         <!-- Slide 1 -->
         <div class="carousel-item active">
-          <img src="img/carrousel-masaje.jpg" class="d-block w-100" alt="Masajes relajantes">
+          <img src="/public/assets/img/carrousel-masaje.jpg" class="d-block w-100" alt="Masajes relajantes">
           <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 p-4 rounded-4">
             <h5 class="display-6">Masajes Relajantes</h5>
             <p>Elimina el estrés y recuperá tu energía con nuestros masajes anti-stress y con piedras calientes.</p>
@@ -156,7 +160,7 @@
     
         <!-- Slide 2 -->
         <div class="carousel-item">
-          <img src="img/carrousel-tratamiento-facial.jpg" class="d-block w-100" alt="Tratamientos faciales">
+          <img src="/public/assets/img/carrousel-tratamiento-facial.jpg" class="d-block w-100" alt="Tratamientos faciales">
           <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 p-4 rounded-4">
             <h5 class="display-6">Tratamientos Faciales</h5>
             <p>Luce una piel radiante con nuestra limpieza profunda, hidratación y criofrecuencia.</p>
@@ -166,7 +170,7 @@
     
         <!-- Slide 3 -->
         <div class="carousel-item">
-          <img src="img/carrousel-hidromasage.jpg" class="d-block w-100" alt="Yoga e Hidromasajes">
+          <img src="/public/assets/img/carrousel-hidromasage.jpg" class="d-block w-100" alt="Yoga e Hidromasajes">
           <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 p-4 rounded-4">
             <h5 class="display-6">Yoga e Hidromasajes</h5>
             <p>Disfrutá de momentos de conexión interior y relajación total en nuestras sesiones grupales.</p>
@@ -206,7 +210,7 @@
           <!-- Servicio 1 -->
           <div class="col-md-4">
             <div class="card h-100 shadow-sm border-0">
-              <img src="img/card-masaje-descontracturante.jpg" class="card-img-top" alt="Masajes descontracturantes">
+              <img src="/public/assets/img/card-masaje-descontracturante.jpg" class="card-img-top" alt="Masajes descontracturantes">
               <div class="card-body d-flex flex-column">
                 <h5 class="card-title text-success">Masajes Descontracturantes</h5>
                 <p class="card-text">Alivio de tensiones, relajación muscular y renovación del bienestar general. Ideal para combatir el estrés diario.</p>
@@ -218,7 +222,7 @@
           <!-- Servicio 2 -->
           <div class="col-md-4">
             <div class="card h-100 shadow-sm border-0">
-              <img src="img/card-limpieza-facial.jpg" class="card-img-top" alt="Limpieza facial profunda">
+              <img src="/public/assets/img/card-limpieza-facial.jpg" class="card-img-top" alt="Limpieza facial profunda">
               <div class="card-body d-flex flex-column">
                 <h5 class="card-title text-success">Limpieza Facial Profunda</h5>
                 <p class="card-text">Remueve impurezas, hidrata la piel y revitaliza tu rostro con nuestro tratamiento facial completo y relajante.</p>
@@ -230,7 +234,7 @@
           <!-- Servicio 3 -->
           <div class="col-md-4">
             <div class="card h-100 shadow-sm border-0">
-              <img src="img/card-vela-slim.jpg" class="card-img-top" alt="VelaSlim corporal">
+              <img src="/public/assets/img/card-vela-slim.jpg" class="card-img-top" alt="VelaSlim corporal">
               <div class="card-body d-flex flex-column">
                 <h5 class="card-title text-success">Tratamiento VelaSlim</h5>
                 <p class="card-text">Reducción de celulitis y contorno corporal. Resultados visibles desde la primera sesión con tecnología avanzada.</p>

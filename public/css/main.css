@@ -4,7 +4,6 @@
     width: 100%;
   }
   
-
   /* ----------------------- Navar ----------------------- */
 
   .navbar {
@@ -23,4 +22,10 @@
   
   .navbar .btn-success:hover {
     background-color: #157347;
+  }
+
+  .montecarlo-regular {
+    font-family: "MonteCarlo", cursive;
+    font-weight: 400;
+    font-style: normal;
   }
