@@ -45,7 +45,7 @@
               <a class="btn btn-success ms-2 px-4 rounded-pill" href="#" data-bs-toggle="modal" data-bs-target="#SigUpModal">Crear cuenta</a>
             </li>
             <li id="userMenu" class="dropdown d-none">
-              <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+              <button class="btn btn-success dropdown-toggle" type="button" data-bs-toggle="dropdown">
                 <i class="bi bi-person-circle"></i>
               </button>
               <ul class="dropdown-menu">
@@ -117,7 +117,7 @@
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
           <div class="modal-header bg-success text-white">
-            <h5 class="modal-title" id="modalCuentaCreadaLabel">🎉 ¡Cuenta creada!</h5>
+            <h5 class="modal-title" id="modalCuentaCreadaLabel">¡Cuenta creada!</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
           </div>
           <div class="modal-body">
@@ -125,7 +125,12 @@
                 class="text-dark"></strong>.</p>
     
             <p class="mb-3">
-              ¿No te llegó el correo? <a href="#" id="reenviarVerificacion">Haz clic aquí para reenviarlo</a>.
+              ¿No te llegó el correo?
+              <button class="btn-reenviar-verificacion btn btn-link p-0">
+                <span class="texto-reenviar">Reenviar verificación</span>
+                <span class="spinner-reenviar spinner-border spinner-border-sm text-primary ms-2 d-none" role="status"
+                  aria-hidden="true"></span>
+              </button>
             </p>
     
             <div id="estadoVerificacion" class="mt-2 text-secondary">Esperando verificación...</div>
@@ -133,12 +138,12 @@
             <div class="alert alert-warning mt-4" role="alert" id="alertaRestriccion">
               <strong>Importante:</strong> si no verificás tu correo, <span class="text-danger fw-bold">no vas a poder
                 reservar turnos</span> en la sección de <strong class="text-primary">Servicios</strong>.
-              Podés verificar tu cuenta más tarde desde tu <strong class="text-primary">Perfil</strong>.
+              Podés verificar tu cuenta más tarde desde tu <strong class="text-primary">Mi Perfil</strong>.
             </div>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Entendido</button>
-            <button type="button" class="btn btn-primary" id="btnVerificarYContinuar">Ya verifiqué, continuar</button>
+            <button type="button" class="btn btn-success" id="btnVerificarYContinuar">Ya verifiqué, continuar</button>
           </div>
         </div>
       </div>

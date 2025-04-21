@@ -1,31 +1,38 @@
 .carousel-item img {
-    max-height: 500px; /* o la altura que prefieras */
-    object-fit: cover; /* recorta imagen para que encaje */
-    width: 100%;
-  }
-  
-  /* ----------------------- Navar ----------------------- */
+  max-height: 500px; /* o la altura que prefieras */
+  object-fit: cover; /* recorta imagen para que encaje */
+  width: 100%;
+}
 
-  .navbar {
-    font-family: 'Segoe UI', sans-serif;
-  }
-  
-  .navbar .nav-link:hover {
-    color: #198754; /* verde Bootstrap */
-    transition: 0.3s;
-  }
-  
-  .navbar .btn-success {
-    background-color: #198754;
-    border: none;
-  }
-  
-  .navbar .btn-success:hover {
-    background-color: #157347;
-  }
+/* ----------------------- Navar ----------------------- */
 
-  .montecarlo-regular {
-    font-family: "MonteCarlo", cursive;
-    font-weight: 400;
-    font-style: normal;
-  }
+.navbar {
+  font-family: "Segoe UI", sans-serif;
+}
+
+.navbar .nav-link:hover {
+  color: #198754; /* verde Bootstrap */
+  transition: 0.3s;
+}
+
+.navbar .btn-success {
+  background-color: #198754;
+  border: none;
+}
+
+.navbar .btn-success:hover {
+  background-color: #157347;
+}
+
+.montecarlo-regular {
+  font-family: "MonteCarlo", cursive;
+  font-weight: 400;
+  font-style: normal;
+}
+
+/*ajusta la imagen "icon.png" para Servicios.js */
+.toast-header img {
+  width: 30px;
+  height: 30px;
+  object-fit: cover;
+}

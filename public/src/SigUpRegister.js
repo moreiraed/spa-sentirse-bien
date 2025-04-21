@@ -10,22 +10,24 @@ import {
 
 import { auth, db } from "./firebase-config.js";
 
-// SigUp
+// ==============================
+// Función para registrar usuario
+// ==============================
 window.register = async function () {
-
   const nombre = document.getElementById("nombreRegistro").value.trim();
   const email = document.getElementById("emailRegistro").value.trim();
   const password = document.getElementById("passwordRegistro").value;
 
   if (!nombre || !email || !password) {
-    mostrarAlerta("Por favor completa todos los campos.", "warning");
+    mostrarToast("Por favor completá todos los campos.", "warning");
     return;
   }
 
   if (password.length < 6) {
-    mostrarAlerta("La contraseña debe tener al menos 6 caracteres.", "warning");
+    mostrarToast("La contraseña debe tener al menos 6 caracteres.", "warning");
     return;
   }
+
   const btnRegistro = document.getElementById("btnRegistro");
   const spinner = document.getElementById("spinnerBtn");
   spinner.classList.remove("d-none");
@@ -40,7 +42,6 @@ window.register = async function () {
     const user = userCredential.user;
 
     await setDoc(doc(db, "users", user.uid), { nombre, email });
-
     await sendEmailVerification(user);
 
     // Cierra modal de registro
@@ -56,38 +57,114 @@ window.register = async function () {
       document.getElementById("modalCuentaCreada")
     );
     modalVerificacion.show();
-
-    // Reenviar correo si clickea
-    document.getElementById("reenviarVerificacion").onclick = async function (e) {
-      e.preventDefault();
-      await sendEmailVerification(user);
-      document.getElementById("estadoVerificacion").innerText =
-        "Correo reenviado. Verificá tu bandeja de entrada.";
-    };
-
-    // Comprobar si ya verificó y avanzar
-    document.getElementById("btnVerificarYContinuar").onclick =
-      async function () {
-        await user.reload(); // Actualiza el estado del usuario
-
-        if (user.emailVerified) {
-          // Redirigís a perfil o servicios
-          window.location.href = "#/servicios"; 
-        } else {
-          document.getElementById("estadoVerificacion").innerText =
-            "Tu correo aún no está verificado. Revisá tu bandeja o reenvialo.";
-        }
-      };
   } catch (error) {
     if (error.code === "auth/email-already-in-use") {
-      mostrarAlerta("Este correo ya está registrado.", "danger");
+      mostrarToast("Este correo ya está registrado.", "danger");
     } else if (error.code === "auth/invalid-email") {
-      mostrarAlerta("El correo no es válido.", "danger");
+      mostrarToast("El correo no es válido.", "danger");
     } else {
-      mostrarAlerta("Error: " + error.message, "danger");
+      mostrarToast("Error: " + error.message, "danger");
     }
   } finally {
     spinner.classList.add("d-none");
     btnRegistro.disabled = false;
   }
 };
+
+// ==============================
+// Reenviar verificación para "Modal de verificación pendiente"
+// ==============================
+document.querySelectorAll(".btn-reenviar-verificacion").forEach((boton) => {
+  boton.addEventListener("click", async function (e) {
+    e.preventDefault();
+
+    const texto = boton.querySelector(".texto-reenviar");
+    const spinner = boton.querySelector(".spinner-reenviar");
+
+    boton.disabled = true;
+    texto.textContent = "Reenviando...";
+    spinner.classList.remove("d-none");
+
+    try {
+      const user = auth.currentUser;
+      if (user) {
+        await user.reload();
+        await sendEmailVerification(user);
+        mostrarToast("Correo de verificación reenviado.", "info");
+      } else {
+        mostrarToast("Usuario no autenticado.", "danger");
+      }
+    } catch (err) {
+      console.error("Error al reenviar verificación:", err);
+      mostrarToast("Error al reenviar el correo.", "danger");
+    } finally {
+      spinner.classList.add("d-none");
+
+      // Temporizador con cuenta regresiva
+      let segundosRestantes = 30;
+      boton.disabled = true;
+      boton.classList.add("disabled"); // Por si usás estilos visuales
+
+      const intervalo = setInterval(() => {
+        segundosRestantes--;
+        texto.textContent = `Reintentar en ${segundosRestantes}s...`;
+
+        if (segundosRestantes <= 0) {
+          clearInterval(intervalo);
+          texto.textContent = "Reenviar verificación";
+          boton.disabled = false;
+          boton.classList.remove("disabled");
+        }
+      }, 1000);
+    }
+  });
+});
+
+// ==============================
+// Verificar y continuar
+// ==============================
+document.getElementById("btnVerificarYContinuar").onclick = async function () {
+  const user = auth.currentUser;
+
+  if (!user) {
+    mostrarToast("No hay usuario activo.", "danger");
+    return;
+  }
+
+  await user.reload();
+
+  if (user.emailVerified) {
+    mostrarToast("¡Correo verificado! Ahora podés pedir tu turno.", "success");
+
+    const modalCuenta = bootstrap.Modal.getInstance(
+      document.getElementById("modalCuentaCreada")
+    );
+    modalCuenta.hide();
+  } else {
+    mostrarToast(
+      "Tu correo aún no fue verificado. Revisá tu bandeja de entrada.",
+      "warning"
+    );
+  }
+};
+
+// ==============================
+// Toast de notificación
+// ==============================
+function mostrarToast(mensaje, tipo = "success") {
+  const toastElement = document.getElementById("toastNotificacion");
+  const toastMensaje = document.getElementById("toastMensaje");
+
+  toastMensaje.textContent = mensaje;
+
+  toastElement.classList.remove(
+    "bg-success",
+    "bg-danger",
+    "bg-warning",
+    "bg-info"
+  );
+  toastElement.classList.add("bg-" + tipo);
+
+  const toast = new bootstrap.Toast(toastElement);
+  toast.show();
+}
