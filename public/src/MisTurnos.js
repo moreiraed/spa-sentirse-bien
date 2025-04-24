@@ -22,6 +22,13 @@ onAuthStateChanged(auth, async (user) => {
     return;
   }
 
+  // Mostrar el mensaje de "Cargando..." cuando empezamos a traer los datos
+  listaTurnos.innerHTML = `
+    <div class="alert alert-info mx-auto my-5 p-4 text-center" style="max-width: 450px; background-color: rgba(40, 167, 69, 0.1); border-radius: 12px; border: 1px solid #28a745;">
+      Cargando turnos...
+    </div>
+  `;
+
   const turnosRef = collection(db, "turnos");
   const q = query(
     turnosRef,
@@ -99,7 +106,7 @@ async function cancelarTurno(turnoId, turnoDiv) {
       turnoDiv.remove();
     }, 500);
 
-    // Mostrar un mensaje de éxito 
+    // Mostrar un mensaje de éxito
     mostrarToast("Turno cancelado correctamente.", "success");
   } catch (error) {
     console.error("Error al cancelar el turno:", error);

@@ -58,11 +58,20 @@
       </div>
     </div>
   </nav>
+
   <div class="container mt-5">
     <h2>Mis Turnos</h2>
+    <!-- Cartel de Cargando -->
+    <div id="loading" class="text-center my-5" style="display: none;">
+      <h4>Cargando...</h4>
+    </div>
+    <!-- Lista de turnos -->
     <div id="lista-turnos" class="mt-4"></div>
   </div>
+
   <div id="toast-container" aria-live="polite" aria-atomic="true" class="position-fixed top-0 end-0 p-3"></div>
+
+
 
   <script type="module" src="../src/MisTurnos.js"></script>
   <script type="module" src="../src/ControlSesion.js"></script>

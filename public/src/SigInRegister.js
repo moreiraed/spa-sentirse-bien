@@ -4,6 +4,11 @@ import {
   onAuthStateChanged,
 } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
 
+import {
+  doc,
+  getDoc,
+} from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+
 import { auth } from "./firebase-config.js"
 
 // Función para iniciar sesión
@@ -66,40 +71,42 @@ window.logout = function () {
 
 onAuthStateChanged(auth, (user) => {
   const userMenu = document.getElementById("userMenu");
-  if (user) {
-    // Usuario logueado: mostrar menú
-    if (userMenu) userMenu.classList.remove("d-none");
-  } else {
-    // No logueado: ocultar menú
-    if (userMenu) userMenu.classList.add("d-none");
-  }
-});
-
-onAuthStateChanged(auth, (user) => {
-  // Verificamos que los elementos existen antes de intentar manipularlos
-  const userMenu = document.getElementById("userMenu");
   const loginBtn = document.getElementById("SigInHidden");
   const registerBtn = document.getElementById("SigUpHidden");
-
-  // Revisamos si los elementos existen
-  if (!userMenu || !loginBtn || !registerBtn) {
-    console.error("Alguno de los elementos no se ha encontrado.");
-    return;
-  }
+  const ctaReserva = document.getElementById("cta-reserva");
+  const welcomeMessage = document.getElementById("welcome-message");
+  const userName = document.getElementById("user-name");
 
   if (user) {
-    // Mostrar menú de usuario
-    userMenu.classList.remove("d-none");
+    // Si el usuario está logueado
+    // Mostrar el menú de usuario
+    if (userMenu) userMenu.classList.remove("d-none");
 
     // Ocultar botones de login y registro
-    loginBtn.classList.add("d-none");
-    registerBtn.classList.add("d-none");
+    if (loginBtn) loginBtn.classList.add("d-none");
+    if (registerBtn) registerBtn.classList.add("d-none");
+
+    // Ocultar la sección de "llamada a la acción"
+    if (ctaReserva) ctaReserva.classList.add("d-none");
+
+    // Mostrar mensaje de bienvenida
+    if (welcomeMessage) welcomeMessage.classList.remove("d-none");
+
+    // Mostrar el correo del usuario en el mensaje de bienvenida
+    if (userName) userName.textContent = user.email || "Usuario";
   } else {
-    // Ocultar menú de usuario
-    userMenu.classList.add("d-none");
+    // Si el usuario no está logueado
+    // Ocultar el menú de usuario
+    if (userMenu) userMenu.classList.add("d-none");
 
     // Mostrar botones de login y registro
-    loginBtn.classList.remove("d-none");
-    registerBtn.classList.remove("d-none");
+    if (loginBtn) loginBtn.classList.remove("d-none");
+    if (registerBtn) registerBtn.classList.remove("d-none");
+
+    // Mostrar la sección de "llamada a la acción"
+    if (ctaReserva) ctaReserva.classList.remove("d-none");
+
+    // Ocultar mensaje de bienvenida
+    if (welcomeMessage) welcomeMessage.classList.add("d-none");
   }
 });
