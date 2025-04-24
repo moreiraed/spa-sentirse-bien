@@ -192,32 +192,35 @@ form.addEventListener("submit", async (e) => {
   
     if (!perfilSnap.exists()) {
       mostrarToast(
-        "Por favor, completa tu Nombre, Apellido y DNI en tu perfil.",
+        "Por favor, completa tu Nombre Completo, Apellido y DNI en tu perfil.",
         "danger"
       );
       return;
     }
   
     const perfilData = perfilSnap.data();
-    const { nombreCompleto, apellido, dni } = perfilData;
+    const nombre = perfilData?.nombre?.trim();
+    const apellido = perfilData?.apellido?.trim();
+    const dni = perfilData?.dni?.trim();
   
-    const camposFaltantes = [
-      !nombreCompleto?.trim(),
-      !apellido?.trim(),
-      !dni?.trim(),
-    ].filter(Boolean).length;
+    const camposFaltantes = [];
   
-    if (camposFaltantes === 3) {
+    if (!nombre) camposFaltantes.push("Nombre Completo");
+    if (!apellido) camposFaltantes.push("Apellido");
+    if (!dni) camposFaltantes.push("DNI");
+  
+    if (camposFaltantes.length === 3) {
       mostrarToast(
-        "Por favor, completa tu Nombre, Apellido y DNI en tu perfil.",
+        "Por favor, completa tu Nombre Completo, Apellido y DNI en tu perfil.",
         "danger"
       );
       return;
     }
   
-    if (camposFaltantes > 0) {
+    if (camposFaltantes.length > 0) {
+      const campos = camposFaltantes.join(", ");
       mostrarToast(
-        "Tu perfil está incompleto. No se pudo guardar el turno. Verifica que hayas completado todos los campos Nombre, Apellido y DNI.",
+        `Tu perfil está incompleto. Faltan los siguientes campos: ${campos}.`,
         "danger"
       );
       return;
