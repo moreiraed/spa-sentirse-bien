@@ -164,10 +164,9 @@ async function cambiarPassword() {
     mostrarToast("Contraseña actualizada correctamente.", "success");
 
     // Cerrar el modal
-    const modal = new bootstrap.Modal(
-      document.getElementById("modalEditarPassword")
-    );
+    const modal = bootstrap.Modal.getInstance(document.getElementById("modalEditarPassword"));
     modal.hide();
+
   } catch (error) {
     console.error("Error al cambiar la contraseña:", error);
     mostrarToast("Error: " + error.message, "danger");
