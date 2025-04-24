@@ -4,6 +4,8 @@ import {
   query,
   where,
   getDocs,
+  doc,
+  getDoc,
 } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
 
 import { auth, db } from "./firebase-config.js";
@@ -105,7 +107,6 @@ document.getElementById("fecha").addEventListener("change", async function () {
   await actualizarHorasDisponibles(servicio, this.value);
 });
 
-
 // 4. Lógica del formulario (submit)
 const form = document.getElementById("form-turno");
 
@@ -144,15 +145,6 @@ form.addEventListener("submit", async (e) => {
     return;
   }
 
-  const horaDisponible = await verificarHoraDisponible(servicio, fecha, hora);
-  if (!horaDisponible) {
-    mostrarToast(
-      "La hora seleccionada ya está ocupada. Por favor, elige otra.",
-      "warning"
-    );
-    return;
-  }
-
   const turnosRef = collection(db, "turnos");
   const qHora = query(
     turnosRef,
@@ -184,9 +176,37 @@ form.addEventListener("submit", async (e) => {
     return;
   }
 
+  // Verificar si el usuario ya tiene un turno en ese horario
+  const turnoExistente = snapshotHora.docs.find(
+    (doc) => doc.data().uid === user.uid
+  );
+
+  if (turnoExistente) {
+    mostrarToast("Ya reservaste un turno en este horario.", "warning");
+    return;
+  }
+
   try {
+    const perfilRef = doc(db, "users", user.uid);
+    const perfilSnap = await getDoc(perfilRef);
+
+    if (!perfilSnap.exists()) {
+      mostrarToast(
+        "Tu perfil está incompleto. No se pudo guardar el turno.",
+        "danger"
+      );
+      return;
+    }
+
+    const perfil = perfilSnap.data();
+
     await addDoc(turnosRef, {
       uid: user.uid,
+      nombreUsuario: perfil.nombreUsuario || "",
+      nombre: perfil.nombre || "",
+      apellido: perfil.apellido || "",
+      dni: perfil.dni || "",
+      email: user.email,
       servicio,
       fecha,
       hora,
@@ -207,18 +227,24 @@ form.addEventListener("submit", async (e) => {
   }
 });
 
-
 function mostrarToast(message, type) {
   // Crear un nuevo div para el toast
   const toast = document.createElement("div");
   toast.classList.add(
     "toast",
     "align-items-center",
-    "text-white",
     "border-0",
     "fade",
     `bg-${type}`
   );
+
+  // Cambiar el color del texto según tipo
+  if (type === "warning") {
+    toast.classList.add("text-dark"); // Texto negro para warning
+  } else {
+    toast.classList.add("text-white"); // Blanco para success, danger
+  }
+
   toast.setAttribute("role", "alert");
   toast.setAttribute("aria-live", "assertive");
   toast.setAttribute("aria-atomic", "true");

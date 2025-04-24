@@ -54,8 +54,8 @@
               <i class="bi bi-person-circle"></i>
             </button>
             <ul class="dropdown-menu">
-              <li><a class="dropdown-item" href="../perfil.html">Mi Perfil</a></li>
-              <li><a class="dropdown-item" href="../turnos.html">Mis Turnos</a></li>
+              <li><a class="dropdown-item" href="../pages/perfil.html">Mi Perfil</a></li>
+              <li><a class="dropdown-item" href="../pages/turnos.html">Mis Turnos</a></li>
               <li><a class="dropdown-item" href="#" onclick="logout()">Cerrar sesión</a></li>
             </ul>
           </li>
@@ -76,7 +76,11 @@
           <form id="formLogin">
             <input type="email" id="email" placeholder="Email" class="form-control mb-3" required>
             <input type="password" id="password" placeholder="Contraseña" class="form-control mb-3" required>
-            <button type="button" class="btn btn-success w-100" onclick="login()">Ingresar</button>
+            <button type="submit" class="btn btn-success w-100" id="loginButton">
+              <span id="loader" class="spinner-border spinner-border-sm me-2 d-none" role="status"
+                aria-hidden="true"></span>
+              Ingresar
+            </button>
           </form>
           <p id="mensajeLogin"></p>
         </div>
@@ -87,7 +91,7 @@
       </div>
     </div>
   </div>
-  
+
   <!-- ----------------------- Modal Registrarse ----------------------- -->
   <div class="modal fade" id="SigUpModal" tabindex="-1" aria-labelledby="modalRegistroLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -98,10 +102,10 @@
         </div>
         <div class="modal-body">
           <form id="formRegistro">
-            <input type="text" id="nombreRegistro" placeholder="Usuario" class="form-control mb-3" required>
+            <input type="text" id="nombreUsuarioRegistro" placeholder="Usuario" class="form-control mb-3" required>
             <input type="email" id="emailRegistro" placeholder="Email" class="form-control mb-3" required>
             <input type="password" id="passwordRegistro" placeholder="Contraseña" class="form-control mb-3" required>
-            <button type="submit" class="btn btn-success w-100" onclick="register()" id="btnRegistro">
+            <button type="submit" class="btn btn-success w-100" id="btnRegistro">
               <span id="spinnerBtn" class="spinner-border spinner-border-sm me-2 d-none" role="status"
                 aria-hidden="true"></span>
               Crear cuenta
@@ -129,7 +133,7 @@
         <div class="modal-body">
           <p>Hemos creado tu cuenta y enviado un correo de verificación a <strong id="emailVerificacionTexto"
               class="text-dark"></strong>.</p>
-  
+
           <p class="mb-3">
             ¿No te llegó el correo?
             <button class="btn-reenviar-verificacion btn btn-link p-0">
@@ -138,18 +142,20 @@
                 aria-hidden="true"></span>
             </button>
           </p>
-  
+
           <div id="estadoVerificacion" class="mt-2 text-secondary">Esperando verificación...</div>
-  
+
           <div class="alert alert-warning mt-4" role="alert" id="alertaRestriccion">
-            <strong>Importante:</strong> si no verificás tu correo, <span class="text-danger fw-bold">no vas a poder
+            <strong>Importante:</strong> si no verificás tu correo, <span class="text-danger fw-bold">no vas
+              a poder
               reservar turnos</span> en la sección de <strong class="text-primary">Servicios</strong>.
             Podés verificar tu cuenta más tarde desde tu <strong class="text-primary">Mi Perfil</strong>.
           </div>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Entendido</button>
-          <button type="button" class="btn btn-success" id="btnVerificarYContinuar">Ya verifiqué, continuar</button>
+          <button type="button" class="btn btn-success" id="btnVerificarYContinuar">Ya verifiqué,
+            continuar</button>
         </div>
       </div>
     </div>
@@ -160,15 +166,15 @@
     aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="modalRequiereLoginLabel">Necesitás una cuenta</h5>
+        <div class="modal-header bg-warning">
+          <h5 class="modal-title" id="modalRequiereLoginLabel" >Necesitás una cuenta</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
         </div>
         <div class="modal-body">
           <p>Para reservar un turno, primero tenés que iniciar sesión o crear una cuenta.</p>
         </div>
         <div class="modal-footer">
-          <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#SigInModal" data-bs-dismiss="modal">
+          <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#SigInModal" data-bs-dismiss="modal">
             Iniciar sesión
           </button>
           <button class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#SigUpModal" data-bs-dismiss="modal">
@@ -178,7 +184,7 @@
       </div>
     </div>
   </div>
-  
+
   <!-- Modal de verificación pendiente -->
   <div class="modal fade" id="modalVerificaCorreo" tabindex="-1" aria-labelledby="modalVerificaCorreoLabel"
     aria-hidden="true">
@@ -189,12 +195,14 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
         </div>
         <div class="modal-body">
-          <p>Tu correo electrónico aún no fue verificado. Necesitás verificarlo antes de poder reservar un turno.</p>
+          <p>Tu correo electrónico aún no fue verificado. Necesitás verificarlo antes de poder reservar un
+            turno.</p>
           <p>¿No encontrás el correo? Hacé clic en el botón de abajo para reenviarlo.</p>
-          <p>Si no sabes tu correo puedes ir al apartado <a href="../perfil.html">Mi Perfil</a> y continuar el proceso.</p>
+          <p>Si no sabes tu correo puedes ir al apartado <a href="../pages/perfil.html">Mi Perfil</a> y continuar el
+            proceso.</p>
         </div>
         <div class="modal-footer">
-          <button class="btn-reenviar-verificacion btn btn-primary">
+          <button class="btn-reenviar-verificacion btn btn-success">
             <span class="texto-reenviar">Reenviar verificación</span>
             <span class="spinner-reenviar spinner-border spinner-border-sm text-light ms-2 d-none" role="status"
               aria-hidden="true"></span>
@@ -247,9 +255,10 @@
               <img src="https://picsum.photos/200/201" class="card-img-top" alt="Masaje Antiestrés">
               <div class="card-body d-flex flex-column">
                 <h5 class="card-title text-success">Masaje Antiestrés</h5>
-                <p class="card-text">Terapia relajante para liberar tensiones y renovar energías, ideal para desconectar cuerpo y mente.</p>
-                <a href="#" class="btn btn-outline-success mt-auto" data-service="Masaje Antiestrés" data-bs-toggle="modal"
-                  data-bs-target="#modalTurno">
+                <p class="card-text">Terapia relajante para liberar tensiones y renovar energías, ideal
+                  para desconectar cuerpo y mente.</p>
+                <a href="#" class="btn btn-outline-success mt-auto" data-service="Masaje Antiestrés"
+                  data-bs-toggle="modal" data-bs-target="#modalTurno">
                   Reservar turno
                 </a>
               </div>
@@ -262,9 +271,10 @@
               <img src="https://picsum.photos/200/202" class="card-img-top" alt="Masaje Descontracturante">
               <div class="card-body d-flex flex-column">
                 <h5 class="card-title text-success">Masaje Descontracturante</h5>
-                <p class="card-text">Alivio de tensiones musculares profundas, ideal para quienes sufren contracturas y fatiga física.</p>
-                <a href="#" class="btn btn-outline-success mt-auto" data-service="Masaje Descontracturante" data-bs-toggle="modal"
-                  data-bs-target="#modalTurno">
+                <p class="card-text">Alivio de tensiones musculares profundas, ideal para quienes sufren
+                  contracturas y fatiga física.</p>
+                <a href="#" class="btn btn-outline-success mt-auto" data-service="Masaje Descontracturante"
+                  data-bs-toggle="modal" data-bs-target="#modalTurno">
                   Reservar turno
                 </a>
               </div>
@@ -277,24 +287,26 @@
               <img src="https://picsum.photos/200/203" class="card-img-top" alt="Masaje con Piedras Calientes">
               <div class="card-body d-flex flex-column">
                 <h5 class="card-title text-success">Piedras Calientes</h5>
-                <p class="card-text">Masaje terapéutico que combina calor y presión para relajar los músculos y armonizar la energía corporal.</p>
-                <a href="#" class="btn btn-outline-success mt-auto" data-service="Masaje con Piedras Calientes" data-bs-toggle="modal"
-                  data-bs-target="#modalTurno">
+                <p class="card-text">Masaje terapéutico que combina calor y presión para relajar los
+                  músculos y armonizar la energía corporal.</p>
+                <a href="#" class="btn btn-outline-success mt-auto" data-service="Masaje con Piedras Calientes"
+                  data-bs-toggle="modal" data-bs-target="#modalTurno">
                   Reservar turno
                 </a>
               </div>
             </div>
           </div>
-          
+
           <!-- Masaje Circulatorio -->
           <div class="col-md-3">
             <div class="card h-100 shadow-sm border-0">
               <img src="https://picsum.photos/200/204" class="card-img-top" alt="Masaje Circulatorio">
               <div class="card-body d-flex flex-column">
                 <h5 class="card-title text-success">Masaje Circulatorio</h5>
-                <p class="card-text">Estimula la circulación sanguínea, favoreciendo la oxigenación de los tejidos y el bienestar general.</p>
-                <a href="#" class="btn btn-outline-success mt-auto" data-service="Masaje Circulatorio" data-bs-toggle="modal"
-                  data-bs-target="#modalTurno">
+                <p class="card-text">Estimula la circulación sanguínea, favoreciendo la oxigenación de
+                  los tejidos y el bienestar general.</p>
+                <a href="#" class="btn btn-outline-success mt-auto" data-service="Masaje Circulatorio"
+                  data-bs-toggle="modal" data-bs-target="#modalTurno">
                   Reservar turno
                 </a>
               </div>
@@ -307,16 +319,17 @@
       <!-- Pestaña Belleza -->
       <div class="tab-pane fade" id="belleza" role="tabpanel" aria-labelledby="belleza-tab">
         <div class="row justify-content-start g-4 py-3">
-          
+
           <!-- Lifting de Pestañas -->
           <div class="col-md-3">
             <div class="card h-100 shadow-sm border-0">
               <img src="https://picsum.photos/200/205" class="card-img-top" alt="Lifting de pestaña">
               <div class="card-body d-flex flex-column">
                 <h5 class="card-title text-success">Lifting de Pestañas</h5>
-                <p class="card-text">Realza y curva tus pestañas naturales sin necesidad de extensiones. ¡Mirada impactante al instante!</p>
-                <a href="#" class="btn btn-outline-success mt-auto" data-service="Lifting de Pestañas" data-bs-toggle="modal"
-                  data-bs-target="#modalTurno">
+                <p class="card-text">Realza y curva tus pestañas naturales sin necesidad de extensiones.
+                  ¡Mirada impactante al instante!</p>
+                <a href="#" class="btn btn-outline-success mt-auto" data-service="Lifting de Pestañas"
+                  data-bs-toggle="modal" data-bs-target="#modalTurno">
                   Reservar turno
                 </a>
               </div>
@@ -329,9 +342,10 @@
               <img src="https://picsum.photos/200/206" class="card-img-top" alt="Depilación Facial">
               <div class="card-body d-flex flex-column">
                 <h5 class="card-title text-success">Depilación Facial</h5>
-                <p class="card-text">Eliminación suave y efectiva del vello facial para una piel suave, lisa y libre de impurezas.</p>
-                <a href="#" class="btn btn-outline-success mt-auto" data-service="Depilación Facial" data-bs-toggle="modal"
-                  data-bs-target="#modalTurno">
+                <p class="card-text">Eliminación suave y efectiva del vello facial para una piel suave,
+                  lisa y libre de impurezas.</p>
+                <a href="#" class="btn btn-outline-success mt-auto" data-service="Depilación Facial"
+                  data-bs-toggle="modal" data-bs-target="#modalTurno">
                   Reservar turno
                 </a>
               </div>
@@ -344,9 +358,10 @@
               <img src="https://picsum.photos/200/207" class="card-img-top" alt="Belleza de manos y pies">
               <div class="card-body d-flex flex-column">
                 <h5 class="card-title text-success">Manos y Pies</h5>
-                <p class="card-text">Cuidado integral de manos y pies: limpieza, hidratación, limado y esmaltado para lucir impecable.</p>
-                <a href="#" class="btn btn-outline-success mt-auto" data-service="Belleza de manos y pies" data-bs-toggle="modal"
-                  data-bs-target="#modalTurno">
+                <p class="card-text">Cuidado integral de manos y pies: limpieza, hidratación, limado y
+                  esmaltado para lucir impecable.</p>
+                <a href="#" class="btn btn-outline-success mt-auto" data-service="Belleza de manos y pies"
+                  data-bs-toggle="modal" data-bs-target="#modalTurno">
                   Reservar turno
                 </a>
               </div>
@@ -354,7 +369,7 @@
           </div>
 
         </div>
-        
+
       </div>
 
       <!-- Pestaña Tratamientos Faciales -->
@@ -367,9 +382,10 @@
               <img src="https://picsum.photos/200/208" class="card-img-top" alt="Punta de Diamante">
               <div class="card-body d-flex flex-column">
                 <h5 class="card-title text-success">Punta de Diamante</h5>
-                <p class="card-text">Microexfoliación profunda que remueve impurezas y células muertas, dejando la piel suave y renovada.</p>
-                <a href="#" class="btn btn-outline-success mt-auto" data-service="Punta de Diamante" data-bs-toggle="modal"
-                  data-bs-target="#modalTurno">
+                <p class="card-text">Microexfoliación profunda que remueve impurezas y células muertas,
+                  dejando la piel suave y renovada.</p>
+                <a href="#" class="btn btn-outline-success mt-auto" data-service="Punta de Diamante"
+                  data-bs-toggle="modal" data-bs-target="#modalTurno">
                   Reservar turno
                 </a>
               </div>
@@ -382,7 +398,8 @@
               <img src="https://picsum.photos/200/209" class="card-img-top" alt="Limpieza profunda e hidratación">
               <div class="card-body d-flex flex-column">
                 <h5 class="card-title text-success">Limpieza + Hidratación</h5>
-                <p class="card-text">Limpieza profunda seguida de hidratación intensa para revitalizar y equilibrar tu piel.</p>
+                <p class="card-text">Limpieza profunda seguida de hidratación intensa para revitalizar y
+                  equilibrar tu piel.</p>
                 <a href="#" class="btn btn-outline-success mt-auto" data-service="Limpieza profunda + Hidratación"
                   data-bs-toggle="modal" data-bs-target="#modalTurno">
                   Reservar turno
@@ -397,20 +414,22 @@
               <img src="https://picsum.photos/200/210" class="card-img-top" alt="Criofrecuencia facial">
               <div class="card-body d-flex flex-column">
                 <h5 class="card-title text-success">Criofrecuencia Facial</h5>
-                <p class="card-text">Técnica avanzada que genera un "shock térmico" para un lifting facial inmediato y visible.</p>
-                <a href="#" class="btn btn-outline-success mt-auto" data-service="Criofrecuencia Facial" data-bs-toggle="modal"
-                  data-bs-target="#modalTurno">
+                <p class="card-text">Técnica avanzada que genera un "shock térmico" para un lifting
+                  facial inmediato y visible.</p>
+                <a href="#" class="btn btn-outline-success mt-auto" data-service="Criofrecuencia Facial"
+                  data-bs-toggle="modal" data-bs-target="#modalTurno">
                   Reservar turno
                 </a>
               </div>
             </div>
           </div>
-          
+
         </div>
       </div>
 
       <!-- Pestaña Tratamientos Corporales -->
-      <div class="tab-pane fade" id="tratamientos-corporales" role="tabpanel" aria-labelledby="tratamientos-corporales-tab">
+      <div class="tab-pane fade" id="tratamientos-corporales" role="tabpanel"
+        aria-labelledby="tratamientos-corporales-tab">
         <div class="row justify-content-start g-4 py-3">
 
           <!-- VelaSlim -->
@@ -419,7 +438,8 @@
               <img src="https://picsum.photos/200/211" class="card-img-top" alt="VelaSlim">
               <div class="card-body d-flex flex-column">
                 <h5 class="card-title text-success">VelaSlim</h5>
-                <p class="card-text">Tratamiento modelador que reduce medidas y celulitis, mejorando la firmeza de la piel.</p>
+                <p class="card-text">Tratamiento modelador que reduce medidas y celulitis, mejorando la
+                  firmeza de la piel.</p>
                 <a href="#" class="btn btn-outline-success mt-auto" data-service="VelaSlim" data-bs-toggle="modal"
                   data-bs-target="#modalTurno">
                   Reservar turno
@@ -434,7 +454,8 @@
               <img src="https://picsum.photos/200/212" class="card-img-top" alt="DermoHealth">
               <div class="card-body d-flex flex-column">
                 <h5 class="card-title text-success">DermoHealth</h5>
-                <p class="card-text">Estimulación de la piel y la circulación mediante tecnología avanzada para un drenaje linfático efectivo.</p>
+                <p class="card-text">Estimulación de la piel y la circulación mediante tecnología
+                  avanzada para un drenaje linfático efectivo.</p>
                 <a href="#" class="btn btn-outline-success mt-auto" data-service="DermoHealth" data-bs-toggle="modal"
                   data-bs-target="#modalTurno">
                   Reservar turno
@@ -449,9 +470,10 @@
               <img src="https://picsum.photos/200/213" class="card-img-top" alt="Criofrecuencia corporal">
               <div class="card-body d-flex flex-column">
                 <h5 class="card-title text-success">Criofrecuencia Corporal</h5>
-                <p class="card-text">Técnica innovadora que combina frío y calor para reafirmar la piel y reducir la flacidez.</p>
-                <a href="#" class="btn btn-outline-success mt-auto" data-service="Criofrecuencia Corporal" data-bs-toggle="modal"
-                  data-bs-target="#modalTurno">
+                <p class="card-text">Técnica innovadora que combina frío y calor para reafirmar la piel
+                  y reducir la flacidez.</p>
+                <a href="#" class="btn btn-outline-success mt-auto" data-service="Criofrecuencia Corporal"
+                  data-bs-toggle="modal" data-bs-target="#modalTurno">
                   Reservar turno
                 </a>
               </div>
@@ -464,9 +486,10 @@
               <img src="https://picsum.photos/200/214" class="card-img-top" alt="Ultracavitación">
               <div class="card-body d-flex flex-column">
                 <h5 class="card-title text-success">Ultracavitación</h5>
-                <p class="card-text">Tecnología no invasiva que ayuda a reducir grasa localizada y moldear el contorno corporal.</p>
-                <a href="#" class="btn btn-outline-success mt-auto" data-service="Ultracavitación" data-bs-toggle="modal"
-                  data-bs-target="#modalTurno">
+                <p class="card-text">Tecnología no invasiva que ayuda a reducir grasa localizada y
+                  moldear el contorno corporal.</p>
+                <a href="#" class="btn btn-outline-success mt-auto" data-service="Ultracavitación"
+                  data-bs-toggle="modal" data-bs-target="#modalTurno">
                   Reservar turno
                 </a>
               </div>
@@ -483,7 +506,8 @@
       <div class="modal-content">
         <form id="form-turno">
           <div class="modal-header">
-            <h5 class="modal-title" id="modalTurnoLabel">Pedir turno para <span id="service-name"></span></h5>
+            <h5 class="modal-title" id="modalTurnoLabel">Pedir turno para <span id="service-name"></span>
+            </h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
           </div>
           <div class="modal-body">
@@ -531,7 +555,7 @@
   </div>
 
   <!-- ----------------------- Footer ----------------------- -->
-  <footer class="bg-dark text-light pt-5 pb-3">
+  <footer class="bg-dark text-light pt-5 pb-3" id="contacto">
     <div class="container">
       <div class="row text-center text-md-start">
 
@@ -539,7 +563,8 @@
         <div class="col-md-4 mb-4">
           <h4 class="text-success fw-bold">Spa Sentirse Bien</h4>
           <p>
-            Tu lugar de relajación y bienestar en la ciudad. Te ayudamos a encontrar el equilibrio que merecés.
+            Tu lugar de relajación y bienestar en la ciudad. Te ayudamos a encontrar el equilibrio que
+            merecés.
           </p>
         </div>
 

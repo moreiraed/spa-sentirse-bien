@@ -10,15 +10,17 @@ import {
 
 import { auth, db } from "./firebase-config.js";
 
-// ==============================
 // Función para registrar usuario
-// ==============================
-window.register = async function () {
-  const nombre = document.getElementById("nombreRegistro").value.trim();
+window.register = async function (event) {
+  event.preventDefault(); // Prevenir el comportamiento de envío predeterminado del formulario
+
+  const username = document
+    .getElementById("nombreUsuarioRegistro")
+    .value.trim();
   const email = document.getElementById("emailRegistro").value.trim();
   const password = document.getElementById("passwordRegistro").value;
 
-  if (!nombre || !email || !password) {
+  if (!username || !email || !password) {
     mostrarToast("Por favor completá todos los campos.", "warning");
     return;
   }
@@ -30,7 +32,19 @@ window.register = async function () {
 
   const btnRegistro = document.getElementById("btnRegistro");
   const spinner = document.getElementById("spinnerBtn");
+
+  // Comprobamos que el spinner existe antes de intentar mostrarlo
+  if (!spinner) {
+    console.error("Spinner no encontrado");
+    return;
+  }
+
+  // Guardamos el texto original del botón y lo cambiamos por "Cargando..."
+  const originalButtonText = btnRegistro.innerHTML; // Usamos innerHTML para el botón
+
+  // Mostrar el spinner y ocultar el texto del botón
   spinner.classList.remove("d-none");
+  btnRegistro.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span> Cargando...';
   btnRegistro.disabled = true;
 
   try {
@@ -41,7 +55,14 @@ window.register = async function () {
     );
     const user = userCredential.user;
 
-    await setDoc(doc(db, "users", user.uid), { nombre, email });
+    // Guardar datos adicionales del usuario en Firestore
+    await setDoc(doc(db, "users", user.uid), {
+      username,
+      email,
+      nombre: "",
+      apellido: "",
+      dni: "",
+    });
     await sendEmailVerification(user);
 
     // Cierra modal de registro
@@ -58,6 +79,7 @@ window.register = async function () {
     );
     modalVerificacion.show();
   } catch (error) {
+    // Manejo de errores específicos
     if (error.code === "auth/email-already-in-use") {
       mostrarToast("Este correo ya está registrado.", "danger");
     } else if (error.code === "auth/invalid-email") {
@@ -66,14 +88,17 @@ window.register = async function () {
       mostrarToast("Error: " + error.message, "danger");
     }
   } finally {
+    // Restauramos el texto original y escondemos el spinner
     spinner.classList.add("d-none");
+    btnRegistro.innerHTML = originalButtonText; // Restauramos el texto original del botón
     btnRegistro.disabled = false;
   }
 };
 
-// ==============================
+// Asignar la función de registro al evento de envío del formulario
+document.getElementById("formRegistro").addEventListener("submit", register);
+
 // Reenviar verificación para "Modal de verificación pendiente"
-// ==============================
 document.querySelectorAll(".btn-reenviar-verificacion").forEach((boton) => {
   boton.addEventListener("click", async function (e) {
     e.preventDefault();
@@ -103,7 +128,7 @@ document.querySelectorAll(".btn-reenviar-verificacion").forEach((boton) => {
       // Temporizador con cuenta regresiva
       let segundosRestantes = 30;
       boton.disabled = true;
-      boton.classList.add("disabled"); // Por si usás estilos visuales
+      boton.classList.add("disabled");
 
       const intervalo = setInterval(() => {
         segundosRestantes--;
@@ -120,9 +145,7 @@ document.querySelectorAll(".btn-reenviar-verificacion").forEach((boton) => {
   });
 });
 
-// ==============================
 // Verificar y continuar
-// ==============================
 document.getElementById("btnVerificarYContinuar").onclick = async function () {
   const user = auth.currentUser;
 
@@ -148,12 +171,13 @@ document.getElementById("btnVerificarYContinuar").onclick = async function () {
   }
 };
 
-// ==============================
+
 // Toast de notificación
-// ==============================
 function mostrarToast(mensaje, tipo = "success") {
   const toastElement = document.getElementById("toastNotificacion");
   const toastMensaje = document.getElementById("toastMensaje");
+
+  if (!toastElement || !toastMensaje) return;
 
   toastMensaje.textContent = mensaje;
 

@@ -1,6 +1,8 @@
 .carousel-item img {
-  max-height: 500px; /* o la altura que prefieras */
-  object-fit: cover; /* recorta imagen para que encaje */
+  max-height: 500px;
+  /* o la altura que prefieras */
+  object-fit: cover;
+  /* recorta imagen para que encaje */
   width: 100%;
 }
 
@@ -11,7 +13,8 @@
 }
 
 .navbar .nav-link:hover {
-  color: #198754; /* verde Bootstrap */
+  color: #198754;
+  /* verde Bootstrap */
   transition: 0.3s;
 }
 
@@ -35,4 +38,37 @@
   width: 30px;
   height: 30px;
   object-fit: cover;
+}
+
+/* Toasts de la seccion de perfil.html */
+/* Asegura que el contenedor del toast esté por encima del fondo oscuro del modal */
+#toast-container {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1051;
+  /* Asegura que el toast esté por encima del modal */
+  padding: 1rem;
+}
+
+/* Aseguramos que el fondo del toast no esté opacado */
+.toast {
+  background-color: transparent !important;
+}
+
+.toast.bg-success {
+  background-color: #28a745 !important;
+}
+
+.toast.bg-danger {
+  background-color: #dc3545 !important;
+}
+
+.toast.bg-warning {
+  background-color: #ffc107 !important;
+}
+
+/* Evitar que el backdrop del modal afecte la visibilidad del toast */
+.modal-backdrop {
+  z-index: 1040 !important;
 }

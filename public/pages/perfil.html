@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=MonteCarlo&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../css/main.css" />
+    <title>Spa Sentirse Bien</title>
+</head>
+
+<body>
+    <!-- ----------------------- Nav ----------------------- -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm py-3">
+        <div class="container">
+            <!-- Logo -->
+            <a class="navbar-brand d-flex align-items-center" href="../index.html">
+                <img src="../assets/icon/icon.png" alt="Spa Logo" width="40" height="40" class="me-2" />
+                <span class="fw-bold text-success fs-4 montecarlo-regular">Spa Sentirse Bien</span>
+            </a>
+
+            <!-- Botón hamburguesa para móviles -->
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSpa"
+                aria-controls="navbarSpa" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <!-- Enlaces -->
+            <div class="collapse navbar-collapse justify-content-end" id="navbarSpa">
+                <ul class="navbar-nav mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link px-3 fw-semibold text-dark" href="./servicios.html">Servicios</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link px-3 fw-semibold text-dark" href="#contacto">Contacto</a>
+                    </li>
+                    <li class="nav-item" id="SigInHidden">
+                        <a class="nav-link px-3 fw-semibold text-dark" href="#" data-bs-toggle="modal"
+                            data-bs-target="#SigInModal">Iniciar sesión</a>
+                    </li>
+                    <li class="nav-item" id="SigUpHidden">
+                        <a class="btn btn-success ms-2 px-4 rounded-pill" href="#" data-bs-toggle="modal"
+                            data-bs-target="#SigUpModal">Crear cuenta</a>
+                    </li>
+                    <li id="userMenu" class="dropdown d-none">
+                        <button class="btn btn-success dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                            <i class="bi bi-person-circle"></i>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a class="dropdown-item" href="./perfil.html">Mi Perfil</a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="./turnos.html">Mis Turnos</a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="#" onclick="logout()">Cerrar sesión</a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Perfil -->
+    <div class="container mt-5 mb-5">
+        <div class="card shadow-sm p-4">
+            <h3 class="text-center mb-4">Mi Perfil</h3>
+
+            <!-- Alerta NO verificado -->
+            <div id="alertaVerificacion" class="alert alert-warning d-none" role="alert">
+                <strong class="text-danger">Atención:</strong> tu correo
+                <strong>aún no está verificado</strong>.
+                <span class="text-danger fw-bold">No podrás reservar turnos</span> en
+                la sección de <strong class="text-primary">Servicios</strong> hasta
+                que completes la verificación.
+                <br />
+                Además, debes completar tus datos personales: <strong>Nombre</strong>,
+                <strong>Apellido</strong> y <strong>DNI</strong>.
+                <br />
+                Podés hacerlo más tarde desde
+                <strong class="text-primary">Mi Perfil</strong>.
+                <br />
+                <button class="btn btn-outline-primary mt-3" type="button" id="btnReenviarVerificacion"
+                    onclick="reenviarVerificacion()">
+                    Reenviar verificación
+                </button>
+            </div>
+
+            <!-- Alerta VERIFICADO -->
+            <div id="estadoVerificacionOk" class="alert alert-success d-none" role="alert">
+                ¡Tu correo está <strong class="text-success">verificado</strong>!
+                Ahora puedes empezar a reservar tus
+                <strong class="text-primary">Servicios</strong> favoritos.
+            </div>
+
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label">Correo electrónico</label>
+                    <input type="email" class="form-control" id="email" disabled style="background-color: #f0f0f0" />
+                </div>
+                <div class="mb-3">
+                    <label for="usuario" class="form-label">Nombre de usuario</label>
+                    <input type="text" class="form-control" id="usuario" disabled style="background-color: #f0f0f0" />
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Nombre</label>
+                    <input type="text" class="form-control" id="nombre" />
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Apellido</label>
+                    <input type="text" class="form-control" id="apellido" />
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">DNI</label>
+                    <input type="text" class="form-control" id="dni" />
+                </div>
+            </div>
+
+            <div class="text-end mt-4">
+                <button class="btn btn-success px-4" id="btnGuardarPerfil" onclick="guardarPerfil()">
+                    Guardar Cambios
+                </button>
+                <div class="mt-4 text-center">
+                    <button class="btn btn-outline-secondary" data-bs-toggle="modal"
+                        data-bs-target="#modalEditarPassword">
+                        Cambiar Contraseña
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para cambiar la contraseña -->
+    <div class="modal fade" id="modalEditarPassword" tabindex="-1" aria-labelledby="modalPasswordLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalPasswordLabel">
+                        Cambiar Contraseña
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <label class="form-label mt-3">Contraseña actual</label>
+                    <input type="password" class="form-control" id="contraseñaActual" />
+                    <label class="form-label">Nueva contraseña</label>
+                    <input type="password" class="form-control" id="nuevaPassword" />
+                    <label class="form-label mt-3">Confirmar contraseña</label>
+                    <input type="password" class="form-control" id="confirmarPassword" />
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-danger" data-bs-dismiss="modal">
+                        Cancelar
+                    </button>
+                    <button class="btn btn-success" id="guardarPassword">
+                        Guardar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para mostrar confirmaciones -->
+    <div class="modal fade" id="modalConfirmacion" tabindex="-1" aria-labelledby="modalConfirmacionLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalConfirmacionLabel">
+                        Confirmación
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="mensajeConfirmacion">
+                    <!-- Aquí se actualizará el mensaje -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        Cerrar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contenedor de Toasts -->
+    <div id="toast-container" class="position-fixed top-0 end-0 p-3">
+        <!-- Aquí se agregarán los toasts dinámicamente -->
+    </div>
+
+    <!-- ----------------------- Footer ----------------------- -->
+    <footer class="bg-dark text-light pt-5 pb-3" id="contacto">
+        <div class="container">
+            <div class="row text-center text-md-start">
+                <!-- Logo e información -->
+                <div class="col-md-4 mb-4">
+                    <h4 class="text-success fw-bold">Spa Sentirse Bien</h4>
+                    <p>
+                        Tu lugar de relajación y bienestar en la ciudad. Te ayudamos a
+                        encontrar el equilibrio que merecés.
+                    </p>
+                </div>
+
+                <!-- Información de contacto -->
+                <div class="col-md-4 mb-4">
+                    <h5 class="fw-bold">Contacto</h5>
+                    <ul class="list-unstyled">
+                        <li>
+                            <i class="bi bi-geo-alt-fill"></i> Av. Tranquilidad 123,
+                            Resistencia, Chaco
+                        </li>
+                        <li>
+                            <i class="bi bi-envelope-fill"></i> contacto@armoniaspa.com
+                        </li>
+                        <li><i class="bi bi-telephone-fill"></i> +54 362 123 4567</li>
+                    </ul>
+                </div>
+
+                <!-- Redes sociales -->
+                <div class="col-md-4 mb-4">
+                    <h5 class="fw-bold">Seguinos</h5>
+                    <a href="#" class="text-light me-3 fs-5"><i class="bi bi-facebook"></i></a>
+                    <a href="#" class="text-light me-3 fs-5"><i class="bi bi-instagram"></i></a>
+                    <a href="#" class="text-light me-3 fs-5"><i class="bi bi-whatsapp"></i></a>
+                </div>
+            </div>
+            <hr class="border-light" />
+            <div class="text-center small">
+                © 2025 Spa Sentirse Bien. Todos los derechos reservados.
+            </div>
+        </div>
+    </footer>
+
+    <script type="module" src="../src/Perfil.js"></script>
+    <script type="module" src="../src/ControlSesion.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
