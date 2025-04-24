@@ -189,10 +189,35 @@ form.addEventListener("submit", async (e) => {
   try {
     const perfilRef = doc(db, "users", user.uid);
     const perfilSnap = await getDoc(perfilRef);
-
+  
     if (!perfilSnap.exists()) {
       mostrarToast(
-        "Tu perfil está incompleto. No se pudo guardar el turno.",
+        "Por favor, completa tu Nombre, Apellido y DNI en tu perfil.",
+        "danger"
+      );
+      return;
+    }
+  
+    const perfilData = perfilSnap.data();
+    const { nombreCompleto, apellido, dni } = perfilData;
+  
+    const camposFaltantes = [
+      !nombreCompleto?.trim(),
+      !apellido?.trim(),
+      !dni?.trim(),
+    ].filter(Boolean).length;
+  
+    if (camposFaltantes === 3) {
+      mostrarToast(
+        "Por favor, completa tu Nombre, Apellido y DNI en tu perfil.",
+        "danger"
+      );
+      return;
+    }
+  
+    if (camposFaltantes > 0) {
+      mostrarToast(
+        "Tu perfil está incompleto. No se pudo guardar el turno. Verifica que hayas completado todos los campos Nombre, Apellido y DNI.",
         "danger"
       );
       return;
