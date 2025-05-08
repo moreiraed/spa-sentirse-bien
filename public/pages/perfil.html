@@ -18,7 +18,7 @@
     <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm py-3">
         <div class="container">
             <!-- Logo -->
-            <a class="navbar-brand d-flex align-items-center" href="../index.html">
+            <a class="navbar-brand d-flex align-items-center line-effect" href="../index.html">
                 <img src="../assets/icon/icon.png" alt="Spa Logo" width="40" height="40" class="me-2" />
                 <span class="fw-bold text-success fs-3 montecarlo-regular">Spa Sentirse Bien</span>
             </a>
@@ -33,17 +33,17 @@
             <div class="collapse navbar-collapse justify-content-end" id="navbarSpa">
                 <ul class="navbar-nav mb-2 mb-lg-0">
                     <li class="nav-item">
-                        <a class="nav-link px-3 fw-semibold text-dark" href="./servicios.html">Servicios</a>
+                        <a class="nav-link px-3 fw-semibold text-dark line-effect" href="./servicios.html">Servicios</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link px-3 fw-semibold text-dark" href="#contacto">Contacto</a>
+                        <a class="nav-link px-3 fw-semibold text-dark line-effect" href="#contacto">Contacto</a>
                     </li>
                     <li class="nav-item" id="SigInHidden">
-                        <a class="nav-link px-3 fw-semibold text-dark" href="#" data-bs-toggle="modal"
+                        <a class="nav-link px-3 fw-semibold text-dark btn-animate" href="#" data-bs-toggle="modal"
                             data-bs-target="#SigInModal">Iniciar sesión</a>
                     </li>
                     <li class="nav-item" id="SigUpHidden">
-                        <a class="btn btn-success ms-2 px-4 rounded-pill" href="#" data-bs-toggle="modal"
+                        <a class="nav-link px-3 fw-semibold text-dark btn-animate" href="#" data-bs-toggle="modal"
                             data-bs-target="#SigUpModal">Crear cuenta</a>
                     </li>
                     <li id="userMenu" class="dropdown d-none">
@@ -71,7 +71,7 @@
     <div class="container mt-5 mb-5">
         <div class="card shadow-sm p-4">
             <h3 class="text-center mb-4">Mi Perfil</h3>
-
+    
             <!-- Alerta NO verificado -->
             <div id="alertaVerificacion" class="alert alert-warning d-none" role="alert">
                 <strong class="text-danger">Atención:</strong> tu correo
@@ -91,14 +91,14 @@
                     Reenviar verificación
                 </button>
             </div>
-
+    
             <!-- Alerta VERIFICADO -->
             <div id="estadoVerificacionOk" class="alert alert-success d-none" role="alert">
                 ¡Tu correo está <strong class="text-success">verificado</strong>!
                 Ahora puedes empezar a reservar tus
                 <strong class="text-primary">Servicios</strong> favoritos.
             </div>
-
+    
             <div class="row g-3">
                 <div class="col-md-6">
                     <label class="form-label">Correo electrónico</label>
@@ -121,24 +121,63 @@
                     <input type="text" class="form-control" id="dni" />
                 </div>
             </div>
-
-            <div class="text-end mt-4">
+    
+            <!-- Botón Guardar Cambios centrado -->
+            <div class="text-center mt-4">
                 <button class="btn btn-success px-4" id="btnGuardarPerfil" onclick="guardarPerfil()">
                     Guardar Cambios
                 </button>
-                <div class="mt-4 text-center">
-                    <button class="btn btn-outline-secondary" data-bs-toggle="modal"
-                        data-bs-target="#modalEditarPassword">
+            </div>
+    
+        </div>
+    </div>
+    
+    <!-- Caja para Cambiar Contraseña y Eliminar Cuenta -->
+    <div class="container mt-4">
+        <div class="card p-4 shadow-sm">
+            <h5 class="text-center mb-4">Opciones de Cuenta</h5>
+            <div class="row justify-content-center">
+                <!-- Cambiar Contraseña -->
+                <div class="col-12 col-md-6 text-center mb-3">
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalEditarPassword">
                         Cambiar Contraseña
+                    </button>
+                </div>
+    
+                <!-- Eliminar Cuenta -->
+                <div class="col-12 col-md-6 text-center">
+                    <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalEliminarCuenta">
+                        Eliminar Cuenta
                     </button>
                 </div>
             </div>
         </div>
     </div>
+    
+    <!-- Modal para Confirmar Eliminación de Cuenta -->
+    <div class="modal fade" id="modalEliminarCuenta" tabindex="-1" aria-labelledby="modalEliminarCuentaLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalEliminarCuentaLabel">Confirmar Eliminación de Cuenta</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body">
+                    ¿Estás seguro de que quieres eliminar tu cuenta? Esta acción no se puede deshacer.
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-danger ms-auto" onclick="eliminarCuenta()">Eliminar Cuenta</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
 
     <!-- Modal para cambiar la contraseña -->
-    <div class="modal fade" id="modalEditarPassword" tabindex="-1" aria-labelledby="modalPasswordLabel"
-        aria-hidden="true">
+    <div class="modal fade" id="modalEditarPassword" tabindex="-1" aria-labelledby="modalPasswordLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -148,18 +187,23 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <label class="form-label mt-3">Contraseña actual</label>
-                    <input type="password" class="form-control" id="contraseñaActual" />
-                    <label class="form-label">Nueva contraseña</label>
-                    <input type="password" class="form-control" id="nuevaPassword" />
-                    <label class="form-label mt-3">Confirmar contraseña</label>
-                    <input type="password" class="form-control" id="confirmarPassword" />
+                    <div class="mb-4">
+                        <label class="form-label mt-3">Contraseña actual</label>
+                        <input type="password" class="form-control" id="contraseñaActual" />
+                        <label class="form-label">Nueva contraseña</label>
+                        <input type="password" class="form-control" id="nuevaPassword" />
+                        <label class="form-label mt-3">Confirmar contraseña</label>
+                        <input type="password" class="form-control" id="confirmarPassword" />
+                    </div>
                 </div>
                 <div class="modal-footer">
+                    <!-- Botón Cancelar a la izquierda -->
                     <button class="btn btn-danger" data-bs-dismiss="modal">
                         Cancelar
                     </button>
-                    <button class="btn btn-success" id="guardarPassword">
+    
+                    <!-- Botón Guardar a la derecha -->
+                    <button class="btn btn-success ms-auto" id="guardarPassword">
                         Guardar
                     </button>
                 </div>

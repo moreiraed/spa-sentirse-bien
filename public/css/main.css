@@ -6,26 +6,9 @@
   width: 100%;
 }
 
-/* ----------------------- Navar ----------------------- */
-
-
+/* ----------------------- Nav ----------------------- */
 .navbar {
   font-family: "Segoe UI", sans-serif;
-}
-
-.navbar .nav-link:hover {
-  color: #198754;
-  /* verde Bootstrap */
-  transition: 0.3s;
-}
-
-.navbar .btn-success {
-  background-color: #198754;
-  border: none;
-}
-
-.navbar .btn-success:hover {
-  background-color: #157347;
 }
 
 .montecarlo-regular {
@@ -34,7 +17,167 @@
   font-style: normal;
 }
 
-/*ajusta la imagen "icon.png" para Servicios.js */
+/* ----------------------- Efectos Animados ----------------------- */
+
+/* Efecto de la línea animada (para Servicios y Contacto) */
+.navbar .nav-link.line-effect {
+  position: relative;
+  padding-bottom: 5px;
+  font-family: "Segoe UI", sans-serif;
+  display: inline-block;
+  overflow: hidden;
+}
+
+.navbar .nav-link.line-effect:hover {
+  color: #198754;
+  /* Cambia el color del texto en hover */
+  transition: color 0.3s ease;
+  animation: letter-slide 0.4s ease-out forwards;
+  /* Animación de las letras */
+}
+
+/* Animación de deslizamiento de las letras */
+@keyframes letter-slide {
+  0% {
+    transform: translateY(10px);
+    /* Comienza un poco más abajo */
+    opacity: 0;
+    /* Letras invisibles al inicio */
+  }
+
+  100% {
+    transform: translateY(0);
+    /* Se mueve a su posición original */
+    opacity: 1;
+    /* Letras visibles al final */
+  }
+}
+
+/* Efecto de la línea animada desde el centro */
+.navbar .nav-link.line-effect::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 0;
+  height: 2px;
+  background-color: #198754;
+  transition: width 0.3s ease, left 0.3s ease;
+  transform: translateX(-50%);
+  /* Centra la línea */
+}
+
+.navbar .nav-link.line-effect:hover::after {
+  width: 100%;
+  /* Expande la línea en el hover */
+  left: 50%;
+  /* La línea comienza desde el centro */
+}
+
+/* ----------------------- Botón Animado (para Iniciar sesión y Crear cuenta) ----------------------- */
+.navbar .nav-link.btn-animate {
+  position: relative;
+  padding: 8px 20px;
+  border: 2px solid transparent;
+  color: #198754;
+  font-weight: 600;
+  text-transform: none;
+  font-family: "Segoe UI", sans-serif;
+  text-align: center;
+  background-color: transparent;
+  /* Elimina el fondo para que no parezca un botón */
+  overflow: hidden;
+  display: inline-block;
+  transition: color 0.3s ease, border-color 0.3s ease, transform 0.3s ease;
+  border-radius: 25px;
+  /* Agregamos borde redondeado */
+}
+
+/* Animación de las letras al hacer hover (deslizar) */
+.navbar .nav-link.btn-animate:hover {
+  color: #198754;
+  border-color: #198754;
+  /* Borde verde al hacer hover */
+  transform: translateY(-5px);
+  /* Desliza ligeramente el texto hacia arriba */
+}
+
+/* Animación de deslizamiento de las letras */
+@keyframes letter-slide {
+  0% {
+    transform: translateY(5px);
+    /* Comienza un poco más abajo */
+    opacity: 0;
+    /* Letras invisibles al inicio */
+  }
+
+  100% {
+    transform: translateY(0);
+    /* Se mueve a su posición original */
+    opacity: 1;
+    /* Letras visibles al final */
+  }
+}
+
+/* Efecto de la línea animada (para "Spa Sentirse Bien") */
+.navbar .navbar-brand.line-effect {
+  position: relative;
+  display: inline-block;
+  overflow: hidden;
+  padding-bottom: 5px;
+  font-family: "Segoe UI", sans-serif;
+}
+
+/* Efecto al hacer hover sobre "Spa Sentirse Bien" */
+.navbar .navbar-brand.line-effect:hover span {
+  color: #198754;
+  /* Cambia el color del texto en hover */
+  transition: color 0.3s ease;
+  animation: letter-slide 0.4s ease-out forwards;
+  /* Animación de las letras */
+}
+
+/* Animación de deslizamiento de las letras */
+@keyframes letter-slide {
+  0% {
+    transform: translateY(10px);
+    /* Comienza un poco más abajo */
+    opacity: 0;
+    /* Letras invisibles al inicio */
+  }
+
+  100% {
+    transform: translateY(0);
+    /* Se mueve a su posición original */
+    opacity: 1;
+    /* Letras visibles al final */
+  }
+}
+
+/* Efecto de la línea animada debajo del nombre (Spa Sentirse Bien) */
+.navbar .navbar-brand.line-effect::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 0;
+  height: 2px;
+  background-color: #198754;
+  transition: width 0.3s ease, left 0.3s ease;
+  transform: translateX(-50%);
+  /* Centra la línea */
+}
+
+/* Efecto al hacer hover sobre "Spa Sentirse Bien" */
+.navbar .navbar-brand.line-effect:hover::after {
+  width: 100%;
+  /* Expande la línea en el hover */
+  left: 50%;
+  /* La línea comienza desde el centro */
+}
+
+
+/** ajusta la imagen "icon.png" para Servicios.js **/
 .toast-header img {
   width: 30px;
   height: 30px;
@@ -72,4 +215,73 @@
 /* Evitar que el backdrop del modal afecte la visibilidad del toast */
 .modal-backdrop {
   z-index: 1040 !important;
+}
+
+/** Modal de solicitar turnos de servicios.html **/
+
+/* Cambiar color de la cabecera */
+.modal-header {
+  background-color: #f8f5f2;
+  /* Color suave, tipo beige claro */
+}
+
+.modal-footer {
+  background-color: #f8f5f2;
+  /* Color suave, tipo beige claro */
+}
+
+/* Cambiar fondo de las secciones de fecha y hora */
+.modal-body .mb-4 {
+  background-color: #f4f4f4;
+  /* Color gris claro, para un contraste suave */
+  padding: 15px;
+  /* Padding horizontal de 15px, pero sin padding vertical */
+  border-radius: 8px;
+}
+
+
+/* Cambiar el fondo de la cabecera */
+.bg-warning {
+  background-color: #ffed6b !important;
+}
+
+#modalRequiereLogin .modal-body .back-4 {
+  background-color: #f4f4f4;
+  /* Color gris claro, para un contraste suave */
+  padding: 15px;
+  /* Padding horizontal de 15px, pero sin padding vertical */
+  padding-bottom: 1px;
+  border-radius: 8px;
+}
+
+#SigInModal .modal-body .mb-4 {
+  background-color: #f4f4f4;
+  /* Color gris claro, para un contraste suave */
+  padding: 15px;
+  /* Padding horizontal de 15px, pero sin padding vertical */
+  padding-bottom: 1px;
+  border-radius: 8px;
+}
+
+#SigUpModal .modal-body .mb-4 {
+  background-color: #f4f4f4;
+  /* Color gris claro, para un contraste suave */
+  padding: 15px;
+  /* Padding horizontal de 15px, pero sin padding vertical */
+  padding-bottom: 1px;
+  border-radius: 8px;
+}
+
+#modalCuentaCreada .alert-warning {
+  background-color: #f8f5f2;
+}
+
+#modalEditarPassword .modal-body .mb-4 {
+  background-color: #f4f4f4;
+  /* Color gris claro, para un contraste suave */
+  padding: 15px;
+  padding-top: 1px;
+  /* Padding horizontal de 15px, pero sin padding vertical */
+  padding-bottom: 20px;
+  border-radius: 8px;
 }

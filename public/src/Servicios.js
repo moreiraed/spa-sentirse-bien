@@ -113,10 +113,22 @@ const form = document.getElementById("form-turno");
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
 
+  const confirmarButton = document.getElementById("confirmarButton");
+  const btnText = document.getElementById("btn-text");
+  const btnSpinner = document.getElementById("btn-spinner");
+  const spinnerText = document.getElementById("spinner-text");
+
+  // Deshabilitar el botón y mostrar el spinner + texto
+  confirmarButton.disabled = true;
+  btnText.classList.add("d-none"); // Ocultar el texto del botón
+  btnSpinner.classList.remove("d-none"); // Mostrar el spinner
+  spinnerText.classList.remove("d-none"); // Mostrar el texto "Cargando..."
+
   const servicio = document.getElementById("service-name").textContent;
   const fecha = document.getElementById("fecha").value;
   const hora = document.getElementById("hora").value;
   const comentario = document.getElementById("comentario").value;
+  const metodoPago = document.getElementById("metodoPago").value;
 
   const user = auth.currentUser;
 
@@ -133,6 +145,11 @@ form.addEventListener("submit", async (e) => {
       document.getElementById("modalRequiereLogin")
     );
     modalLogin.show();
+    // Restaurar el estado del botón
+    confirmarButton.disabled = false;
+    btnText.classList.remove("d-none");
+    btnSpinner.classList.add("d-none");
+    spinnerText.classList.add("d-none"); 
     return;
   }
 
@@ -142,6 +159,11 @@ form.addEventListener("submit", async (e) => {
       document.getElementById("modalVerificaCorreo")
     );
     modalVerifica.show();
+    // Restaurar el estado del botón
+    confirmarButton.disabled = false;
+    btnText.classList.remove("d-none");
+    btnSpinner.classList.add("d-none");
+    spinnerText.classList.add("d-none"); 
     return;
   }
 
@@ -189,7 +211,7 @@ form.addEventListener("submit", async (e) => {
   try {
     const perfilRef = doc(db, "users", user.uid);
     const perfilSnap = await getDoc(perfilRef);
-  
+
     if (!perfilSnap.exists()) {
       mostrarToast(
         "Por favor, completa tu Nombre Completo, Apellido y DNI en tu perfil.",
@@ -197,18 +219,18 @@ form.addEventListener("submit", async (e) => {
       );
       return;
     }
-  
+
     const perfilData = perfilSnap.data();
     const nombre = perfilData?.nombre?.trim();
     const apellido = perfilData?.apellido?.trim();
     const dni = perfilData?.dni?.trim();
-  
+
     const camposFaltantes = [];
-  
+
     if (!nombre) camposFaltantes.push("Nombre Completo");
     if (!apellido) camposFaltantes.push("Apellido");
     if (!dni) camposFaltantes.push("DNI");
-  
+
     if (camposFaltantes.length === 3) {
       mostrarToast(
         "Por favor, completa tu Nombre Completo, Apellido y DNI en tu perfil.",
@@ -216,7 +238,7 @@ form.addEventListener("submit", async (e) => {
       );
       return;
     }
-  
+
     if (camposFaltantes.length > 0) {
       const campos = camposFaltantes.join(", ");
       mostrarToast(
@@ -239,6 +261,7 @@ form.addEventListener("submit", async (e) => {
       fecha,
       hora,
       comentario,
+      metodoPago,
       timestamp: new Date(),
     });
 
@@ -252,6 +275,12 @@ form.addEventListener("submit", async (e) => {
   } catch (error) {
     console.error("Error al guardar turno:", error);
     mostrarToast("Error al guardar el turno. Intentá más tarde.", "danger");
+  } finally {
+    // Restaurar el estado del botón después de completar el proceso
+    confirmarButton.disabled = false; // Habilitar el botón de nuevo
+    btnText.classList.remove("d-none"); // Mostrar el texto
+    btnSpinner.classList.add("d-none"); // Ocultar el spinner
+    spinnerText.classList.add("d-none"); // Ocultar el texto
   }
 });
 
@@ -335,14 +364,30 @@ function mostrarToast(message, type) {
 }
 
 export function selectService(serviceName) {
+  // Obtenemos el nombre del servicio
   document.getElementById("service-name").textContent = serviceName;
 
+  // Obtener el precio dinámicamente a partir del atributo data-price
+  const serviceButton = [
+    ...document.querySelectorAll(".btn-outline-success"),
+  ].find((button) => button.getAttribute("data-service") === serviceName);
+  const servicePrice = serviceButton
+    ? serviceButton.getAttribute("data-price")
+    : "N/A";
+
+  // Actualizar el precio en el modal
+  document.getElementById(
+    "service-price"
+  ).textContent = `Precio: $${servicePrice}`;
+
+  // Configuración de la fecha mínima para la selección
   const fechaInput = document.getElementById("fecha");
   const hoy = new Date();
   const fechaMin = hoy.toISOString().split("T")[0];
   fechaInput.value = "";
   fechaInput.setAttribute("min", fechaMin);
 
-  // Oculta el aviso si estaba visible
+  // Ocultar el aviso si estaba visible
   document.getElementById("aviso-dia").classList.add("d-none");
 }
+

@@ -12,6 +12,68 @@ import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.0/fi
 
 import { db, auth } from "./firebase-config.js";
 
+// Inyectar CSS dinámicamente
+const css = `
+  /* Estilos para el contenedor de los turnos */
+  #lista-turnos {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3 columnas */
+    gap: 20px;
+    margin-top: 20px;
+  }
+
+  /* Estilo individual para cada turno */
+  .turno-item {
+    padding: 20px;
+    border-radius: 12px;
+    background-color: #f8f9fa;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .turno-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+  }
+
+  /* Colores para el fondo de los turnos */
+  .turno-item-info {
+    background-color: #e9f7df; /* Fondo verde suave */
+  }
+
+  .turno-item-warning {
+    background-color: #ffefdb; /* Fondo amarillo suave */
+  }
+
+  .turno-item-danger {
+    background-color: #ffdddd; /* Fondo rojo suave */
+  }
+
+  /* Estilo para el botón de cancelar */
+  .cancelar-btn {
+    background-color: #ff4d4d;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 8px;
+    transition: background-color 0.3s ease;
+  }
+
+  .cancelar-btn:hover {
+    background-color: #cc3f3f;
+  }
+
+  /* Animación de carga */
+  .alert-info {
+    font-size: 16px;
+    font-weight: bold;
+  }
+`;
+
+const style = document.createElement("style");
+style.textContent = css;
+document.head.appendChild(style);
+
 // Contenedor donde se agregarán los turnos
 const listaTurnos = document.getElementById("lista-turnos");
 
@@ -23,11 +85,12 @@ onAuthStateChanged(auth, async (user) => {
   }
 
   // Mostrar el mensaje de "Cargando..." cuando empezamos a traer los datos
-  listaTurnos.innerHTML = `
-    <div class="alert alert-info mx-auto my-5 p-4 text-center" style="max-width: 450px; background-color: rgba(40, 167, 69, 0.1); border-radius: 12px; border: 1px solid #28a745;">
-      Cargando turnos...
-    </div>
-  `;
+  listaTurnos.innerHTML = `  
+  <div class="alert alert-info mx-auto my-5 p-4 text-center" 
+       style="max-width: 450px; background-color: rgba(40, 167, 69, 0.1); border-radius: 12px; border: 1px solid #28a745;">
+    Cargando turnos...
+  </div>
+`;
 
   const turnosRef = collection(db, "turnos");
   const q = query(
@@ -41,11 +104,12 @@ onAuthStateChanged(auth, async (user) => {
 
   if (snapshot.empty) {
     // Si no hay turnos, mostramos el mensaje de que no hay turnos
-    listaTurnos.innerHTML = `
-      <div class="alert alert-info mx-auto my-5 p-4 text-center" style="max-width: 450px; background-color: rgba(0, 123, 255, 0.1); border-radius: 12px; border: 1px solid #007bff;">
-        Aún no tenés turnos reservados.
-      </div>
-    `;
+listaTurnos.innerHTML = `
+  <div class="alert alert-info mx-auto my-5 p-4 text-center" 
+       style="max-width: 450px; background-color: rgba(0, 123, 255, 0.1); border-radius: 12px; border: 1px solid #007bff;">
+    Aún no tenés turnos reservados.
+  </div>
+`;
     return;
   }
 
@@ -61,21 +125,22 @@ onAuthStateChanged(auth, async (user) => {
       "turno-item",
       "col-12",
       "mb-3",
-      "p-3",
-      "border",
-      "rounded"
+      turno.estado === "activo" ? "turno-item-info" : "turno-item-warning"
     );
 
     // Añadimos el contenido dinámico de cada turno
     div.innerHTML = `
-      <p><strong>Fecha para ir a su Turno:</strong> ${turno.fecha}</p>
+      <p><strong>Fecha:</strong> ${turno.fecha}</p>
       <p><strong>Hora:</strong> ${turno.hora}</p>
-      <p><strong>Tipo Servicio:</strong> ${turno.servicio}</p>
+      <p><strong>Servicio:</strong> ${turno.servicio}</p>
       <p><strong>Comentario:</strong> ${
         turno.comentario || "Sin comentario"
       }</p>
-      <p class="text-muted"><small>El Turno fue reservado el ${new Date(
-        turno.timestamp?.toDate?.()
+      <p><strong>Medio de Pago:</strong> ${
+        turno.metodoPago || "No especificado"
+      }</p>
+      <p class="text-muted"><small>Reservado el ${new Date(
+        turno.timestamp?.toDate()
       ).toLocaleString()}</small></p>
       <button class="btn btn-danger btn-sm cancelar-btn">Cancelar</button>
     `;
@@ -99,8 +164,9 @@ async function cancelarTurno(turnoId, turnoDiv) {
     await deleteDoc(doc(db, "turnos", turnoId));
 
     // Agregar animación para que el turno desaparezca
-    turnoDiv.style.transition = "opacity 0.5s ease";
+    turnoDiv.style.transition = "opacity 0.5s ease, transform 0.5s ease";
     turnoDiv.style.opacity = "0";
+    turnoDiv.style.transform = "scale(0.9)";
 
     setTimeout(() => {
       turnoDiv.remove();
@@ -127,70 +193,49 @@ function mostrarToast(message, type) {
     "fade",
     `bg-${type}`
   );
-
-  // Cambiar el color del texto según tipo
-  if (type === "warning") {
-    toast.classList.add("text-dark"); // Texto negro para warning
-  } else {
-    toast.classList.add("text-white"); // Blanco para success, danger
-  }
-
+  toast.classList.add(type === "warning" ? "text-dark" : "text-white");
   toast.setAttribute("role", "alert");
-  toast.setAttribute("aria-live", "assertive");
-  toast.setAttribute("aria-atomic", "true");
 
-  // Crear la cabecera del toast
   const toastHeader = document.createElement("div");
   toastHeader.classList.add("toast-header");
-
-  // Crear la imagen
   const img = document.createElement("img");
   img.src = "../assets/icon/icon.png";
   img.classList.add("rounded", "me-2");
   img.alt = "Icono";
 
-  // Crear el texto de la cabecera
   const strong = document.createElement("strong");
   strong.classList.add("me-auto");
   strong.textContent = "Notificación";
 
-  // Crear la hora
   const small = document.createElement("small");
   small.textContent = "Hace un momento";
 
-  // Crear el botón de cierre
   const closeButton = document.createElement("button");
   closeButton.type = "button";
   closeButton.classList.add("btn-close");
   closeButton.setAttribute("data-bs-dismiss", "toast");
-  closeButton.setAttribute("aria-label", "Cerrar");
 
-  // Añadir los elementos a la cabecera
   toastHeader.appendChild(img);
   toastHeader.appendChild(strong);
   toastHeader.appendChild(small);
   toastHeader.appendChild(closeButton);
 
-  // Crear el cuerpo del toast
   const toastBody = document.createElement("div");
   toastBody.classList.add("toast-body");
   toastBody.textContent = message;
 
-  // Añadir la cabecera y el cuerpo al toast
   toast.appendChild(toastHeader);
   toast.appendChild(toastBody);
 
-  // Añadir el toast al contenedor de toasts
   const toastContainer = document.getElementById("toast-container");
   if (toastContainer) {
     toastContainer.appendChild(toast);
     const bootstrapToast = new bootstrap.Toast(toast);
     bootstrapToast.show();
 
-    // Eliminar el toast después de un tiempo
     setTimeout(() => {
       toast.remove();
-    }, 5000); // El toast se elimina después de 5 segundos
+    }, 5000);
   } else {
     console.error("El contenedor de toasts no existe en el DOM");
   }

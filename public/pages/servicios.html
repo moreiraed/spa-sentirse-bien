@@ -23,7 +23,7 @@
   <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm py-3">
     <div class="container">
       <!-- Logo -->
-      <a class="navbar-brand d-flex align-items-center" href="../index.html">
+      <a class="navbar-brand d-flex align-items-center line-effect" href="../index.html">
         <img src="../assets/icon/icon.png" alt="Spa Logo" width="40" height="40" class="me-2">
         <span class="fw-bold text-success fs-3 montecarlo-regular">Spa Sentirse Bien</span>
       </a>
@@ -38,17 +38,17 @@
       <div class="collapse navbar-collapse justify-content-end" id="navbarSpa">
         <ul class="navbar-nav mb-2 mb-lg-0">
           <li class="nav-item">
-            <a class="nav-link px-3 fw-semibold text-dark" href="servicios.html">Servicios</a>
+            <a class="nav-link px-3 fw-semibold text-dark line-effect" href="servicios.html">Servicios</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link px-3 fw-semibold text-dark" href="#contacto">Contacto</a>
+            <a class="nav-link px-3 fw-semibold text-dark line-effect" href="#contacto">Contacto</a>
           </li>
           <li class="nav-item" id="SigInHidden">
-            <a class="nav-link px-3 fw-semibold text-dark" href="#" data-bs-toggle="modal"
+            <a class="nav-link px-3 fw-semibold text-dark btn-animate" href="#" data-bs-toggle="modal"
               data-bs-target="#SigInModal">Iniciar sesión</a>
           </li>
           <li class="nav-item" id="SigUpHidden">
-            <a class="btn btn-success ms-2 px-4 rounded-pill" href="#" data-bs-toggle="modal"
+            <a class="nav-link px-3 fw-semibold text-dark btn-animate" href="#" data-bs-toggle="modal"
               data-bs-target="#SigUpModal">Crear cuenta</a>
           </li>
           <li id="userMenu" class="dropdown d-none">
@@ -76,8 +76,10 @@
         </div>
         <div class="modal-body">
           <form id="formLogin">
-            <input type="email" id="email" placeholder="Email" class="form-control mb-3" required>
-            <input type="password" id="password" placeholder="Contraseña" class="form-control mb-3" required>
+            <div class="mb-4">
+              <input type="email" id="email" placeholder="Email" class="form-control mb-3" required>
+              <input type="password" id="password" placeholder="Contraseña" class="form-control mb-3" required>
+            </div>
             <button type="submit" class="btn btn-success w-100" id="loginButton">
               <span id="loader" class="spinner-border spinner-border-sm me-2 d-none" role="status"
                 aria-hidden="true"></span>
@@ -104,9 +106,11 @@
         </div>
         <div class="modal-body">
           <form id="formRegistro">
-            <input type="text" id="nombreUsuarioRegistro" placeholder="Usuario" class="form-control mb-3" required>
-            <input type="email" id="emailRegistro" placeholder="Email" class="form-control mb-3" required>
-            <input type="password" id="passwordRegistro" placeholder="Contraseña" class="form-control mb-3" required>
+            <div class="mb-4">
+              <input type="text" id="nombreUsuarioRegistro" placeholder="Usuario" class="form-control mb-3" required>
+              <input type="email" id="emailRegistro" placeholder="Email" class="form-control mb-3" required>
+              <input type="password" id="passwordRegistro" placeholder="Contraseña" class="form-control mb-3" required>
+            </div>
             <button type="submit" class="btn btn-success w-100" id="btnRegistro">
               <span id="spinnerBtn" class="spinner-border spinner-border-sm me-2 d-none" role="status"
                 aria-hidden="true"></span>
@@ -135,7 +139,7 @@
         <div class="modal-body">
           <p>Hemos creado tu cuenta y enviado un correo de verificación a <strong id="emailVerificacionTexto"
               class="text-dark"></strong>.</p>
-
+  
           <p class="mb-3">
             ¿No te llegó el correo?
             <button class="btn-reenviar-verificacion btn btn-link p-0">
@@ -144,18 +148,18 @@
                 aria-hidden="true"></span>
             </button>
           </p>
-
+  
           <div id="estadoVerificacion" class="mt-2 text-secondary">Esperando verificación...</div>
-
+  
           <div class="alert alert-warning mt-4" role="alert" id="alertaRestriccion">
-            <strong>Importante:</strong> si no verificás tu correo, <span class="text-danger fw-bold">no vas
-              a poder
-              reservar turnos</span> en la sección de <strong class="text-primary">Servicios</strong>.
+            <span class="text-dark fw-bold">Importante:</span> si no verificás tu correo, <span
+              class="text-danger fw-bold">no vas a
+              poder reservar turnos</span> en la sección de <strong class="text-primary">Servicios</strong>.
             Podés verificar tu cuenta más tarde desde tu <strong class="text-primary">Mi Perfil</strong>.
           </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Entendido</button>
+          <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Entendido</button>
           <button type="button" class="btn btn-success" id="btnVerificarYContinuar">Ya verifiqué,
             continuar</button>
         </div>
@@ -168,18 +172,27 @@
     aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
+        <!-- Cabecera -->
         <div class="modal-header bg-warning">
-          <h5 class="modal-title" id="modalRequiereLoginLabel" >Necesitás una cuenta</h5>
+          <h5 class="modal-title text-dark" id="modalRequiereLoginLabel">Necesitás una cuenta</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
         </div>
+  
+        <!-- Cuerpo del modal -->
         <div class="modal-body">
-          <p>Para reservar un turno, primero tenés que iniciar sesión o crear una cuenta.</p>
+          <div class="back-4">
+            <p>Para reservar un turno, primero tenés que iniciar sesión o crear una cuenta.</p>
+          </div>
         </div>
+  
+        <!-- Pie del modal con botones -->
         <div class="modal-footer">
-          <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#SigInModal" data-bs-dismiss="modal">
+          <button class="btn btn-success w-100 w-sm-auto" data-bs-toggle="modal" data-bs-target="#SigInModal"
+            data-bs-dismiss="modal">
             Iniciar sesión
           </button>
-          <button class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#SigUpModal" data-bs-dismiss="modal">
+          <button class="btn btn-secondary w-100 w-sm-auto" data-bs-toggle="modal" data-bs-target="#SigUpModal"
+            data-bs-dismiss="modal">
             Crear cuenta
           </button>
         </div>
@@ -259,7 +272,8 @@
                 <h5 class="card-title text-success">Masaje Antiestrés</h5>
                 <p class="card-text">Terapia relajante para liberar tensiones y renovar energías, ideal
                   para desconectar cuerpo y mente.</p>
-                <a href="#" class="btn btn-outline-success mt-auto" data-service="Masaje Antiestrés"
+                <p class="card-price text-success fs-5 mt-auto">Precio: $900</p>
+                <a href="#" class="btn btn-outline-success mt-auto" data-service="Masaje Antiestrés" data-price="900"
                   data-bs-toggle="modal" data-bs-target="#modalTurno">
                   Reservar turno
                 </a>
@@ -275,7 +289,8 @@
                 <h5 class="card-title text-success">Masaje Descontracturante</h5>
                 <p class="card-text">Alivio de tensiones musculares profundas, ideal para quienes sufren
                   contracturas y fatiga física.</p>
-                <a href="#" class="btn btn-outline-success mt-auto" data-service="Masaje Descontracturante"
+                <p class="card-price text-success fs-5 mt-auto">Precio: $1000</p>
+                <a href="#" class="btn btn-outline-success mt-auto" data-service="Masaje Descontracturante" data-price="1000"
                   data-bs-toggle="modal" data-bs-target="#modalTurno">
                   Reservar turno
                 </a>
@@ -291,8 +306,9 @@
                 <h5 class="card-title text-success">Piedras Calientes</h5>
                 <p class="card-text">Masaje terapéutico que combina calor y presión para relajar los
                   músculos y armonizar la energía corporal.</p>
+                <p class="card-price text-success fs-5 mt-auto">Precio: $1100</p>
                 <a href="#" class="btn btn-outline-success mt-auto" data-service="Masaje con Piedras Calientes"
-                  data-bs-toggle="modal" data-bs-target="#modalTurno">
+                  data-price="1100"  data-bs-toggle="modal" data-bs-target="#modalTurno">
                   Reservar turno
                 </a>
               </div>
@@ -307,7 +323,8 @@
                 <h5 class="card-title text-success">Masaje Circulatorio</h5>
                 <p class="card-text">Estimula la circulación sanguínea, favoreciendo la oxigenación de
                   los tejidos y el bienestar general.</p>
-                <a href="#" class="btn btn-outline-success mt-auto" data-service="Masaje Circulatorio"
+                <p class="card-price text-success fs-5 mt-auto">Precio: $1300</p>
+                <a href="#" class="btn btn-outline-success mt-auto" data-service="Masaje Circulatorio" data-price="1200"
                   data-bs-toggle="modal" data-bs-target="#modalTurno">
                   Reservar turno
                 </a>
@@ -330,7 +347,8 @@
                 <h5 class="card-title text-success">Lifting de Pestañas</h5>
                 <p class="card-text">Realza y curva tus pestañas naturales sin necesidad de extensiones.
                   ¡Mirada impactante al instante!</p>
-                <a href="#" class="btn btn-outline-success mt-auto" data-service="Lifting de Pestañas"
+                <p class="card-price text-success fs-5 mt-auto">Precio: $1300</p>
+                <a href="#" class="btn btn-outline-success mt-auto" data-service="Lifting de Pestañas" data-price="1300"
                   data-bs-toggle="modal" data-bs-target="#modalTurno">
                   Reservar turno
                 </a>
@@ -346,7 +364,8 @@
                 <h5 class="card-title text-success">Depilación Facial</h5>
                 <p class="card-text">Eliminación suave y efectiva del vello facial para una piel suave,
                   lisa y libre de impurezas.</p>
-                <a href="#" class="btn btn-outline-success mt-auto" data-service="Depilación Facial"
+                <p class="card-price text-success fs-5 mt-auto">Precio: $1400</p>
+                <a href="#" class="btn btn-outline-success mt-auto" data-service="Depilación Facial" data-price="1400"
                   data-bs-toggle="modal" data-bs-target="#modalTurno">
                   Reservar turno
                 </a>
@@ -362,8 +381,9 @@
                 <h5 class="card-title text-success">Manos y Pies</h5>
                 <p class="card-text">Cuidado integral de manos y pies: limpieza, hidratación, limado y
                   esmaltado para lucir impecable.</p>
+                <p class="card-price text-success fs-5 mt-auto">Precio: $1500</p>
                 <a href="#" class="btn btn-outline-success mt-auto" data-service="Belleza de manos y pies"
-                  data-bs-toggle="modal" data-bs-target="#modalTurno">
+                  data-price="1500" data-bs-toggle="modal" data-bs-target="#modalTurno">
                   Reservar turno
                 </a>
               </div>
@@ -386,7 +406,8 @@
                 <h5 class="card-title text-success">Punta de Diamante</h5>
                 <p class="card-text">Microexfoliación profunda que remueve impurezas y células muertas,
                   dejando la piel suave y renovada.</p>
-                <a href="#" class="btn btn-outline-success mt-auto" data-service="Punta de Diamante"
+                <p class="card-price text-success fs-5 mt-auto">Precio: $1600</p>
+                <a href="#" class="btn btn-outline-success mt-auto" data-service="Punta de Diamante" data-price="1600"
                   data-bs-toggle="modal" data-bs-target="#modalTurno">
                   Reservar turno
                 </a>
@@ -402,8 +423,9 @@
                 <h5 class="card-title text-success">Limpieza + Hidratación</h5>
                 <p class="card-text">Limpieza profunda seguida de hidratación intensa para revitalizar y
                   equilibrar tu piel.</p>
+                <p class="card-price text-success fs-5 mt-auto">Precio: $1700</p>
                 <a href="#" class="btn btn-outline-success mt-auto" data-service="Limpieza profunda + Hidratación"
-                  data-bs-toggle="modal" data-bs-target="#modalTurno">
+                  data-price="1700" data-bs-toggle="modal" data-bs-target="#modalTurno">
                   Reservar turno
                 </a>
               </div>
@@ -418,7 +440,8 @@
                 <h5 class="card-title text-success">Criofrecuencia Facial</h5>
                 <p class="card-text">Técnica avanzada que genera un "shock térmico" para un lifting
                   facial inmediato y visible.</p>
-                <a href="#" class="btn btn-outline-success mt-auto" data-service="Criofrecuencia Facial"
+                <p class="card-price text-success fs-5 mt-auto">Precio: $1800</p>
+                <a href="#" class="btn btn-outline-success mt-auto" data-service="Criofrecuencia Facial" data-price="1800"
                   data-bs-toggle="modal" data-bs-target="#modalTurno">
                   Reservar turno
                 </a>
@@ -442,7 +465,8 @@
                 <h5 class="card-title text-success">VelaSlim</h5>
                 <p class="card-text">Tratamiento modelador que reduce medidas y celulitis, mejorando la
                   firmeza de la piel.</p>
-                <a href="#" class="btn btn-outline-success mt-auto" data-service="VelaSlim" data-bs-toggle="modal"
+                <p class="card-price text-success fs-5 mt-auto">Precio: $1900</p>
+                <a href="#" class="btn btn-outline-success mt-auto" data-service="VelaSlim" data-price="1900" data-bs-toggle="modal"
                   data-bs-target="#modalTurno">
                   Reservar turno
                 </a>
@@ -458,7 +482,8 @@
                 <h5 class="card-title text-success">DermoHealth</h5>
                 <p class="card-text">Estimulación de la piel y la circulación mediante tecnología
                   avanzada para un drenaje linfático efectivo.</p>
-                <a href="#" class="btn btn-outline-success mt-auto" data-service="DermoHealth" data-bs-toggle="modal"
+                <p class="card-price text-success fs-5 mt-auto">Precio: $2000</p>
+                <a href="#" class="btn btn-outline-success mt-auto" data-service="DermoHealth" data-price="2000" data-bs-toggle="modal"
                   data-bs-target="#modalTurno">
                   Reservar turno
                 </a>
@@ -474,55 +499,61 @@
                 <h5 class="card-title text-success">Criofrecuencia Corporal</h5>
                 <p class="card-text">Técnica innovadora que combina frío y calor para reafirmar la piel
                   y reducir la flacidez.</p>
-                <a href="#" class="btn btn-outline-success mt-auto" data-service="Criofrecuencia Corporal"
-                  data-bs-toggle="modal" data-bs-target="#modalTurno">
+                <p class="card-price text-success fs-5 mt-auto">Precio: $2200</p>
+                <a href="#" class="btn btn-outline-success mt-auto" data-service="Criofrecuencia Corporal"       data-price="2200" data-bs-toggle="modal" data-bs-target="#modalTurno">
                   Reservar turno
                 </a>
               </div>
             </div>
           </div>
 
-          <!-- Ultracavitación -->
+          <!-- Tarjeta de servicio -->
           <div class="col-md-3">
             <div class="card h-100 shadow-sm border-0">
               <img src="../assets/img/card-ultracavitacion.jpg" class="card-img-top" alt="Ultracavitación">
-              <div class="card-body d-flex flex-column">
+              <div class="card-body d-flex flex-column align-items-stretch">
                 <h5 class="card-title text-success">Ultracavitación</h5>
-                <p class="card-text">Tecnología no invasiva que ayuda a reducir grasa localizada y
-                  moldear el contorno corporal.</p>
-                <a href="#" class="btn btn-outline-success mt-auto" data-service="Ultracavitación"
+                <p class="card-text">Tecnología no invasiva que ayuda a reducir grasa localizada y moldear el contorno corporal.
+                </p>
+                <p class="card-price text-success fs-5 mt-auto">Precio: $2500</p>
+                <a href="#" class="btn btn-outline-success mt-auto" data-service="Ultracavitación" data-price="2500"
                   data-bs-toggle="modal" data-bs-target="#modalTurno">
                   Reservar turno
                 </a>
               </div>
             </div>
+          </div>
           </div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- ----------------------- Modal para pedir turno----------------------- -->
+  <!-- ----------------------- Modal Mejorado para Pedir Turno ----------------------- -->
   <div class="modal fade" id="modalTurno" tabindex="-1" aria-labelledby="modalTurnoLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content shadow-lg border-0 rounded-4">
         <form id="form-turno">
-          <div class="modal-header">
-            <h5 class="modal-title" id="modalTurnoLabel">Pedir turno para <span id="service-name"></span>
-            </h5>
+          <div class="modal-header border-bottom-0">
+            <h5 class="modal-title-turno" id="modalTurnoLabel">Reserva tu turno para <span id="service-name"></span></h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
           </div>
           <div class="modal-body">
-            <div class="mb-3">
-              <label for="fecha" class="form-label">Selecciona la fecha</label>
-              <input type="date" class="form-control" id="fecha" required />
+            <p id="service-price" class="text-success fs-5">Precio: $0</p> <!-- Precio del servicio -->
+  
+            <!-- Selección de la fecha -->
+            <div class="mb-4">
+              <label for="fecha" class="form-label text-muted">Selecciona la fecha</label>
+              <input type="date" class="form-control shadow-sm border-0 rounded-3" id="fecha" required />
               <div id="aviso-dia" class="alert alert-warning mt-2 d-none" role="alert">
                 Solo se pueden seleccionar días hábiles (lunes a viernes).
               </div>
             </div>
-            <div class="mb-3">
-              <label for="hora" class="form-label">Selecciona la hora</label>
-              <select class="form-select" id="hora" required>
+  
+            <!-- Selección de la hora -->
+            <div class="mb-4">
+              <label for="hora" class="form-label text-muted">Selecciona la hora</label>
+              <select class="form-select shadow-sm border-0 rounded-3" id="hora" required>
                 <option value="">Selecciona una hora</option>
                 <option value="08:00">08:00</option>
                 <option value="09:00">09:00</option>
@@ -536,15 +567,37 @@
                 <option value="20:00">20:00</option>
               </select>
             </div>
-            <div class="mb-3">
-              <label for="comentario" class="form-label">Aclaración o comentario (opcional)</label>
-              <textarea class="form-control" id="comentario" rows="3"
-                placeholder="Por ejemplo: 'Quiero el masaje con piedras calientes', 'Tengo alergia al aceite de coco', etc."></textarea>
+  
+            <!-- Comentario -->
+            <div class="mb-4">
+              <label for="comentario" class="form-label text-muted">Aclaración o comentario (opcional)</label>
+              <textarea class="form-control shadow-sm border-0 rounded-3" id="comentario" rows="3"
+                placeholder="Ejemplo: 'Tengo alergia al aceite de coco', 'Prefiero un masaje relajante', etc."></textarea>
             </div>
+  
+            <!-- Medios de pago -->
+            <div class="mb-4">
+              <label for="metodoPago" class="form-label text-muted">Método de pago</label>
+              <select class="form-select shadow-sm border-0 rounded-3" id="metodoPago" required>
+                <option value="">Selecciona un método de pago</option>
+                <option value="tarjeta">Tarjeta de Crédito/Débito</option>
+                <option value="transferencia">Transferencia Bancaria</option>
+                <option value="paypal">PayPal</option>
+                <option value="efectivo">Efectivo en el local</option>
+              </select>
+            </div>
+  
           </div>
-          <div class="modal-footer">
-            <button type="submit" class="btn btn-success">Confirmar turno</button>
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <div class="modal-footer border-top-0 d-flex justify-content-between">
+            <button type="submit" class="btn btn-success shadow-sm rounded-3 px-4" id="confirmarButton">
+              <span id="btn-text">Confirmar turno</span>
+              <div class="spinner-border spinner-border-sm text-light d-none" id="btn-spinner" role="status">
+                <span class="visually-hidden">Cargando...</span>
+              </div>
+              <span id="spinner-text" class="d-none text-light ms-2">Cargando...</span>
+            </button>
+            <button type="button" class="btn btn-danger shadow-sm rounded-3 px-4"
+              data-bs-dismiss="modal">Cancelar</button>
           </div>
         </form>
       </div>
