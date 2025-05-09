@@ -68,6 +68,13 @@ const css = `
     font-size: 16px;
     font-weight: bold;
   }
+
+  @media (max-width: 768px) {
+    /* Estilos para el contenedor de los turnos */
+    #lista-turnos {
+      grid-template-columns: repeat(1, 1fr); /* 1 columna */
+    }
+  }
 `;
 
 const style = document.createElement("style");

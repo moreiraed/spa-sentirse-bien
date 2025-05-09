@@ -212,9 +212,33 @@
   background-color: #ffc107 !important;
 }
 
-/* Evitar que el backdrop del modal afecte la visibilidad del toast */
+/* Evitar que el backdrop del modal tape los toasts */
 .modal-backdrop {
   z-index: 1040 !important;
+}
+
+/* Asegurar que los toasts estén por encima del modal */
+#toast-container {
+  z-index: 1081;
+  /* Bootstrap modal usa hasta 1055 */
+}
+
+/* Estilos específicos para móviles */
+@media (max-width: 768px) {
+  #toast-container {
+    top: auto !important;
+    bottom: 1rem;
+    right: 50%;
+    left: auto;
+    transform: translateX(50%);
+    width: 100%;
+    max-width: 90%;
+  }
+
+  #toast-container .toast {
+    width: 100%;
+    max-width: 100%;
+  }
 }
 
 /** Modal de solicitar turnos de servicios.html **/
@@ -284,4 +308,28 @@
   /* Padding horizontal de 15px, pero sin padding vertical */
   padding-bottom: 20px;
   border-radius: 8px;
+}
+
+.text-white.text-decoration-none {
+  position: relative;
+  transition: color 0.3s ease;
+}
+
+.text-white.text-decoration-none::after {
+  content: "";
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background-color: #ffffff;
+  transition: width 0.3s ease;
+}
+
+.text-white.text-decoration-none:hover {
+  color: #ffffff;
+}
+
+.text-white.text-decoration-none:hover::after {
+  width: 100%;
 }

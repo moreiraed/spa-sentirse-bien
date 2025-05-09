@@ -1,0 +1,61 @@
+body {
+    background: linear-gradient(135deg, #a8e6cf 0%, #dcedc1 100%);
+}
+
+h1 {
+    font-family: 'MonteCarlo', sans-serif;
+    text-align: center;
+    animation: fadeIn 2s ease-in-out;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+    transform: scale(1.1);
+    margin-top: 20px;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Añadir un efecto de transición de color al hover del h1 */
+h1:hover {
+    color: #3cb371;
+    transition: color 0.3s ease-in-out;
+}
+
+.map-container {
+    border-radius: 15px;
+    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1);
+    margin-top: 30px;
+    overflow: hidden;
+}
+
+iframe {
+    width: 100%;
+    height: 450px;
+    border: none;
+}
+
+.info-container {
+    background-color: #f3f4f6;
+    padding: 25px;
+    border-radius: 15px;
+    margin-top: 30px;
+    box-shadow: 0px 4px 25px rgba(0, 0, 0, 0.1);
+}
+
+.info-container h4 {
+    font-size: 1.5rem;
+    color: #2e8b57;
+}
+
+.info-container p {
+    font-size: 1.1rem;
+    color: #555;
+}
