@@ -4,7 +4,12 @@ import {
   onAuthStateChanged,
 } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
 
-import { auth } from "./firebase-config.js"
+import {
+  doc,
+  getDoc,
+} from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+
+import { auth, db } from "./firebase-config.js"
 
 // Función para iniciar sesión
 window.login = async function (event) {
@@ -64,7 +69,7 @@ window.logout = function () {
   signOut(auth);
 };
 
-onAuthStateChanged(auth, (user) => {
+onAuthStateChanged(auth, async (user) => {
   const userMenu = document.getElementById("userMenu");
   const loginBtn = document.getElementById("SigInHidden");
   const registerBtn = document.getElementById("SigUpHidden");
@@ -74,34 +79,34 @@ onAuthStateChanged(auth, (user) => {
 
   if (user) {
     // Si el usuario está logueado
-    // Mostrar el menú de usuario
     if (userMenu) userMenu.classList.remove("d-none");
-
-    // Ocultar botones de login y registro
     if (loginBtn) loginBtn.classList.add("d-none");
     if (registerBtn) registerBtn.classList.add("d-none");
-
-    // Ocultar la sección de "llamada a la acción"
     if (ctaReserva) ctaReserva.classList.add("d-none");
-
-    // Mostrar mensaje de bienvenida
     if (welcomeMessage) welcomeMessage.classList.remove("d-none");
 
-    // Mostrar el correo del usuario en el mensaje de bienvenida
-    if (userName) userName.textContent = user.email || "Usuario";
+    try {
+      // Obtener el documento del usuario desde Firestore
+      const userDoc = doc(db, "users", user.uid); // Aquí estamos usando el UID del usuario
+      const userSnapshot = await getDoc(userDoc);
+
+      if (userSnapshot.exists()) {
+        const userData = userSnapshot.data();
+        const userFullName = userData.username || "Usuario"; // 'nombre' es el campo donde guardas el nombre
+        if (userName) userName.textContent = userFullName;
+      } else {
+        // Si no hay datos, muestra "Usuario" como valor predeterminado
+        if (userName) userName.textContent = "Usuario";
+      }
+    } catch (error) {
+      console.error("Error al obtener los datos del usuario:", error);
+    }
   } else {
     // Si el usuario no está logueado
-    // Ocultar el menú de usuario
     if (userMenu) userMenu.classList.add("d-none");
-
-    // Mostrar botones de login y registro
     if (loginBtn) loginBtn.classList.remove("d-none");
     if (registerBtn) registerBtn.classList.remove("d-none");
-
-    // Mostrar la sección de "llamada a la acción"
     if (ctaReserva) ctaReserva.classList.remove("d-none");
-
-    // Ocultar mensaje de bienvenida
     if (welcomeMessage) welcomeMessage.classList.add("d-none");
   }
 });

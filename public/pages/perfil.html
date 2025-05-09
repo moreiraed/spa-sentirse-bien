@@ -243,48 +243,96 @@
     </div>
 
     <!-- ----------------------- Footer ----------------------- -->
-  <footer class="bg-dark text-light pt-5 pb-3" id="contacto">
-    <div class="container">
-      <div class="d-flex flex-wrap justify-content-around text-center text-md-start">
-        
-        <!-- Logo e información -->
-        <div class="mb-4" style="max-width: 300px;">
-          <h4 class="text-success fw-bold">Spa Sentirse Bien</h4>
-          <p>Tu lugar de relajación y bienestar en la ciudad.</p>
+    <footer class="bg-dark text-light pt-5 pb-3" id="contacto">
+        <div class="container">
+            <div class="d-flex flex-wrap justify-content-around text-center text-md-start">
+    
+                <!-- Logo e información -->
+                <div class="mb-4" style="max-width: 300px;">
+                    <h4 class="text-success fw-bold">Spa Sentirse Bien</h4>
+                    <p>Tu lugar de relajación y bienestar en la ciudad.</p>
+                </div>
+    
+                <!-- Información de contacto -->
+                <div class="mb-4" style="max-width: 300px;">
+                    <h5 class="fw-bold">Contacto</h5>
+                    <ul class="list-unstyled">
+                        <li><i class="bi bi-envelope-fill"></i> contacto@spasentirsebien.com</li>
+                        <li><i class="bi bi-telephone-fill"></i> +54 362 123 4567</li>
+                        <li><a href="#" data-bs-toggle="modal" data-bs-target="#consultaModal"
+                                class="text-white text-decoration-none"><i class="bi bi-chat-dots-fill me-1"></i> Hacer una
+                                consulta</a>
+                        </li>
+                    </ul>
+                </div>
+    
+                <!-- Redes sociales -->
+                <div class="mb-4" style="max-width: 300px;">
+                    <h5 class="fw-bold">Seguinos</h5>
+                    <div class="social-links">
+                        <a href="#" class="text-light me-3 fs-5"><i class="bi bi-facebook"></i></a>
+                        <a href="#" class="text-light me-3 fs-5"><i class="bi bi-instagram"></i></a>
+                        <a href="#" class="text-light me-3 fs-5"><i class="bi bi-whatsapp"></i></a>
+                    </div>
+                </div>
+    
+            </div>
+            <hr class="border-light">
+            <div class="text-center small">
+                © 2025 Spa Sentirse Bien. Todos los derechos reservados.
+            </div>
         </div>
+    </footer>
 
-        <!-- Información de contacto -->
-        <div class="mb-4" style="max-width: 300px;">
-          <h5 class="fw-bold">Contacto</h5>
-          <ul class="list-unstyled">
-            <li><i class="bi bi-envelope-fill"></i> contacto@spasentirsebien.com</li>
-            <li><i class="bi bi-telephone-fill"></i> +54 362 123 4567</li>
-            <li><a href="#" data-bs-toggle="modal" data-bs-target="#consultaModal" class="text-white text-decoration-none"><i
-              class="bi bi-chat-dots-fill me-1"></i> Hacer una consulta</a>
-        </li>
-          </ul>
-        </div>
-
-        <!-- Redes sociales -->
-        <div class="mb-4" style="max-width: 300px;">
-          <h5 class="fw-bold">Seguinos</h5>
-          <div class="social-links">
-            <a href="#" class="text-light me-3 fs-5"><i class="bi bi-facebook"></i></a>
-            <a href="#" class="text-light me-3 fs-5"><i class="bi bi-instagram"></i></a>
-            <a href="#" class="text-light me-3 fs-5"><i class="bi bi-whatsapp"></i></a>
+    <!-- Modal de Consultas -->
+  <div class="modal fade" id="consultaModal" tabindex="-1" aria-labelledby="modalConsultaLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <form>
+          <div class="modal-header">
+            <h5 class="modal-title" id="modalConsultaLabel">Hacer una consulta</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
           </div>
-        </div>
-
+          <div class="modal-body">
+            <div class="mb-4">
+              <div class="mb-3">
+                <label for="nombreConsulta" class="form-label">Tu Nombre</label>
+                <input type="text" class="form-control" id="nombreConsulta" placeholder="Nombre" required>
+              </div>
+              <div class="mb-3">
+                <label for="emailConsulta" class="form-label">Correo electrónico</label>
+                <input type="email" class="form-control" id="emailConsulta" placeholder="Email" required>
+              </div>
+              <div class="mb-3">
+                <label for="mensajeConsulta" class="form-label">Mensaje</label>
+                <textarea class="form-control" id="mensajeConsulta" rows="4" placeholder="Escribe aqui tu mensaje..."
+                  required></textarea>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-success w-100" id="btnConsulta">
+              <span id="btn-text">Enviar</span>
+              <div class="spinner-border spinner-border-sm text-light d-none" id="btn-spinner" role="status">
+                <span class="visually-hidden">Cargando...</span>
+              </div>
+              <span id="spinner-text" class="d-none text-light ms-2">Cargando...</span>
+            </button>
+            <button type="button" class="btn btn-danger w-100" data-bs-dismiss="modal">
+              Cancelar
+            </button>
+        </form>
       </div>
-        <hr class="border-light">
-        <div class="text-center small">
-            © 2025 Spa Sentirse Bien. Todos los derechos reservados.
-        </div>
-    </div>
-  </footer>
+  
+      <!-- Contenedor de Toasts -->
+      <div id="toast-container" class="toast-container position-fixed top-0 end-0 p-3">
+        <!-- Los toasts se añadirán aquí dinámicamente -->
+      </div>
 
     <script type="module" src="../src/Perfil.js"></script>
     <script type="module" src="../src/ControlSesion.js"></script>
+    <script type="module" src="../src/ConsultaPages.js"></script>
+    <script type="module" src="../src/DeleteAccount.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 

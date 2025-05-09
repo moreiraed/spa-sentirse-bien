@@ -128,6 +128,51 @@
     </div>
   </footer>
 
+  <!-- Modal de Consultas -->
+  <div class="modal fade" id="consultaModal" tabindex="-1" aria-labelledby="modalConsultaLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <form>
+          <div class="modal-header">
+            <h5 class="modal-title" id="modalConsultaLabel">Hacer una consulta</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+          </div>
+          <div class="modal-body">
+            <div class="mb-4">
+              <div class="mb-3">
+                <label for="nombreConsulta" class="form-label">Tu Nombre</label>
+                <input type="text" class="form-control" id="nombreConsulta" placeholder="Nombre" required>
+              </div>
+              <div class="mb-3">
+                <label for="emailConsulta" class="form-label">Correo electrónico</label>
+                <input type="email" class="form-control" id="emailConsulta" placeholder="Email" required>
+              </div>
+              <div class="mb-3">
+                <label for="mensajeConsulta" class="form-label">Mensaje</label>
+                <textarea class="form-control" id="mensajeConsulta" rows="4" placeholder="Escribe aqui tu mensaje..."
+                  required></textarea>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-success w-100" id="btnConsulta">
+              <span id="btn-text">Enviar</span>
+              <div class="spinner-border spinner-border-sm text-light d-none" id="btn-spinner" role="status">
+                <span class="visually-hidden">Cargando...</span>
+              </div>
+              <span id="spinner-text" class="d-none text-light ms-2">Cargando...</span>
+            </button>
+            <button type="button" class="btn btn-danger w-100" data-bs-dismiss="modal">
+              Cancelar
+            </button>
+        </form>
+      </div>
+
+      <!-- Contenedor de Toasts -->
+      <div id="toast-container" class="toast-container position-fixed top-0 end-0 p-3">
+        <!-- Los toasts se añadirán aquí dinámicamente -->
+      </div>
+
   <script type="module" src="../src/MisTurnos.js"></script>
   <script type="module" src="../src/ControlSesion.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"></script>

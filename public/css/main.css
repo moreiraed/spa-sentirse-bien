@@ -223,21 +223,22 @@
   /* Bootstrap modal usa hasta 1055 */
 }
 
-/* Estilos específicos para móviles */
 @media (max-width: 768px) {
   #toast-container {
     top: auto !important;
-    bottom: 1rem;
-    right: 50%;
-    left: auto;
-    transform: translateX(50%);
+    bottom: 2rem;
+    left: 1rem;
+    right: auto;
+    transform: none;
     width: 100%;
-    max-width: 90%;
+    max-width: 90vw;
+    padding-bottom: env(safe-area-inset-bottom, 1rem);
   }
 
   #toast-container .toast {
     width: 100%;
     max-width: 100%;
+    box-sizing: border-box;
   }
 }
 
