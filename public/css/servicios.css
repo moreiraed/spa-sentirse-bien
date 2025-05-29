@@ -1,120 +1,128 @@
+:root {
+    --accent-color: #8C6E5F;
+    --color-secundario-fondo: #D9D2C5;
+    --color-titulo: #4F463B;
+    --color-texto: #706558;
+    --color-button: #8C6E5F;
+}
+
 body {
-    background: linear-gradient(135deg, #a8e6cf 0%, #dcedc1 100%);
-    margin: 0;
-    padding: 0;
+    background-color: #F5F0E6 !important;
+    padding-top: 70px;
 }
 
-.container {
-    max-width: 1200px;
-    margin: 0 auto;
+.especial{
+    font-family: 'Quicksand', sans-serif;
 }
 
-h2 {
-    font-size: 2.5rem;
-    margin-bottom: 30px;
-    text-align: center;
+.section-title {
+    position: relative;
+    margin-bottom: 3rem;
+    color: var(--color-titulo);
 }
 
-.container.my-5.bg-light {
-    border-radius: 15px;
-    padding: 30px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    margin-top: 40px;
+.section-title:after {
+    content: "";
+    position: absolute;
+    bottom: -15px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 3px;
+    background: var(--accent-color);
 }
 
-.nav-tabs {
-    border: none;
-    margin-bottom: 20px;
-    background: #fff;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    justify-content: center;
-    flex-wrap: wrap;
-}
-
-.nav-link {
-    font-weight: bold;
-}
-
-.nav-link.active {
-    background-color: #dcedc1;
-    color: #fff;
-    border-radius: 5px;
-}
-
-.card {
-    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
-    border-radius: 10px;
-}
-
-.card:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-}
-
-.card-img-top {
-    height: 200px;
-    object-fit: cover;
-    border-top-left-radius: 10px;
-    border-top-right-radius: 10px;
-}
-
-.card-body {
-    padding: 20px;
-}
-
-.tab-content {
-    margin-top: 30px;
-}
-
-.row {
+.filter-buttons {
     display: flex;
-    justify-content: space-between;
     flex-wrap: wrap;
-}
-
-.col-md-3 {
-    max-width: 23%;
+    /* Permite que los botones se ajusten en varias filas si es necesario */
+    justify-content: center;
+    /* Centra los botones horizontalmente */
+    gap: 10px;
+    /* Espacio entre los botones */
     margin-bottom: 30px;
 }
 
-/* --------------------
-   OPTIMIZACIÓN MÓVIL
---------------------- */
+.filter-btn {
+    background-color: white;
+    color: var(--color-button);
+    border: 2px solid var(--color-button);
+    padding: 10px 25px;
+    border-radius: 30px;
+    font-weight: 600;
+    transition: all 0.3s;
+}
+
+.filter-btn:hover,
+.filter-btn.active {
+    background-color: var(--color-button);
+    color: white;
+}
+
 @media (max-width: 768px) {
-    h2 {
-        font-size: 1.8rem;
-        margin-bottom: 20px;
-    }
-
-    .container.my-5.bg-light {
-        padding: 20px;
-        margin-top: 20px;
-    }
-
-    .col-md-3 {
-        max-width: 48%;
-    }
-
-    .card-img-top {
-        height: 150px;
+    .filter-btn {
+        font-size: 14px;
+        /* Disminuye el tamaño del texto en pantallas pequeñas */
+        padding: 8px 16px;
+        /* Ajusta el padding para que los botones no sean tan grandes */
     }
 }
 
 @media (max-width: 480px) {
-    .col-md-3 {
-        max-width: 100%;
-    }
-
-    .card-body {
-        padding: 15px;
-    }
-
-    .nav-tabs {
+    .filter-buttons {
         flex-direction: column;
+        /* Cambia a columna en pantallas muy pequeñas */
         align-items: center;
+        /* Alinea los botones al centro */
+    }
+}
+
+.service-category {
+    display: none;
+}
+
+.service-category.active {
+    display: block;
+    animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
     }
 
-    h2 {
-        font-size: 1.5rem;
+    to {
+        opacity: 1;
     }
+}
+
+.yoga-card {
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 15px;
+    padding: 30px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.yoga-features i {
+    color: var(--color-button);
+    font-size: 1.5rem;
+    margin-right: 10px;
+}
+
+/* ---- carrusel de "Carrusel Yoga e Hidromasaje" (servicios.html) ---- */
+
+.wellness-slide {
+    border-radius: 15px;
+    overflow: hidden;
+}
+
+.carousel-indicators button {
+    background-color: white;
+}
+
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+    background-color: rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    padding: 20px;
 }

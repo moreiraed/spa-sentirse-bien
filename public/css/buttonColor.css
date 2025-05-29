@@ -1,0 +1,31 @@
+#loginModal  .btn-success {
+    background-color: #A07D6D;
+    border-color: #A07D6D;
+    transition: all 0.3s ease;
+}
+
+#loginModal .btn-success:hover {
+    background-color: #8A6B5D;
+    border-color: #8A6B5D;
+}
+
+#LoginModal .text-success {
+    color: #A07D6D !important;
+}
+
+/* ---- registerModal---- */
+
+#registerModal .btn-success {
+    background-color: #A07D6D;
+    border-color: #A07D6D;
+    transition: all 0.3s ease;
+}
+
+#registerModal .btn-success:hover {
+    background-color: #8A6B5D;
+    border-color: #8A6B5D;
+}
+
+#registerModal .text-success {
+    color: #A07D6D !important;
+}

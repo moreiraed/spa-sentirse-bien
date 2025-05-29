@@ -111,7 +111,7 @@ onAuthStateChanged(auth, async (user) => {
 
   if (snapshot.empty) {
     // Si no hay turnos, mostramos el mensaje de que no hay turnos
-listaTurnos.innerHTML = `
+    listaTurnos.innerHTML = `
   <div class="alert alert-info mx-auto my-5 p-4 text-center" 
        style="max-width: 450px; background-color: rgba(0, 123, 255, 0.1); border-radius: 12px; border: 1px solid #007bff;">
     Aún no tenés turnos reservados.

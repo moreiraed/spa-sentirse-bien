@@ -6,21 +6,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/css2?family=MonteCarlo&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="../css/main.css" />
-    <link rel="icon" href="../assets/icon/icon.png" type="image/x-icon">
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/animationNav.css">
+    <link rel="stylesheet" href="../css/perfil.css">
+    <link rel="stylesheet" href="../css/toast.css">
+    <link rel="icon" href="../assets/icon/icon.png" type="image/x-icon" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playball&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
     <title>Spa Sentirse Bien</title>
+
 </head>
 
 <body>
+
     <!-- ----------------------- Nav ----------------------- -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm py-3">
+    <nav class="navbar navbar-expand-lg fixed-top navbar-dark transparent-navbar">
         <div class="container">
             <!-- Logo -->
-            <a class="navbar-brand d-flex align-items-center line-effect" href="../index.html">
+            <a class="navbar-brand d-flex align-items-center" href="../index.html">
                 <img src="../assets/icon/icon.png" alt="Spa Logo" width="40" height="40" class="me-2" />
-                <span class="fw-bold text-success fs-3 montecarlo-regular">Spa Sentirse Bien</span>
+                <span class="text-light fs-2 playball-regular">Spa Sentirse Bien</span>
             </a>
 
             <!-- Botón hamburguesa para móviles -->
@@ -33,35 +44,44 @@
             <div class="collapse navbar-collapse justify-content-end" id="navbarSpa">
                 <ul class="navbar-nav mb-2 mb-lg-0">
                     <li class="nav-item">
-                        <a class="nav-link px-3 fw-semibold text-dark line-effect" href="./servicios.html">Servicios</a>
+                        <a class="nav-link px-3 fw-semibold text-dark" href="../index.html">Inicio</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link px-3 fw-semibold text-dark line-effect" href="#contacto">Contacto</a>
+                        <a class="nav-link px-3 fw-semibold text-dark" href="servicios.html">Servicios</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link px-3 fw-semibold text-dark line-effect" href="ubicacion.html">Ubicación</a>
+                        <a class="nav-link px-3 fw-semibold text-dark" href="#contacto">Contacto</a>
                     </li>
-                    <li class="nav-item" id="SigInHidden">
-                        <a class="nav-link px-3 fw-semibold text-dark btn-animate" href="#" data-bs-toggle="modal"
-                            data-bs-target="#SigInModal">Iniciar sesión</a>
-                    </li>
-                    <li class="nav-item" id="SigUpHidden">
-                        <a class="nav-link px-3 fw-semibold text-dark btn-animate" href="#" data-bs-toggle="modal"
-                            data-bs-target="#SigUpModal">Crear cuenta</a>
-                    </li>
-                    <li id="userMenu" class="dropdown d-none">
-                        <button class="btn btn-success dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                            <i class="bi bi-person-circle"></i>
+                    <li class="nav-item" id="loginNavItem">
+                        <button class="btn btn-outline-success ms-2 px-4 rounded-pill" data-bs-toggle="modal"
+                            data-bs-target="#loginModal">
+                            Iniciar sesión
                         </button>
-                        <ul class="dropdown-menu">
+                    </li>
+                    <li class="nav-item" id="registerNavItem">
+                        <a class="btn btn-success ms-2 px-4 rounded-pill" data-bs-toggle="modal"
+                            data-bs-target="#registerModal">Crear cuenta</a>
+                    </li>
+                    <li id="userMenu" class="nav-item dropdown d-none ms-2">
+                        <button class="nav-link p-0 border-0 bg-transparent" type="button" data-bs-toggle="dropdown"
+                            aria-expanded="false">
+                            <i class="bi bi-person-circle fs-4 icon-hover"></i>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end mt-2 shadow">
                             <li>
-                                <a class="dropdown-item" href="./perfil.html">Mi Perfil</a>
+                                <a class="dropdown-item hover-item" href="pages/perfil.html"><i
+                                        class="bi bi-person-square me-2"></i>Perfil</a>
                             </li>
                             <li>
-                                <a class="dropdown-item" href="./turnos.html">Mis Turnos</a>
+                                <a class="dropdown-item hover-item" href="pages/turnos.html"><i
+                                        class="bi bi-journal-check me-2"></i>Turnos</a>
                             </li>
                             <li>
-                                <a class="dropdown-item" href="#" onclick="logout()">Cerrar sesión</a>
+                                <hr class="dropdown-divider mx-2 my-1" />
+                            </li>
+                            <li>
+                                <a class="dropdown-item hover-item text-danger" href="#" onclick="logout()"><i
+                                        class="bi bi-escape me-2"></i>Salir</a>
                             </li>
                         </ul>
                     </li>
@@ -71,143 +91,239 @@
     </nav>
 
     <!-- Perfil -->
-    <div class="container mt-5 mb-5">
-        <div class="card shadow-sm p-4">
-            <h3 class="text-center mb-4">Mi Perfil</h3>
-    
+    <div class="container mt-5 mb-5" id="perfil">
+        <div class="card border-0 rounded-4 shadow-sm p-4 servicio-fondo">
+            <h3 class="text-center mb-4 fw-bold servicio-titulo">Mi Perfil</h3>
+
             <!-- Alerta NO verificado -->
-            <div id="alertaVerificacion" class="alert alert-warning d-none" role="alert">
-                <strong class="text-danger">Atención:</strong> tu correo
-                <strong>aún no está verificado</strong>.
-                <span class="text-danger fw-bold">No podrás reservar turnos</span> en
-                la sección de <strong class="text-primary">Servicios</strong> hasta
-                que completes la verificación.
-                <br />
-                Además, debes completar tus datos personales: <strong>Nombre</strong>,
-                <strong>Apellido</strong> y <strong>DNI</strong>.
-                <br />
-                Podés hacerlo más tarde desde
-                <strong class="text-primary">Mi Perfil</strong>.
-                <br />
-                <button class="btn btn-outline-primary mt-3" type="button" id="btnReenviarVerificacion"
-                    onclick="reenviarVerificacion()">
-                    Reenviar verificación
-                </button>
-            </div>
-    
-            <!-- Alerta VERIFICADO -->
-            <div id="estadoVerificacionOk" class="alert alert-success d-none" role="alert">
-                ¡Tu correo está <strong class="text-success">verificado</strong>!
-                Ahora puedes empezar a reservar tus
-                <strong class="text-primary">Servicios</strong> favoritos.
-            </div>
-    
-            <div class="row g-3">
-                <div class="col-md-6">
-                    <label class="form-label">Correo electrónico</label>
-                    <input type="email" class="form-control" id="email" disabled style="background-color: #f0f0f0" />
+            <div id="alertaVerificacion" class="alert alert-warning d-none rounded-3 border-0 shadow-sm" role="alert"
+                style="background-color: #fff8e6">
+                <div class="d-flex align-items-center">
+                    <i class="bi bi-exclamation-triangle-fill me-2" style="color: #d4a017"></i>
+                    <strong class="text-dark">Atención:</strong>
                 </div>
-                <div class="mb-3">
-                    <label for="usuario" class="form-label">Nombre de usuario</label>
-                    <input type="text" class="form-control" id="usuario" disabled style="background-color: #f0f0f0" />
-                </div>
-                <div class="col-md-6">
-                    <label class="form-label">Nombre</label>
-                    <input type="text" class="form-control" id="nombre" />
-                </div>
-                <div class="col-md-6">
-                    <label class="form-label">Apellido</label>
-                    <input type="text" class="form-control" id="apellido" />
-                </div>
-                <div class="col-md-6">
-                    <label class="form-label">DNI</label>
-                    <input type="text" class="form-control" id="dni" />
-                </div>
-            </div>
-    
-            <!-- Botón Guardar Cambios centrado -->
-            <div class="text-center mt-4">
-                <button class="btn btn-success px-4" id="btnGuardarPerfil" onclick="guardarPerfil()">
-                    Guardar Cambios
-                </button>
-            </div>
-    
-        </div>
-    </div>
-    
-    <!-- Caja para Cambiar Contraseña y Eliminar Cuenta -->
-    <div class="container mt-4">
-        <div class="card p-4 shadow-sm">
-            <h5 class="text-center mb-4">Opciones de Cuenta</h5>
-            <div class="row justify-content-center">
-                <!-- Cambiar Contraseña -->
-                <div class="col-12 col-md-6 text-center mb-3">
-                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalEditarPassword">
-                        Cambiar Contraseña
+                <hr class="my-2" style="border-color: #f5e6b3" />
+                <div class="text-dark">
+                    Tu correo <strong>aún no está verificado</strong>.
+                    <span class="text-danger fw-bold">No podrás reservar turnos</span>
+                    en la sección de
+                    <strong class="text-primary">Servicios</strong> hasta que completes
+                    la verificación.
+                    <br />
+                    Además, debes completar tus datos personales:
+                    <strong>Nombre</strong>, <strong>Apellido</strong> y
+                    <strong>DNI</strong>.
+                    <br />
+                    Podés hacerlo más tarde desde
+                    <strong class="text-primary">Mi Perfil</strong>.
+                    <br />
+                    <button class="btn btn-outline-primary mt-3 rounded-pill px-4" type="button"
+                        id="btnReenviarVerificacion" onclick="reenviarVerificacion()">
+                        <i class="bi bi-send-fill me-2"></i>Reenviar verificación
                     </button>
                 </div>
-    
+            </div>
+
+            <!-- Alerta VERIFICADO -->
+            <div id="estadoVerificacionOk" class="alert alert-success d-none rounded-3 border-0 shadow-sm" role="alert"
+                style="background-color: #e6f7ee">
+                <div class="d-flex align-items-center">
+                    <i class="bi bi-check-circle-fill me-2" style="color: #28a745"></i>
+                    <strong class="text-dark">¡Verificación exitosa!</strong>
+                </div>
+                <hr class="my-2" style="border-color: #b3e6cc" />
+                <div class="text-dark">
+                    ¡Tu correo está <strong class="text-success">verificado</strong>!
+                    Ahora puedes empezar a reservar tus
+                    <strong class="text-primary">Servicios</strong> favoritos.
+                </div>
+            </div>
+
+            <div class="row g-4 mt-3">
+                <div class="col-md-6">
+                    <label class="form-label text-dark small">Correo electrónico</label>
+                    <div class="input-group" style="
+                background-color: #f5f0e6;
+                border: 1px solid #28a745;
+                border-radius: 0.375rem;
+              ">
+                        <span class="input-group-text bg-transparent border-0">
+                            <i class="bi bi-envelope"></i>
+                        </span>
+                        <input type="email" class="form-control border-0 bg-transparent" id="email" disabled />
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <label for="usuario" class="form-label text-dark small">Nombre de usuario</label>
+                    <div class="input-group" style="background-color: #f5f0e6; border-radius: 0.375rem">
+                        <span class="input-group-text bg-transparent border-0"><i class="bi bi-person"></i></span>
+                        <input type="text" class="form-control border-0 bg-transparent" id="usuario" disabled />
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label text-dark small">Nombre</label>
+                    <div class="input-group" style="background-color: #f5f0e6; border-radius: 0.375rem">
+                        <span class="input-group-text bg-transparent"><i class="bi bi-person-circle"></i></span>
+                        <input type="text" class="form-control rounded-end" id="nombre" style="border-left: none" />
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label text-dark small">Apellido</label>
+                    <div class="input-group" style="background-color: #f5f0e6; border-radius: 0.375rem">
+                        <span class="input-group-text bg-transparent"><i class="bi bi-person-badge"></i></span>
+                        <input type="text" class="form-control rounded-end" id="apellido" style="border-left: none" />
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label text-dark small">DNI</label>
+                    <div class="input-group" style="background-color: #f5f0e6; border-radius: 0.375rem">
+                        <span class="input-group-text bg-transparent"><i class="bi bi-card-text"></i></span>
+                        <input type="text" class="form-control rounded-end" id="dni" style="border-left: none" />
+                    </div>
+                </div>
+            </div>
+
+            <!-- Botón Guardar Cambios centrado -->
+            <div class="text-center mt-5">
+                <button class="btn btn-success px-4 rounded-pill" id="btnGuardarPerfil" onclick="guardarPerfil()">
+                    <i class="bi bi-check-circle me-2"></i>Guardar Cambios
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Caja para Cambiar Contraseña y Eliminar Cuenta -->
+    <div class="container mt-4 mb-5 caja">
+        <div class="card p-4 border-0 rounded-4 shadow-sm servicio-fondo">
+            <h5 class="text-center mb-4 fw-bold servicio-titulo">
+                Opciones de Cuenta
+            </h5>
+            <div class="row justify-content-center g-3">
+                <!-- Cambiar Contraseña -->
+                <div class="col-12 col-md-6 text-center">
+                    <button class="btn px-4 py-2 rounded-pill border-0 shadow-sm" data-bs-toggle="modal"
+                        data-bs-target="#modalEditarPassword" style="background-color: #6c757d; color: white">
+                        <i class="bi bi-key-fill me-2"></i>Cambiar Contraseña
+                    </button>
+                </div>
+
                 <!-- Eliminar Cuenta -->
                 <div class="col-12 col-md-6 text-center">
-                    <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalEliminarCuenta">
-                        Eliminar Cuenta
+                    <button class="btn px-4 py-2 rounded-pill border-0 shadow-sm" data-bs-toggle="modal"
+                        data-bs-target="#modalEliminarCuenta" style="background-color: #dc3545; color: white">
+                        <i class="bi bi-trash-fill me-2"></i>Eliminar Cuenta
                     </button>
                 </div>
             </div>
         </div>
     </div>
-    
+
     <!-- Modal para Confirmar Eliminación de Cuenta -->
     <div class="modal fade" id="modalEliminarCuenta" tabindex="-1" aria-labelledby="modalEliminarCuentaLabel"
         aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="modalEliminarCuentaLabel">Confirmar Eliminación de Cuenta</h5>
+                    <h5 class="modal-title" id="modalEliminarCuentaLabel">
+                        Confirmar Eliminación de Cuenta
+                    </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
                 </div>
                 <div class="modal-body">
-                    ¿Estás seguro de que quieres eliminar tu cuenta? Esta acción no se puede deshacer.
+                    ¿Estás seguro de que quieres eliminar tu cuenta? Esta acción no se
+                    puede deshacer.
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-danger ms-auto" onclick="eliminarCuenta()">Eliminar Cuenta</button>
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">
+                        Cancelar
+                    </button>
+                    <button type="button" class="btn btn-danger ms-auto" onclick="eliminarCuenta()">
+                        Eliminar Cuenta
+                    </button>
                 </div>
             </div>
         </div>
     </div>
 
-
-
     <!-- Modal para cambiar la contraseña -->
     <div class="modal fade" id="modalEditarPassword" tabindex="-1" aria-labelledby="modalPasswordLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="modalPasswordLabel">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0" style="border-radius: 15px; overflow: hidden;">
+                <!-- Encabezado con gradiente suave -->
+                <div class="modal-header py-3" style="background: linear-gradient(135deg, #D9D2C5 0%, #B8AFA0 100%);">
+                    <h5 class="modal-title fs-4 fw-semibold servicio-titulo" id="modalPasswordLabel">
                         Cambiar Contraseña
                     </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body">
-                    <div class="mb-4">
-                        <label class="form-label mt-3">Contraseña actual</label>
-                        <input type="password" class="form-control" id="contraseñaActual" />
-                        <label class="form-label">Nueva contraseña</label>
-                        <input type="password" class="form-control" id="nuevaPassword" />
-                        <label class="form-label mt-3">Confirmar contraseña</label>
-                        <input type="password" class="form-control" id="confirmarPassword" />
+    
+                <!-- Cuerpo del modal -->
+                <div class="modal-body py-4" style="background-color: #f9f9f9;">
+                    <div class="px-3">
+                        <!-- Grupo de contraseña actual -->
+                        <div class="mb-4">
+                            <label class="form-label text-secondary mb-2">Contraseña actual</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-transparent border-end-0">
+                                    <i class="fas fa-lock text-muted"></i>
+                                </span>
+                                <input type="password" class="form-control border-start-0 ps-2 password-input"
+                                    id="contraseñaActual" placeholder="Ingresa tu contraseña actual"
+                                    style="border-radius: 0 8px 8px 0;" />
+                                <button class="btn btn-outline-secondary toggle-password" type="button"
+                                    style="border-radius: 0 8px 8px 0;">
+                                    <i class="far fa-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+    
+                        <!-- Grupo de nueva contraseña -->
+                        <div class="mb-4">
+                            <label class="form-label text-secondary mb-2">Nueva contraseña</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-transparent border-end-0">
+                                    <i class="fas fa-key text-muted"></i>
+                                </span>
+                                <input type="password" class="form-control border-start-0 ps-2 password-input"
+                                    id="nuevaPassword" placeholder="Crea una nueva contraseña"
+                                    style="border-radius: 0 8px 8px 0;" />
+                                <button class="btn btn-outline-secondary toggle-password" type="button"
+                                    style="border-radius: 0 8px 8px 0;">
+                                    <i class="far fa-eye"></i>
+                                </button>
+                            </div>
+                            <small class="text-muted mt-1 d-block">Mínimo 6 caracteres</small>
+                        </div>
+    
+                        <!-- Grupo de confirmación -->
+                        <div class="mb-3">
+                            <label class="form-label text-secondary mb-2">Confirmar contraseña</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-transparent border-end-0">
+                                    <i class="fas fa-check-circle text-muted"></i>
+                                </span>
+                                <input type="password" class="form-control border-start-0 ps-2 password-input"
+                                    id="confirmarPassword" placeholder="Repite la nueva contraseña"
+                                    style="border-radius: 0 8px 8px 0;" />
+                                <button class="btn btn-outline-secondary toggle-password" type="button"
+                                    style="border-radius: 0 8px 8px 0;">
+                                    <i class="far fa-eye"></i>
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <!-- Botón Cancelar a la izquierda -->
-                    <button class="btn btn-danger" data-bs-dismiss="modal">
-                        Cancelar
+    
+                <!-- Pie de modal con botones redondeados -->
+                <div class="modal-footer border-0 pt-0" style="background-color: #f9f9f9;">
+                    <!-- Botón Cancelar con estilo suave -->
+                    <button class="btn btn-outline-secondary px-4 rounded-pill" data-bs-dismiss="modal">
+                        <i class="fas fa-times me-1"></i> Cancelar
                     </button>
     
-                    <!-- Botón Guardar a la derecha -->
-                    <button class="btn btn-success ms-auto" id="guardarPassword">
-                        Guardar
+                    <!-- Botón Guardar con gradiente suave -->
+                    <button class="btn btn-success px-4 rounded-pill text-white" id="guardarPassword">
+                        <i class="fas fa-save me-1"></i> Guardar
                     </button>
                 </div>
             </div>
@@ -238,96 +354,107 @@
     </div>
 
     <!-- Contenedor de Toasts -->
-    <div id="toast-container" class="position-fixed top-0 end-0 p-3">
-        <!-- Aquí se agregarán los toasts dinámicamente -->
-    </div>
+    <div id="toast-container" class="toast-container position-fixed top-0 end-0 p-3"></div>
+    <!-- Contenedor de Toasts -->
 
     <!-- ----------------------- Footer ----------------------- -->
-    <footer class="bg-dark text-light pt-5 pb-3" id="contacto">
+    <footer class="pt-5 pb-3" style="background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);">
         <div class="container">
-            <div class="d-flex flex-wrap justify-content-around text-center text-md-start">
+            <div class="row text-center text-md-start">
     
                 <!-- Logo e información -->
-                <div class="mb-4" style="max-width: 300px;">
-                    <h4 class="text-success fw-bold">Spa Sentirse Bien</h4>
-                    <p>Tu lugar de relajación y bienestar en la ciudad.</p>
+                <div class="col-md-4 mb-4">
+                    <div class="d-flex align-items-center mb-3">
+                        <img src="../assets/icon/icon.png" alt="Spa Logo" width="40" height="40" class="me-2">
+                        <h4 class="text-light m-0 playball-regular fs-2">Spa Sentirse Bien</h4>
+                    </div>
+                    <p class="text-light-80" style="color: rgba(255,255,255,0.7);">Tu lugar de relajación y bienestar en
+                        la
+                        ciudad. Te ayudamos a encontrar el equilibrio que merecés.</p>
+                    <div class="mt-3">
+                        <img src="" alt="Certificación" class="img-fluid">
+                    </div>
                 </div>
     
                 <!-- Información de contacto -->
-                <div class="mb-4" style="max-width: 300px;">
-                    <h5 class="fw-bold">Contacto</h5>
+                <div class="col-md-4 mb-4">
+                    <h5 class="fw-bold text-white mb-4">Contacto</h5>
                     <ul class="list-unstyled">
-                        <li><i class="bi bi-envelope-fill"></i> contacto@spasentirsebien.com</li>
-                        <li><i class="bi bi-telephone-fill"></i> +54 362 123 4567</li>
-                        <li><a href="#" data-bs-toggle="modal" data-bs-target="#consultaModal"
-                                class="text-white text-decoration-none"><i class="bi bi-chat-dots-fill me-1"></i> Hacer una
-                                consulta</a>
+                        <li class="mb-3 d-flex align-items-center">
+                            <i class="bi bi-geo-alt-fill me-2" style="color: var(--color-button);"></i>
+                            <span style="color: rgba(255,255,255,0.7);">Av. Tranquilidad 123, Resistencia, Chaco</span>
                         </li>
-                    </ul>
+                        <li class="mb-3 d-flex align-items-center">
+                            <i class="bi bi-envelope-fill me-2" style="color: var(--color-button);"></i>
+                            <span style="color: rgba(255,255,255,0.7);">contacto@sentirbien.com</span>
+                        </li>
+                        <li class="mb-3 d-flex align-items-center">
+                            <i class="bi bi-telephone-fill me-2" style="color: var(--color-button);"></i>
+                            <span style="color: rgba(255,255,255,0.7);">+54 362 123 4567</span>
+                        </li>
+                        <li class="mb-3 d-flex align-items-center">
+                            <i class="bi bi-clock-fill me-2" style="color: var(--color-button);"></i>
+                            <span style="color: rgba(255,255,255,0.7);">Lunes a Sábado: 9:00 - 20:00</span>
+                        </li>
+                    </ul>                    
                 </div>
     
-                <!-- Redes sociales -->
-                <div class="mb-4" style="max-width: 300px;">
-                    <h5 class="fw-bold">Seguinos</h5>
-                    <div class="social-links">
-                        <a href="#" class="text-light me-3 fs-5"><i class="bi bi-facebook"></i></a>
-                        <a href="#" class="text-light me-3 fs-5"><i class="bi bi-instagram"></i></a>
-                        <a href="#" class="text-light me-3 fs-5"><i class="bi bi-whatsapp"></i></a>
+                <!-- Redes sociales y novedades -->
+                <div class="col-md-4 mb-4">
+                    <h5 class="fw-bold text-white mb-4">Seguinos</h5>
+                    <div class="d-flex justify-content-center justify-content-md-start mb-4">
+                        <a href="https://www.facebook.com" target="_blank"
+                            class="text-light me-3 fs-5 transition-all hover-scale"><i class="bi bi-facebook"></i></a>
+                        <a href="https://www.instagram.com" target="_blank"
+                            class="text-light me-3 fs-5 transition-all hover-scale"><i class="bi bi-instagram"></i></a>
+                        <a href="https://www.whatsapp.com" target="_blank"
+                            class="text-light me-3 fs-5 transition-all hover-scale"><i class="bi bi-whatsapp"></i></a>
+                        <a href="https://www.tiktok.com" target="_blank"
+                            class="text-light fs-5 transition-all hover-scale"><i class="bi bi-tiktok"></i></a>
+                    </div>
+    
+                    <h5 class="fw-bold text-white mb-3">Novedades</h5>
+                    <p class="text-light-80 mb-3" style="color: rgba(255,255,255,0.7);">Suscríbete para recibir promociones exclusivas.</p>
+                    <div class="input-group mb-3">
+                        <input type="email" class="form-control rounded-start-pill" placeholder="Tu email">
+                        <button class="btn btn-success rounded-end-pill" type="button">
+                            <i class="bi bi-envelope-arrow-up"></i>
+                        </button>
                     </div>
                 </div>
     
             </div>
-            <hr class="border-light">
-            <div class="text-center small">
-                © 2025 Spa Sentirse Bien. Todos los derechos reservados.
+            <hr class="border-light-20 my-4" style="border-color: rgba(255,255,255,0.1);">
+            <div class="text-center small" style="color: rgba(255,255,255,0.5);">
+                © 2025 Spa Sentirse Bien. Todos los derechos reservados. |
+                <a href="#" class="text-light-80" style="color: rgba(255,255,255,0.7);">Política de privacidad</a> |
+                <a href="#" class="text-light-80" style="color: rgba(255,255,255,0.7);">Términos de servicio</a>
             </div>
         </div>
     </footer>
 
-    <!-- Modal de Consultas -->
-  <div class="modal fade" id="consultaModal" tabindex="-1" aria-labelledby="modalConsultaLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <form>
-          <div class="modal-header">
-            <h5 class="modal-title" id="modalConsultaLabel">Hacer una consulta</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-          </div>
-          <div class="modal-body">
-            <div class="mb-4">
-              <div class="mb-3">
-                <label for="nombreConsulta" class="form-label">Tu Nombre</label>
-                <input type="text" class="form-control" id="nombreConsulta" placeholder="Nombre" required>
-              </div>
-              <div class="mb-3">
-                <label for="emailConsulta" class="form-label">Correo electrónico</label>
-                <input type="email" class="form-control" id="emailConsulta" placeholder="Email" required>
-              </div>
-              <div class="mb-3">
-                <label for="mensajeConsulta" class="form-label">Mensaje</label>
-                <textarea class="form-control" id="mensajeConsulta" rows="4" placeholder="Escribe aqui tu mensaje..."
-                  required></textarea>
-              </div>
-            </div>
-          </div>
-          <div class="modal-footer">
-            <button type="submit" class="btn btn-success w-100" id="btnConsulta">
-              <span id="btn-text">Enviar</span>
-              <div class="spinner-border spinner-border-sm text-light d-none" id="btn-spinner" role="status">
-                <span class="visually-hidden">Cargando...</span>
-              </div>
-              <span id="spinner-text" class="d-none text-light ms-2">Cargando...</span>
-            </button>
-            <button type="button" class="btn btn-danger w-100" data-bs-dismiss="modal">
-              Cancelar
-            </button>
-        </form>
-      </div>
-  
-      <!-- Contenedor de Toasts -->
-      <div id="toast-container" class="toast-container position-fixed top-0 end-0 p-3">
-        <!-- Los toasts se añadirán aquí dinámicamente -->
-      </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const toggleButtons = document.querySelectorAll('.toggle-password');
+
+            toggleButtons.forEach(button => {
+                button.addEventListener('click', function () {
+                    const input = this.parentElement.querySelector('.password-input');
+                    const icon = this.querySelector('i');
+
+                    if (input.type === 'password') {
+                        input.type = 'text';
+                        icon.classList.remove('fa-eye');
+                        icon.classList.add('fa-eye-slash');
+                    } else {
+                        input.type = 'password';
+                        icon.classList.remove('fa-eye-slash');
+                        icon.classList.add('fa-eye');
+                    }
+                });
+            });
+        });
+    </script>
 
     <script type="module" src="../src/Perfil.js"></script>
     <script type="module" src="../src/ControlSesion.js"></script>

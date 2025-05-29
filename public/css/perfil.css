@@ -1,0 +1,52 @@
+body {
+    background-color: #f5f0e6;
+    padding-top: 70px;
+}
+
+#perfil {
+    font-family: 'Quicksand', sans-serif;
+}
+
+.caja {
+    font-family: 'Quicksand', sans-serif;
+}
+
+/* --- botones ---*/
+
+.btn-success {
+    background-color: var(--color-button);
+    border-color: var(--color-button);
+}
+
+.btn-success:hover {
+    background-color: #6F5448;
+    border-color: #6F5448;
+}
+
+/* --- input de "Modal para cambiar la contraseña" --- */
+
+.input-group {
+    border: 2px solid transparent;
+    border-radius: 8px;
+    transition: box-shadow 0.15s ease, border 0.15s ease;
+}
+
+.input-group:has(input:focus) {
+    border: 2px solid #D9D2C5; 
+}
+
+.input-group .form-control,
+.input-group .input-group-text,
+.input-group .btn {
+    border: none !important;
+    box-shadow: none !important;
+    outline: none !important;
+}
+
+.input-group .input-group-text:first-child {
+    border-radius: 8px 0 0 8px;
+}
+
+.input-group .btn:last-child {
+    border-radius: 0 8px 8px 0;
+}

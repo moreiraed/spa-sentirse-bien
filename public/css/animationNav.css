@@ -1,0 +1,48 @@
+/* Efecto de subrayado animado SOLO para los nav-links normales (excluyendo el ícono) */
+.navbar-nav>li:not(#userMenu)>.nav-link {
+    position: relative;
+    transition: color 0.3s ease;
+}
+
+.navbar-nav>li:not(#userMenu)>.nav-link::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #fff;
+    transition: width 0.3s ease;
+}
+
+.navbar-nav>li:not(#userMenu)>.nav-link:hover::after {
+    width: 80%;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+/* Animación de cambio de color SOLO para los nav-links normales */
+.navbar-nav>li:not(#userMenu)>.nav-link {
+    transition: color 0.3s ease;
+}
+
+.navbar-nav>li:not(#userMenu)>.nav-link:hover {
+    color: #fff;
+}
+
+/* Estilos específicos para el ícono de usuario (sin animaciones de subrayado) */
+#userMenu .nav-link {
+    position: static;
+    /* Anula el position:relative heredado */
+}
+
+#userMenu .nav-link::after {
+    display: none !important;
+    /* Elimina completamente el pseudo-elemento */
+}
+
+#userMenu .nav-link {
+    transition: none !important;
+    /* Elimina transiciones */
+}

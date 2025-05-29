@@ -29,7 +29,7 @@ async function eliminarCuenta() {
     console.log("Cuenta de usuario eliminada de Firebase Auth.");
 
     alert("Tu cuenta ha sido eliminada exitosamente.");
-    // Opcional: Redireccionar al login o a la página de inicio
+  
     window.location.href = "./index.html";
   } catch (error) {
     console.error("Error al eliminar la cuenta:", error);
@@ -38,7 +38,6 @@ async function eliminarCuenta() {
       alert(
         "Debes iniciar sesión nuevamente para eliminar tu cuenta. Por favor, vuelve a loguearte."
       );
-      // Podrías redirigir al usuario al login o mostrar un modal de re-autenticación
     } else {
       alert(
         "Ocurrió un error al eliminar la cuenta. Intenta de nuevo más tarde."

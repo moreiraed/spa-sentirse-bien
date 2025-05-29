@@ -1,336 +1,166 @@
 .carousel-item img {
-  max-height: 500px;
-  /* o la altura que prefieras */
-  object-fit: cover;
-  /* recorta imagen para que encaje */
-  width: 100%;
-}
-
-/* ----------------------- Nav ----------------------- */
-.navbar {
-  font-family: "Segoe UI", sans-serif;
-}
-
-.montecarlo-regular {
-  font-family: "MonteCarlo", cursive;
-  font-weight: 400;
-  font-style: normal;
-}
-
-/* ----------------------- Efectos Animados ----------------------- */
-
-/* Efecto de la línea animada (para Servicios y Contacto) */
-.navbar .nav-link.line-effect {
-  position: relative;
-  padding-bottom: 5px;
-  font-family: "Segoe UI", sans-serif;
-  display: inline-block;
-  overflow: hidden;
-}
-
-.navbar .nav-link.line-effect:hover {
-  color: #198754;
-  /* Cambia el color del texto en hover */
-  transition: color 0.3s ease;
-  animation: letter-slide 0.4s ease-out forwards;
-  /* Animación de las letras */
-}
-
-/* Animación de deslizamiento de las letras */
-@keyframes letter-slide {
-  0% {
-    transform: translateY(10px);
-    /* Comienza un poco más abajo */
-    opacity: 0;
-    /* Letras invisibles al inicio */
-  }
-
-  100% {
-    transform: translateY(0);
-    /* Se mueve a su posición original */
-    opacity: 1;
-    /* Letras visibles al final */
-  }
-}
-
-/* Efecto de la línea animada desde el centro */
-.navbar .nav-link.line-effect::after {
-  content: "";
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  width: 0;
-  height: 2px;
-  background-color: #198754;
-  transition: width 0.3s ease, left 0.3s ease;
-  transform: translateX(-50%);
-  /* Centra la línea */
-}
-
-.navbar .nav-link.line-effect:hover::after {
-  width: 100%;
-  /* Expande la línea en el hover */
-  left: 50%;
-  /* La línea comienza desde el centro */
-}
-
-/* ----------------------- Botón Animado (para Iniciar sesión y Crear cuenta) ----------------------- */
-.navbar .nav-link.btn-animate {
-  position: relative;
-  padding: 8px 20px;
-  border: 2px solid transparent;
-  color: #198754;
-  font-weight: 600;
-  text-transform: none;
-  font-family: "Segoe UI", sans-serif;
-  text-align: center;
-  background-color: transparent;
-  /* Elimina el fondo para que no parezca un botón */
-  overflow: hidden;
-  display: inline-block;
-  transition: color 0.3s ease, border-color 0.3s ease, transform 0.3s ease;
-  border-radius: 25px;
-  /* Agregamos borde redondeado */
-}
-
-/* Animación de las letras al hacer hover (deslizar) */
-.navbar .nav-link.btn-animate:hover {
-  color: #198754;
-  border-color: #198754;
-  /* Borde verde al hacer hover */
-  transform: translateY(-5px);
-  /* Desliza ligeramente el texto hacia arriba */
-}
-
-/* Animación de deslizamiento de las letras */
-@keyframes letter-slide {
-  0% {
-    transform: translateY(5px);
-    /* Comienza un poco más abajo */
-    opacity: 0;
-    /* Letras invisibles al inicio */
-  }
-
-  100% {
-    transform: translateY(0);
-    /* Se mueve a su posición original */
-    opacity: 1;
-    /* Letras visibles al final */
-  }
-}
-
-/* Efecto de la línea animada (para "Spa Sentirse Bien") */
-.navbar .navbar-brand.line-effect {
-  position: relative;
-  display: inline-block;
-  overflow: hidden;
-  padding-bottom: 5px;
-  font-family: "Segoe UI", sans-serif;
-}
-
-/* Efecto al hacer hover sobre "Spa Sentirse Bien" */
-.navbar .navbar-brand.line-effect:hover span {
-  color: #198754;
-  /* Cambia el color del texto en hover */
-  transition: color 0.3s ease;
-  animation: letter-slide 0.4s ease-out forwards;
-  /* Animación de las letras */
-}
-
-/* Animación de deslizamiento de las letras */
-@keyframes letter-slide {
-  0% {
-    transform: translateY(10px);
-    /* Comienza un poco más abajo */
-    opacity: 0;
-    /* Letras invisibles al inicio */
-  }
-
-  100% {
-    transform: translateY(0);
-    /* Se mueve a su posición original */
-    opacity: 1;
-    /* Letras visibles al final */
-  }
-}
-
-/* Efecto de la línea animada debajo del nombre (Spa Sentirse Bien) */
-.navbar .navbar-brand.line-effect::after {
-  content: "";
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  width: 0;
-  height: 2px;
-  background-color: #198754;
-  transition: width 0.3s ease, left 0.3s ease;
-  transform: translateX(-50%);
-  /* Centra la línea */
-}
-
-/* Efecto al hacer hover sobre "Spa Sentirse Bien" */
-.navbar .navbar-brand.line-effect:hover::after {
-  width: 100%;
-  /* Expande la línea en el hover */
-  left: 50%;
-  /* La línea comienza desde el centro */
-}
-
-
-/** ajusta la imagen "icon.png" para Servicios.js **/
-.toast-header img {
-  width: 30px;
-  height: 30px;
-  object-fit: cover;
-}
-
-/* Toasts de la seccion de perfil.html */
-/* Asegura que el contenedor del toast esté por encima del fondo oscuro del modal */
-#toast-container {
-  position: fixed;
-  top: 20px;
-  right: 20px;
-  z-index: 1051;
-  /* Asegura que el toast esté por encima del modal */
-  padding: 1rem;
-}
-
-/* Aseguramos que el fondo del toast no esté opacado */
-.toast {
-  background-color: transparent !important;
-}
-
-.toast.bg-success {
-  background-color: #28a745 !important;
-}
-
-.toast.bg-danger {
-  background-color: #dc3545 !important;
-}
-
-.toast.bg-warning {
-  background-color: #ffc107 !important;
-}
-
-/* Evitar que el backdrop del modal tape los toasts */
-.modal-backdrop {
-  z-index: 1040 !important;
-}
-
-/* Asegurar que los toasts estén por encima del modal */
-#toast-container {
-  z-index: 1081;
-  /* Bootstrap modal usa hasta 1055 */
-}
-
-@media (max-width: 768px) {
-  #toast-container {
-    top: auto !important;
-    bottom: 2rem;
-    left: 1rem;
-    right: auto;
-    transform: none;
+    max-height: 590px;
+    /* o la altura que prefieras */
+    object-fit: cover;
+    /* recorta imagen para que encaje */
     width: 100%;
-    max-width: 90vw;
-    padding-bottom: env(safe-area-inset-bottom, 1rem);
-  }
-
-  #toast-container .toast {
-    width: 100%;
-    max-width: 100%;
-    box-sizing: border-box;
-  }
 }
 
-/** Modal de solicitar turnos de servicios.html **/
-
-/* Cambiar color de la cabecera */
-.modal-header {
-  background-color: #f8f5f2;
-  /* Color suave, tipo beige claro */
+.btn-success {
+    background-color: var(--color-button);
+    border-color: var(--color-button);
 }
 
-.modal-footer {
-  background-color: #f8f5f2;
-  /* Color suave, tipo beige claro */
+.btn-success:hover {
+    background-color: #6F5448;
+    border-color: #6F5448;
 }
 
-/* Cambiar fondo de las secciones de fecha y hora */
-.modal-body .mb-4 {
-  background-color: #f4f4f4;
-  /* Color gris claro, para un contraste suave */
-  padding: 15px;
-  /* Padding horizontal de 15px, pero sin padding vertical */
-  border-radius: 8px;
+/* ---- Nav ---- */
+
+.transparent-navbar {
+    background-color: rgba(0, 0, 0, 0.4);
+    /* fondo negro translúcido */
+    backdrop-filter: blur(6px);
+    /* desenfoque elegante */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    /* sombra suave */
+    transition: background-color 0.3s ease;
 }
 
-
-/* Cambiar el fondo de la cabecera */
-.bg-warning {
-  background-color: #ffed6b !important;
+.transparent-navbar .nav-link,
+.transparent-navbar .navbar-brand,
+.transparent-navbar .btn {
+    color: #fff !important;
 }
 
-#modalRequiereLogin .modal-body .back-4 {
-  background-color: #f4f4f4;
-  /* Color gris claro, para un contraste suave */
-  padding: 15px;
-  /* Padding horizontal de 15px, pero sin padding vertical */
-  padding-bottom: 1px;
-  border-radius: 8px;
+.transparent-navbar .btn-outline-success {
+    border-color: #fff;
+    color: #fff;
 }
 
-#SigInModal .modal-body .mb-4 {
-  background-color: #f4f4f4;
-  /* Color gris claro, para un contraste suave */
-  padding: 15px;
-  /* Padding horizontal de 15px, pero sin padding vertical */
-  padding-bottom: 1px;
-  border-radius: 8px;
+.transparent-navbar .btn-outline-success:hover {
+    background-color: var(--color-button);
+    border-color: var(--color-button);
 }
 
-#SigUpModal .modal-body .mb-4 {
-  background-color: #f4f4f4;
-  /* Color gris claro, para un contraste suave */
-  padding: 15px;
-  /* Padding horizontal de 15px, pero sin padding vertical */
-  padding-bottom: 1px;
-  border-radius: 8px;
+.transparent-navbar .btn-success {
+    background-color: var(--color-button);
+    border-color: var(--color-button);
 }
 
-#modalCuentaCreada .alert-warning {
-  background-color: #f8f5f2;
+.transparent-navbar .btn-success:hover {
+    background-color: #6F5448;
+    border-color: #6F5448;
 }
 
-#modalEditarPassword .modal-body .mb-4 {
-  background-color: #f4f4f4;
-  /* Color gris claro, para un contraste suave */
-  padding: 15px;
-  padding-top: 1px;
-  /* Padding horizontal de 15px, pero sin padding vertical */
-  padding-bottom: 20px;
-  border-radius: 8px;
+.navbar-brand span {
+    line-height: 1;
+    position: relative;
+    top: 3px;
 }
 
-.text-white.text-decoration-none {
-  position: relative;
-  transition: color 0.3s ease;
+.playball-regular {
+    font-family: "Playball", cursive;
+    font-weight: 400;
+    font-style: normal;
 }
 
-.text-white.text-decoration-none::after {
-  content: "";
-  position: absolute;
-  bottom: -2px;
-  left: 0;
-  width: 0;
-  height: 2px;
-  background-color: #ffffff;
-  transition: width 0.3s ease;
+/* ---- colores de "Servicios Populares" (index.html) ---- */
+
+:root {
+    --color-principal-fondo: #F5F0E6;
+    --color-secundario-fondo: #D9D2C5;
+    --color-titulo: #4F463B;
+    --color-texto: #706558;
+    --color-button: #8C6E5F;
 }
 
-.text-white.text-decoration-none:hover {
-  color: #ffffff;
+.servicio-titulo {
+    color: var(--color-titulo);
 }
 
-.text-white.text-decoration-none:hover::after {
-  width: 100%;
+.servicio-descripcion {
+    color: var(--color-texto);
+}
+
+.servicio-fondo {
+    background-color: var(--color-secundario-fondo);
+}
+
+.servicio-texto {
+    color: var(--color-texto);
+}
+
+#servicios .btn-success {
+    background-color: var(--color-button);
+    border-color: var(--color-button);
+}
+
+#servicios .btn-success:hover {
+    background-color: #6F5448;
+    border-color: #6F5448;
+}
+
+.card-body .border-top {
+    border-top: 2px solid var(--color-texto) !important;
+}
+
+/* ---- botones de servicios.html ---- */
+
+#services .btn-success {
+    background-color: var(--color-button);
+    border-color: var(--color-button);
+}
+
+#services .btn-success:hover {
+    background-color: #6F5448;
+    border-color: #6F5448;
+}
+
+/*----------------------------------------*/
+
+.icon-hover {
+    color: #fff;
+    transition: all 0.3s ease;
+    padding: 4px;
+}
+
+.icon-hover:hover {
+    color: #ccc;
+    transform: scale(1.1);
+}
+
+.hover-item {
+    border-radius: 4px;
+    transition: all 0.2s;
+    margin: 2px 4px;
+}
+
+.hover-item:hover {
+    background-color: #f8f9fa;
+    transform: translateX(3px);
+}
+
+.dropdown-menu {
+    border-radius: 8px;
+    border: none;
+    min-width: 200px;
+}
+
+/*---------------------------------------*/
+.auth-dependent {
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+/*---------------------------------------*/
+
+/* --- footer ---*/
+
+.hover-scale {
+    transition: color 0.4s ease;
+}
+
+.hover-scale:hover {
+    color: #8C6E5F !important;
 }
