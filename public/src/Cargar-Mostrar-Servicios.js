@@ -56,10 +56,10 @@ async function cargarServicios() {
       const adminButtons = isAdmin
         ? `
         <div class="admin-controls">
-          <button class="btn btn-sm btn-danger delete-btn" data-id="${doc.id}">
+          <button class="btn btn-sm btn-danger position-absolute top-0 start-0 m-2 delete-btn" data-id="${doc.id}" title="Eliminar servicio">
             <i class="bi bi-x-lg"></i>
           </button>
-          <button class="btn btn-sm btn-warning edit-btn" data-id="${doc.id}">
+          <button class="btn btn-sm btn-warning position-absolute top-0 end-0 m-2 edit-btn" data-id="${doc.id}" title="Editar servicio">
             <i class="bi bi-pencil-fill"></i>
           </button>
         </div>
@@ -125,82 +125,123 @@ async function eliminarServicio(e) {
 
 // Función para editar servicio
 function iniciarEdicion(e) {
-  const id = e.target.closest(".edit-btn").dataset.id;
+  e.preventDefault();
+  const id = e.currentTarget.dataset.id;
   const card = document.getElementById(`service-${id}`);
 
-  // Crear formulario de edición
-  const editForm = `
-    <div class="edit-form p-3">
-      <div class="mb-3">
-        <label>Título</label>
-        <input type="text" class="form-control edit-title" value="${
-          card.querySelector(".card-title").textContent
-        }">
-      </div>
-      <div class="mb-3">
-        <label>Descripción</label>
-        <textarea class="form-control edit-description">${
-          card.querySelector(".card-text").textContent
-        }</textarea>
-      </div>
-      <div class="row mb-3">
-        <div class="col-6">
-          <label>Duración (min)</label>
-          <input type="number" class="form-control edit-duration" value="${card
-            .querySelector(".servicio-texto:nth-of-type(1)")
-            .textContent.replace(" min", "")}">
+  if (!card) {
+    console.error("No se encontró la tarjeta del servicio");
+    return;
+  }
+
+  // Obtener valores actuales con selectores más robustos
+  const currentValues = {
+    title: card.querySelector(".card-title").textContent,
+    description: card.querySelector(".card-text").textContent,
+    duration: card
+      .querySelector(".servicio-texto:nth-of-type(1)")
+      .textContent.replace(" min", "")
+      .trim(),
+    price: card
+      .querySelector(".servicio-texto.fw-bold")
+      .textContent.replace("$", "")
+      .replace(",", ""),
+    imageUrl: card.querySelector("img").src,
+  };
+
+  // Crear modal de edición
+  const modalHTML = `
+    <div class="modal fade" id="editModal-${id}" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header bg-primary text-white">
+            <h5 class="modal-title">Editar Servicio</h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form id="editForm-${id}">
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label class="form-label">Título</label>
+                  <input type="text" class="form-control" name="title" value="${currentValues.title}" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label class="form-label">Precio</label>
+                  <div class="input-group">
+                    <span class="input-group-text">$</span>
+                    <input type="number" class="form-control" name="price" value="${currentValues.price}" step="100" required>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="mb-3">
+                <label class="form-label">Descripción</label>
+                <textarea class="form-control" name="description" rows="3" required>${currentValues.description}</textarea>
+              </div>
+              
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label class="form-label">Duración (minutos)</label>
+                  <input type="number" class="form-control" name="duration" value="${currentValues.duration}" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label class="form-label">URL de la Imagen</label>
+                  <input type="url" class="form-control" name="imageUrl" value="${currentValues.imageUrl}" required>
+                </div>
+              </div>
+              
+              <div class="text-center mt-4">
+                <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">Cancelar</button>
+                <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+              </div>
+            </form>
+          </div>
         </div>
-        <div class="col-6">
-          <label>Precio</label>
-          <input type="number" class="form-control edit-price" value="${card
-            .querySelector(".servicio-texto.fw-bold")
-            .textContent.replace("$", "")
-            .replace(",", "")}">
-        </div>
-      </div>
-      <div class="mb-3">
-        <label>URL Imagen</label>
-        <input type="text" class="form-control edit-image" value="${
-          card.querySelector("img").src
-        }">
-      </div>
-      <div class="d-flex justify-content-end gap-2">
-        <button class="btn btn-secondary cancel-edit">Cancelar</button>
-        <button class="btn btn-primary save-edit" data-id="${id}">Guardar</button>
       </div>
     </div>
   `;
 
-  // Reemplazar contenido de la tarjeta con el formulario
-  card.querySelector(".card-body").innerHTML = editForm;
+  // Agregar modal al body
+  document.body.insertAdjacentHTML("beforeend", modalHTML);
 
-  // Event listeners para los botones del formulario
-  card
-    .querySelector(".cancel-edit")
-    .addEventListener("click", () => cargarServicios());
-  card.querySelector(".save-edit").addEventListener("click", guardarCambios);
-}
+  // Mostrar modal
+  const modal = new bootstrap.Modal(document.getElementById(`editModal-${id}`));
+  modal.show();
 
-// Función para guardar cambios
-async function guardarCambios(e) {
-  const id = e.target.dataset.id;
-  const card = document.getElementById(`service-${id}`);
+  // Manejar envío del formulario
+  document
+    .getElementById(`editForm-${id}`)
+    .addEventListener("submit", async (e) => {
+      e.preventDefault();
 
-  const updatedData = {
-    title: card.querySelector(".edit-title").value,
-    description: card.querySelector(".edit-description").value,
-    duration: card.querySelector(".edit-duration").value,
-    price: parseFloat(card.querySelector(".edit-price").value),
-    imageUrl: card.querySelector(".edit-image").value,
-    updatedAt: new Date(),
-  };
+      const formData = new FormData(e.target);
+      const updatedData = {
+        title: formData.get("title"),
+        description: formData.get("description"),
+        duration: formData.get("duration"),
+        price: parseFloat(formData.get("price")),
+        imageUrl: formData.get("imageUrl"),
+        updatedAt: new Date(),
+      };
 
-  try {
-    await updateDoc(doc(db, "services", id), updatedData);
-    cargarServicios();
-  } catch (error) {
-    console.error("Error actualizando:", error);
-    alert("Error al actualizar servicio");
-  }
+      try {
+        await updateDoc(doc(db, "services", id), updatedData);
+        modal.hide();
+        cargarServicios();
+
+        // Mostrar notificación de éxito
+        alert("Servicio actualizado correctamente");
+      } catch (error) {
+        console.error("Error actualizando:", error);
+        alert("Error al actualizar el servicio");
+      }
+    });
+
+  // Limpiar modal cuando se cierre
+  document
+    .getElementById(`editModal-${id}`)
+    .addEventListener("hidden.bs.modal", () => {
+      document.getElementById(`editModal-${id}`).remove();
+    });
 }
 
