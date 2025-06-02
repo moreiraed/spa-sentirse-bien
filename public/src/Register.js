@@ -29,11 +29,16 @@ window.register = async function (event) {
         return;
     }
 
-    const btnRegistro = document.querySelector("button[type='submit']");
-    const spinner = document.createElement("span");
-    spinner.classList.add("spinner-border", "spinner-border-sm", "me-2");
-    btnRegistro.innerHTML = "";
-    btnRegistro.appendChild(spinner);
+    const btnRegistro = document.querySelector(
+      "#formRegister button[type='submit']"
+    ); 
+    const originalHTML = btnRegistro.innerHTML; // Guardamos el contenido original
+
+    // Mostrar spinner y deshabilitar botón
+    btnRegistro.innerHTML = `
+        <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+        Creando cuenta...
+    `;
     btnRegistro.disabled = true;
 
     try {
@@ -77,10 +82,9 @@ window.register = async function (event) {
             mostrarToast("Error: " + error.message, "danger");
         }
     } finally {
-        // Restauramos el texto original y escondemos el spinner
-        btnRegistro.innerHTML =
-            '<i class="bi bi-person-plus me-2"></i> Crear cuenta';
-        btnRegistro.disabled = false;
+      // Restaurar el botón a su estado original
+      btnRegistro.innerHTML = originalHTML;
+      btnRegistro.disabled = false;
     }
 };
 

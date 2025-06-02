@@ -11,9 +11,6 @@ import {
 
 import { auth, db } from "./firebase-config.js";
 
-
-
-
 // Función para iniciar sesión
 window.login = async function (event) {
     event.preventDefault(); // Prevenir el comportamiento de envío predeterminado del formulario
@@ -22,45 +19,53 @@ window.login = async function (event) {
     const password = document.getElementById("loginPassword").value;
 
     if (!email || !password) {
-        mostrarToast("Por favor completá todos los campos.", "warning");
+        mostrarToastSeguro("Por favor completá todos los campos.", "warning");
         return;
     }
 
     const loginButton = document.getElementById("loginButton");
     const loader = document.getElementById("loader");
 
-    // Comprobamos que el loader y el botón existen antes de manipularlos
     if (!loginButton || !loader) {
         console.error("Elemento del loader o del botón de login no encontrado");
         return;
     }
 
-    // Guardamos el texto original del botón
     const originalButtonText = loginButton.innerHTML;
 
     try {
-        // Mostrar el loader y ocultar el texto del botón
         loader.style.display = "inline-block";
         loginButton.innerHTML =
             '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span> Cargando...';
         loginButton.disabled = true;
 
-        // Intentar hacer login
         await signInWithEmailAndPassword(auth, email, password);
 
-        // Si el login fue exitoso, ocultar el modal
         const modal = bootstrap.Modal.getInstance(
             document.getElementById("loginModal")
         );
         if (modal) modal.hide();
+
     } catch (error) {
-        // Mostrar el mensaje de error
-        alert(error.message);
+        let mensaje = "Correo o contraseña incorrectos.";
+
+        switch (error.code) {
+            case "auth/invalid-email":
+                mensaje = "El correo electrónico ingresado no es válido.";
+                break;
+            case "auth/user-not-found":
+                mensaje = "No existe una cuenta con este correo.";
+                break;
+            case "auth/wrong-password":
+                mensaje = "La contraseña es incorrecta.";
+                break;
+        }
+
+        mostrarToastSeguro(mensaje, "danger");
     } finally {
-        // Esconder el loader y restaurar el texto del botón cuando termine el proceso
         loader.style.display = "none";
-        loginButton.innerHTML = originalButtonText; // Restauramos el texto original
-        loginButton.disabled = false; // Habilitar el botón nuevamente
+        loginButton.innerHTML = originalButtonText;
+        loginButton.disabled = false;
     }
 };
 
@@ -164,3 +169,100 @@ onAuthStateChanged(auth, async (user) => {
     });
 });
 
+let toastCooldown = false;
+
+function mostrarToastSeguro(message, type) {
+  if (toastCooldown) return; // Bloquea si está en cooldown
+
+  toastCooldown = true;
+  mostrarToast(message, type); // Llama a tu función real
+
+  setTimeout(() => {
+    toastCooldown = false; // Se desbloquea después de 2s
+  }, 2000);
+}
+
+
+function mostrarToast(message, type) {
+  // Crear un nuevo div para el toast
+  const toast = document.createElement("div");
+  toast.classList.add(
+    "toast",
+    "align-items-center",
+    "border-0",
+    "fade",
+    `bg-${type}`
+  );
+
+  // Cambiar el color del texto según tipo
+  if (type === "warning") {
+    toast.classList.add("text-dark"); // Texto negro para warning
+  } else {
+    toast.classList.add("text-white"); // Blanco para success, danger
+  }
+
+  toast.setAttribute("role", "alert");
+  toast.setAttribute("aria-live", "assertive");
+  toast.setAttribute("aria-atomic", "true");
+
+  // Crear la cabecera del toast
+  const toastHeader = document.createElement("div");
+  toastHeader.classList.add("toast-header");
+
+  // Crear la imagen
+  const currentPath = window.location.pathname;
+  const isInPagesFolder = currentPath.includes("/pages/");
+  const img = document.createElement("img");
+
+  img.src = isInPagesFolder
+    ? "../assets/icon/icon.png"
+    : "assets/icon/icon.png";
+  img.classList.add("rounded", "me-2");
+  img.alt = "Icono";
+
+  // Crear el texto de la cabecera
+  const strong = document.createElement("strong");
+  strong.classList.add("me-auto");
+  strong.textContent = "Notificación";
+
+  // Crear la hora
+  const small = document.createElement("small");
+  small.textContent = "Hace un momento";
+
+  // Crear el botón de cierre
+  const closeButton = document.createElement("button");
+  closeButton.type = "button";
+  closeButton.classList.add("btn-close");
+  closeButton.setAttribute("data-bs-dismiss", "toast");
+  closeButton.setAttribute("aria-label", "Cerrar");
+
+  // Añadir los elementos a la cabecera
+  toastHeader.appendChild(img);
+  toastHeader.appendChild(strong);
+  toastHeader.appendChild(small);
+  toastHeader.appendChild(closeButton);
+
+  // Crear el cuerpo del toast
+  const toastBody = document.createElement("div");
+  toastBody.classList.add("toast-body");
+  toastBody.textContent = message;
+
+  // Añadir la cabecera y el cuerpo al toast
+  toast.appendChild(toastHeader);
+  toast.appendChild(toastBody);
+
+  // Añadir el toast al contenedor de toasts
+  const toastContainer = document.getElementById("toast-container");
+  if (toastContainer) {
+    toastContainer.appendChild(toast);
+    const bootstrapToast = new bootstrap.Toast(toast);
+    bootstrapToast.show();
+
+    // Eliminar el toast después de un tiempo
+    setTimeout(() => {
+      toast.remove();
+    }, 3000); // El toast se elimina después de 5 segundos
+  } else {
+    console.error("El contenedor de toasts no existe en el DOM");
+  }
+}

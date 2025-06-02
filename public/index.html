@@ -46,11 +46,11 @@
                     <li class="nav-item">
                         <a class="nav-link px-3 fw-semibold text-dark" href="#contacto">Contacto</a>
                     </li>
-                    <li class="nav-item" id="loginNavItem">
+                    <li class="nav-item mt-2 mt-lg-0" id="loginNavItem">
                         <button class="btn btn-outline-success ms-2 px-4 rounded-pill" data-bs-toggle="modal"
                             data-bs-target="#loginModal">Iniciar sesión</button>
                     </li>
-                    <li class="nav-item" id="registerNavItem">
+                    <li class="nav-item mt-2 mt-lg-0" id="registerNavItem">
                         <a class="btn btn-success ms-2 px-4 rounded-pill" data-bs-toggle="modal"
                             data-bs-target="#registerModal">Crear cuenta</a>
                     </li>
@@ -74,6 +74,10 @@
             </div>
         </div>
     </nav>
+
+    <!-- Contenedor de Toasts -->
+    <div id="toast-container" class="toast-container position-fixed top-0 end-0 p-3"></div>
+    <!-- Contenedor de Toasts -->
 
     <!-- Contenedor donde se cargarán los modales -->
     <div id="modals-container"></div>
@@ -145,7 +149,7 @@
                         style="background-color: #d4edda; color: #155724;">
                         <i class="bi bi-flower1 me-2"></i>100% Natural
                     </span>
-                    <span class="d-inline-block px-3 py-1 rounded-pill ms-2"
+                    <span class="d-inline-block px-3 py-1 rounded-pill ms-2 mt-3 mt-lg-0"
                         style="background-color: #d1ecf1; color: #0c5460;">
                         <i class="bi bi-heart-fill me-2"></i>Enfoque holístico
                     </span>
@@ -246,7 +250,7 @@
 
     <!-- ----------------------- Testimonios ----------------------- -->
     <section class="py-5" style="background: url('assets/img/footer.webp') center/cover; position: relative;">
-        <div class="position-absolute top-0 start-0 w-100 h-100" style="background-color: rgba(15, 45, 40, 0.85);">
+        <div class="position-absolute top-0 start-0 w-100 h-100" style="background-color: rgba(194, 194, 178, 0.50);">
         </div>
         <div class="container position-relative z-index-1">
             <h2 class="text-center mb-5 display-6 fw-light text-white"
@@ -363,12 +367,11 @@
     </section>
 
     <!-- ----------------------- Llamado a la acción ----------------------- -->
-    <section id="cta-reserva" class="py-5" style="background: linear-gradient(135deg, #0f2c26 0%, #1a4b3e 100%);">
+    <section id="cta-reserva" class="py-5" style="background-color: var(--color-principal-fondo); ">
         <div class="container text-center">
-            <div class="p-4 rounded-4" style="background-color: rgba(255,255,255,0.1); backdrop-filter: blur(5px);">
-                <h2 class="fw-bold mb-3 text-white">¿Listo para relajarte?</h2>
-                <p class="lead mb-4 text-light">Iniciá sesión o creá tu cuenta para reservar tu próximo momento de
-                    bienestar.</p>
+            <div class="p-4 rounded-4 servicio-fondo">
+                <h2 class="fw-bold mb-3 servicio-titulo">¿Listo para relajarte?</h2>
+                <p class="lead mb-4 servicio-texto">Iniciá sesión o creá tu cuenta para reservar tu próximo momento de bienestar.</p>
                 <div class="d-flex justify-content-center gap-3 flex-wrap">
                     <a class="btn btn-light btn-lg px-4 rounded-pill fw-semibold d-flex align-items-center"
                         data-bs-toggle="modal" data-bs-target="#loginModal">

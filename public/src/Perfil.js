@@ -16,6 +16,7 @@ import {
 
 function actualizarEstadoVerificacion(user) {
   const emailInput = document.getElementById("email");
+  const emailGroup = document.getElementById("emailGroup");
 
   if (user.emailVerified) {
     document.getElementById("alertaVerificacion").classList.add("d-none");
@@ -23,13 +24,14 @@ function actualizarEstadoVerificacion(user) {
 
     emailInput.classList.remove("is-invalid");
     emailInput.classList.add("is-valid");
+    emailGroup.style.border = "1px solid #28a745";
   } else {
     document.getElementById("alertaVerificacion").classList.remove("d-none");
     document.getElementById("estadoVerificacionOk").classList.add("d-none");
 
     emailInput.classList.remove("is-valid");
     emailInput.classList.add("is-invalid");
-    ("");
+    emailGroup.style.border = "1px solid #dc3545"; 
   }
 }
 

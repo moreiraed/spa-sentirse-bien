@@ -16,6 +16,13 @@
     border-color: #6F5448;
 }
 
+.btn-success:active,
+.btn-success.active,
+.show>.btn-success.dropdown-toggle {
+    background-color: #6F5448 !important;
+    border-color: #6F5448 !important;
+}
+
 /* ---- Nav ---- */
 
 .transparent-navbar {
@@ -164,3 +171,11 @@
 .hover-scale:hover {
     color: #8C6E5F !important;
 }
+
+/*---------------------------------------*/
+.toast-header img {
+    width: 30px;
+    height: 30px;
+    object-fit: cover;
+}
+/*---------------------------------------*/
