@@ -1,4 +1,5 @@
 import {
+    getAuth,
     signInWithEmailAndPassword,
     signOut,
     onAuthStateChanged,
@@ -95,10 +96,18 @@ document.addEventListener("DOMContentLoaded", function () {
     observer.observe(modalsContainer, { childList: true });
 });
 
-// Logout
-window.logout = function () {
-    signOut(auth);
-};
+// Función para cerrar sesión
+window.logout = async function() {
+    try {
+      const auth = getAuth();
+      await signOut(auth);
+      // Forzar recarga de la página después de cerrar sesión
+      window.location.reload();
+    } catch (error) {
+      console.error("Error al cerrar sesión:", error);
+      alert("Ocurrió un error al cerrar sesión");
+    }
+  };
 
 // Mostrar UI inmediatamente según el estado en sessionStorage
 const cachedUser = sessionStorage.getItem('firebaseUser');

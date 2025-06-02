@@ -195,22 +195,86 @@ document.querySelectorAll(".btn-reenviar-verificacion").forEach((boton) => {
 });
 
 // Toast de notificación
-function mostrarToast(mensaje, tipo = "success") {
-    const toastElement = document.getElementById("toastNotificacion");
-    const toastMensaje = document.getElementById("toastMensaje");
+function mostrarToast(message, type) {
+  // Crear un nuevo div para el toast
+  const toast = document.createElement("div");
+  toast.classList.add(
+    "toast",
+    "align-items-center",
+    "border-0",
+    "fade",
+    `bg-${type}`
+  );
 
-    if (!toastElement || !toastMensaje) return;
+  // Cambiar el color del texto según tipo
+  if (type === "warning") {
+    toast.classList.add("text-dark"); // Texto negro para warning
+  } else {
+    toast.classList.add("text-white"); // Blanco para success, danger
+  }
 
-    toastMensaje.textContent = mensaje;
+  toast.setAttribute("role", "alert");
+  toast.setAttribute("aria-live", "assertive");
+  toast.setAttribute("aria-atomic", "true");
 
-    toastElement.classList.remove(
-        "bg-success",
-        "bg-danger",
-        "bg-warning",
-        "bg-info"
-    );
-    toastElement.classList.add("bg-" + tipo);
+  // Crear la cabecera del toast
+  const toastHeader = document.createElement("div");
+  toastHeader.classList.add("toast-header");
 
-    const toast = new bootstrap.Toast(toastElement);
-    toast.show();
+  // Crear la imagen
+  const currentPath = window.location.pathname;
+  const isInPagesFolder = currentPath.includes("/pages/");
+  const img = document.createElement("img");
+
+  img.src = isInPagesFolder
+    ? "../assets/icon/icon.png"
+    : "assets/icon/icon.png";
+  img.classList.add("rounded", "me-2");
+  img.alt = "Icono";
+
+  // Crear el texto de la cabecera
+  const strong = document.createElement("strong");
+  strong.classList.add("me-auto");
+  strong.textContent = "Notificación";
+
+  // Crear la hora
+  const small = document.createElement("small");
+  small.textContent = "Hace un momento";
+
+  // Crear el botón de cierre
+  const closeButton = document.createElement("button");
+  closeButton.type = "button";
+  closeButton.classList.add("btn-close");
+  closeButton.setAttribute("data-bs-dismiss", "toast");
+  closeButton.setAttribute("aria-label", "Cerrar");
+
+  // Añadir los elementos a la cabecera
+  toastHeader.appendChild(img);
+  toastHeader.appendChild(strong);
+  toastHeader.appendChild(small);
+  toastHeader.appendChild(closeButton);
+
+  // Crear el cuerpo del toast
+  const toastBody = document.createElement("div");
+  toastBody.classList.add("toast-body");
+  toastBody.textContent = message;
+
+  // Añadir la cabecera y el cuerpo al toast
+  toast.appendChild(toastHeader);
+  toast.appendChild(toastBody);
+
+  // Añadir el toast al contenedor de toasts
+  const toastContainer = document.getElementById("toast-container");
+  if (toastContainer) {
+    toastContainer.appendChild(toast);
+    const bootstrapToast = new bootstrap.Toast(toast);
+    bootstrapToast.show();
+
+    // Eliminar el toast después de un tiempo
+    setTimeout(() => {
+      toast.remove();
+    }, 3000); // El toast se elimina después de 5 segundos
+  } else {
+    console.error("El contenedor de toasts no existe en el DOM");
+  }
 }
