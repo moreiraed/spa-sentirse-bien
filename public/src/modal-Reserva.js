@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", function () {
+function initializeReservaModalFeatures() {
   // Elementos del DOM
   const modal = new bootstrap.Modal(document.getElementById("reservaModal"));
   const steps = document.querySelectorAll(".reserva-step");
@@ -277,4 +277,4 @@ document.addEventListener("DOMContentLoaded", function () {
 
     updateButtons();
   }
-});
+};

@@ -178,7 +178,7 @@ async function cargarServicios() {
                     <small class="servicio-texto"><i class="bi bi-clock"></i> ${servicio.duration} min</small>
                     <small class="servicio-texto fw-bold">${precioFormateado}</small>
                   </div>
-                  <a href="pages/servicios.html" class="btn btn-success w-100 py-2 rounded-pill d-flex align-items-center justify-content-center">
+                  <a class="btn btn-success w-100 py-2 rounded-pill d-flex align-items-center justify-content-center" data-bs-toggle="modal" data-bs-target="#reservaModal">
                     <i class="bi bi-calendar-check me-2"></i>Reservar turno
                   </a>
                 </div>

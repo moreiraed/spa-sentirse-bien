@@ -117,6 +117,9 @@
     <div id="modals-container"></div>
     <!-- Contenedor donde se cargarán los modales -->
 
+    <!-- Contenedor donde se cargara el modal-Reserva -->
+    <div id="modal-reserva-container"></div>
+
     <div id="services" class="container py-5 especial">
 
         <!-- Servicios Individuales -->
@@ -152,9 +155,8 @@
                                         <small class="servicio-texto"><i class="bi bi-clock"></i> 60 min</small>
                                         <small class="servicio-texto fw-bold">$4,500</small>
                                     </div>
-                                    <a href="pages/servicios.html"
-                                        class="btn btn-success w-100 py-2 rounded-pill d-flex align-items-center justify-content-center" data-bs-toggle="modal"
-                                        data-bs-target="#reservationModal">
+                                    <a class="btn btn-success w-100 py-2 rounded-pill d-flex align-items-center justify-content-center" data-bs-toggle="modal"
+                                        data-bs-target="#reservaModal">
                                         <i class="bi bi-calendar-check me-2"></i>Reservar turno
                                     </a>
                                 </div>
@@ -681,11 +683,30 @@
                 });
             });
         });
+
+        document.addEventListener("DOMContentLoaded", () => {
+                fetch("modal-Reserva.html")
+                    .then((response) => response.text())
+                    .then((html) => {
+                        document.getElementById("modal-reserva-container").innerHTML = html;
+
+                        // Cargar manualmente el JS del modal
+                        const script = document.createElement("script");
+                        script.src = "../src/modal-Reserva.js";
+                        script.onload = () => {
+                            console.log("Script modal-Reserva.js cargado correctamente");
+                            if (typeof initializeReservaModalFeatures === "function") {
+                                initializeReservaModalFeatures();
+                            }
+                        };
+                        document.body.appendChild(script);
+                    })
+                    .catch((error) => console.error("Error al cargar modal de reserva:", error));
+            });
     </script>
 
     <script src="../src/CargarModal.js"></script>
     <script type="module" src="../src/chatBot.js"></script>
-    <script src="../src/script.js"></script>
     <script type="module" src="../src/Cargar-Mostrar-Servicios.js"></script>
     <script type="module" src="../src/Login.js"></script>
     <script type="module" src="../src/Register.js"></script>
