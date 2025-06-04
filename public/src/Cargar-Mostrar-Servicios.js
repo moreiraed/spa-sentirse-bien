@@ -25,12 +25,58 @@ onAuthStateChanged(auth, async (user) => {
       isAdmin = userDoc.data().rol === 'admin';
     }
   }
-  cargarServicios();
+  initFiltersAndServices();
 });
 
+// Función de inicialización
+function initFiltersAndServices() {
+  const defaultCategory = 'todos'; // Categoría por defecto
+  
+  // Marcar el botón "Todos" como activo inicialmente
+  document.querySelector(`.filter-btn[data-category="${defaultCategory}"]`).classList.add('active');
+  
+  // Cargar servicios sin filtro inicial (todos)
+  cargarServicios();
+  
+  // Configurar los event listeners de los filtros
+  setupFilterButtons();
+}
+
+// Función para configurar los botones de filtro
+function setupFilterButtons() {
+  const filterButtons = document.querySelectorAll('.filter-btn');
+  
+  filterButtons.forEach(button => {
+    button.addEventListener('click', function() {
+      // Remover clase 'active' de todos los botones
+      filterButtons.forEach(btn => btn.classList.remove('active'));
+      
+      // Agregar clase 'active' al botón clickeado
+      this.classList.add('active');
+      
+      // Obtener la categoría seleccionada
+      const category = this.dataset.category;
+      
+      // Cargar servicios filtrados (null para 'todos')
+      cargarServicios(category === 'todos' ? null : category);
+    });
+  });
+}
+
+
 // Función para mostrar formulario de agregar servicio
-function mostrarFormularioAgregar() {
-  // Crear modal para agregar nuevo servicio
+async function mostrarFormularioAgregar() {
+  // Cargar categorías desde Firestore
+  const categoriesSnapshot = await getDocs(collection(db, "categories"));
+  const categories = categoriesSnapshot.docs.map((doc) => ({
+    id: doc.id,...doc.data(),
+  }));
+
+  // Crear opciones del select
+  const categoryOptions = categories
+    .map((cat) => `<option value="${cat.id}">${cat.name}</option>`)
+    .join("");
+
   const modalHTML = `
     <div class="modal fade" id="addServiceModal" tabindex="-1" aria-hidden="true">
       <div class="modal-dialog modal-lg">
@@ -47,11 +93,25 @@ function mostrarFormularioAgregar() {
                   <input type="text" class="form-control" name="title" required>
                 </div>
                 <div class="col-md-6 mb-3">
+                  <label class="form-label">Categoría*</label>
+                  <select class="form-select" name="category" required>
+                    <option value="">Seleccione una categoría</option>
+                    ${categoryOptions}
+                  </select>
+                </div>
+              </div>
+              
+              <div class="row">
+                <div class="col-md-6 mb-3">
                   <label class="form-label">Precio*</label>
                   <div class="input-group">
                     <span class="input-group-text">$</span>
                     <input type="number" class="form-control" name="price" step="100" required>
                   </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label class="form-label">Duración (minutos)*</label>
+                  <input type="number" class="form-control" name="duration" required>
                 </div>
               </div>
               
@@ -60,20 +120,14 @@ function mostrarFormularioAgregar() {
                 <textarea class="form-control" name="description" rows="3" required></textarea>
               </div>
               
-              <div class="row">
-                <div class="col-md-6 mb-3">
-                  <label class="form-label">Duración (minutos)*</label>
-                  <input type="number" class="form-control" name="duration" required>
-                </div>
-                <div class="col-md-6 mb-3">
-                  <label class="form-label">URL de la Imagen*</label>
-                  <input type="url" class="form-control" name="imageUrl" required>
-                </div>
+              <div class="mb-3">
+                <label class="form-label">URL de la Imagen*</label>
+                <input type="url" class="form-control" name="imageUrl" required>
               </div>
               
               <div class="text-center mt-4">
                 <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">Cancelar</button>
-                <button type="submit" class="btn btn-primary">Agregar Servicio</button>
+                <button type="submit" class="btn btn-primary">Guardar Servicio</button>
               </div>
             </form>
           </div>
@@ -86,168 +140,199 @@ function mostrarFormularioAgregar() {
   document.body.insertAdjacentHTML("beforeend", modalHTML);
 
   // Mostrar modal
-  const modal = new bootstrap.Modal(document.getElementById('addServiceModal'));
+  const modal = new bootstrap.Modal(document.getElementById("addServiceModal"));
   modal.show();
 
   // Manejar envío del formulario
-  document.getElementById('addServiceForm').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    
-    const formData = new FormData(e.target);
-    const newService = {
-      title: formData.get('title'),
-      description: formData.get('description'),
-      duration: formData.get('duration'),
-      price: parseFloat(formData.get('price')),
-      imageUrl: formData.get('imageUrl'),
-      active: true, // Por defecto activo
-      createdAt: new Date(),
-      updatedAt: new Date()
-    };
+  document
+    .getElementById("addServiceForm")
+    .addEventListener("submit", async (e) => {
+      e.preventDefault();
 
-    try {
-      // Importar addDoc si no está ya importado
-      const { addDoc } = await import("https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js");
-      
-      await addDoc(collection(db, "services"), newService);
-      modal.hide();
-      cargarServicios();
-      
-      // Mostrar notificación de éxito
-      alert("Servicio agregado correctamente");
-    } catch (error) {
-      console.error("Error agregando servicio:", error);
-      alert("Error al agregar el servicio");
-    }
-  });
+      const formData = new FormData(e.target);
+      const newService = {
+        title: formData.get("title"),
+        category: formData.get("category"),
+        description: formData.get("description"),
+        duration: formData.get("duration"),
+        price: parseFloat(formData.get("price")),
+        imageUrl: formData.get("imageUrl"),
+        active: true, // Por defecto activo
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      };
+
+      try {
+        // Importar addDoc si no está ya importado
+        const { addDoc } = await import(
+          "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js"
+        );
+
+        await addDoc(collection(db, "services"), newService);
+        bootstrap.Modal.getInstance(
+          document.getElementById("addServiceModal")
+        ).hide();
+        //modal.hide();
+        cargarServicios();
+
+        // Mostrar notificación de éxito
+        alert("Servicio agregado correctamente");
+      } catch (error) {
+        console.error("Error agregando servicio:", error);
+        alert("Error al agregar el servicio");
+      }
+    });
 
   // Limpiar modal cuando se cierre
-  document.getElementById('addServiceModal').addEventListener('hidden.bs.modal', () => {
-    document.getElementById('addServiceModal').remove();
-  });
+  document
+    .getElementById("addServiceModal")
+    .addEventListener("hidden.bs.modal", () => {
+      document.getElementById("addServiceModal").remove();
+    });
 }
 
-async function cargarServicios() {
+// Función principal para cargar los servicios (puede filtrar por categoría)
+async function cargarServicios(category = null) {
   const serviciosContainer = document.getElementById("servicios-container");
-  serviciosContainer.innerHTML = ""; // Limpiar contenedor
+  serviciosContainer.innerHTML = `
+  <div class="col-12 text-center my-5">
+    <div class="spinner-grow" role="status">
+      <span class="visually-hidden">Cargando...</span>
+    </div>
+    <p class="mt-2 custom-loader-text">Cargando servicios...</p>
+  </div>
+  `;
 
   try {
-    const q = query(collection(db, "services"), where("active", "==", "true"));
-    const querySnapshot = await getDocs(q);
-
-    // Mostrar mensaje si no hay servicios (sin return para continuar ejecución)
-    if (querySnapshot.empty) {
-      serviciosContainer.innerHTML = `<div class="col-12"><p class="text-center py-5">No hay servicios disponibles.</p></div>`;
+    let q;
+    if (category) {
+      q = query(
+        collection(db, "services"),
+        where("active", "==", true),
+        where("category", "==", category)
+      );
     } else {
-      querySnapshot.forEach((doc) => {
-        const servicio = doc.data();
-        const precioFormateado = new Intl.NumberFormat("es-AR", {
-          style: "currency",
-          currency: "ARS",
-          minimumFractionDigits: 0,
-        })
-          .format(servicio.price)
-          .replace("ARS", "$");
-
-        // Botones de admin (solo si isAdmin es true)
-        const adminButtons = isAdmin
-          ? `
-          <div class="admin-controls">
-            <button class="btn btn-sm btn-danger position-absolute top-0 start-0 m-2 delete-btn" data-id="${doc.id}" title="Eliminar servicio">
-              <i class="bi bi-x-lg"></i>
-            </button>
-            <button class="btn btn-sm btn-warning position-absolute top-0 end-0 m-2 edit-btn" data-id="${doc.id}" title="Editar servicio">
-              <i class="bi bi-pencil-fill"></i>
-            </button>
-          </div>
-        `
-          : "";
-
-        const servicioHTML = `
-          <div class="col-md-3 col-sm-6 col-12" id="service-${doc.id}">
-            <div class="card h-100 border-0 overflow-hidden transition-all hover-scale position-relative">
-              ${adminButtons}
-              <div class="overflow-hidden">
-                <img src="${servicio.imageUrl}" class="card-img-top transition-all" alt="${servicio.title}">
-              </div>
-              <div class="card-body d-flex flex-column servicio-fondo">
-                <h5 class="card-title mb-3 fw-bold servicio-titulo">${servicio.title}</h5>
-                <p class="card-text servicio-texto">${servicio.description}</p>
-                <div class="mt-auto pt-3 border-top">
-                  <div class="d-flex justify-content-between align-items-center mb-2">
-                    <small class="servicio-texto"><i class="bi bi-clock"></i> ${servicio.duration} min</small>
-                    <small class="servicio-texto fw-bold">${precioFormateado}</small>
-                  </div>
-                  <a class="btn btn-success w-100 py-2 rounded-pill d-flex align-items-center justify-content-center" data-bs-toggle="modal" data-bs-target="#reservaModal">
-                    <i class="bi bi-calendar-check me-2"></i>Reservar turno
-                  </a>
-                </div>
-              </div>
-            </div>
-          </div>
-        `;
-        serviciosContainer.innerHTML += servicioHTML;
-      });
+      q = query(collection(db, "services"), where("active", "==", true));
     }
 
-    // AGREGAR TARJETA DE "AÑADIR SERVICIO" SI ES ADMIN (SIEMPRE)
+    const querySnapshot = await getDocs(q);
+    renderServices(querySnapshot);
+    
+  } catch (error) {
+    console.error("Error al cargar servicios:", error);
+    serviciosContainer.innerHTML = `
+      <div class="col-12">
+        <p class="text-danger">Error al cargar los servicios. Por favor intenta nuevamente.</p>
+      </div>
+      ${isAdmin ? renderAddServiceCardHTML() : ""}
+    `;
     if (isAdmin) {
-      const addCardHTML = `
-        <div class="col-md-3 col-sm-6 col-12">
-          <div class="card h-100 border-2 border-dashed add-service-card">
-            <div class="card-body d-flex flex-column justify-content-center align-items-center text-center p-4">
-              <div class="add-service-content">
-                <i class="bi bi-plus-lg fs-1 text-muted mb-3"></i>
-                <h5 class="text-muted mb-0">Agregar servicio</h5>
+      document.querySelector('.add-service-card')?.addEventListener("click", mostrarFormularioAgregar);
+    }
+  }
+}
+
+function renderServices(querySnapshot) {
+  const serviciosContainer = document.getElementById("servicios-container");
+  serviciosContainer.innerHTML = "";
+  serviciosContainer.style.opacity = "0"; // Inicia invisible
+
+  if (querySnapshot.empty) {
+    serviciosContainer.innerHTML = `
+      <div class="col-12">
+        <p class="text-center py-5">No hay servicios disponibles en esta categoría.</p>
+      </div>
+    `;
+    serviciosContainer.style.opacity = "1";
+    return;
+  } else {
+    querySnapshot.forEach((doc) => {
+      const servicio = doc.data();
+      const precioFormateado = new Intl.NumberFormat("es-AR", {
+        style: "currency",
+        currency: "ARS",
+        minimumFractionDigits: 0,
+      })
+        .format(servicio.price)
+        .replace("ARS", "$");
+
+      const adminButtons = isAdmin
+        ? `
+        <div class="admin-controls">
+          <button class="btn btn-sm btn-danger position-absolute top-0 start-0 m-2 delete-btn" data-id="${doc.id}" title="Eliminar servicio">
+            <i class="bi bi-x-lg"></i>
+          </button>
+          <button class="btn btn-sm btn-warning position-absolute top-0 end-0 m-2 edit-btn" data-id="${doc.id}" title="Editar servicio">
+            <i class="bi bi-pencil-fill"></i>
+          </button>
+        </div>
+      `
+        : "";
+
+      serviciosContainer.innerHTML += `
+        <div class="col-md-3 col-sm-6 col-12" id="service-${doc.id}">
+          <div class="card h-100 border-0 overflow-hidden transition-all hover-scale position-relative">
+            ${adminButtons}
+            <div class="overflow-hidden">
+              <img src="${servicio.imageUrl}" class="card-img-top transition-all" alt="${servicio.title}">
+            </div>
+            <div class="card-body d-flex flex-column servicio-fondo">
+              <h5 class="card-title mb-3 fw-bold servicio-titulo">${servicio.title}</h5>
+              <p class="card-text servicio-texto">${servicio.description}</p>
+              <div class="mt-auto pt-3 border-top">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                  <small class="servicio-texto"><i class="bi bi-clock"></i> <span class="servicio-duracion">${servicio.duration}</span> min</small>
+                  <small class="servicio-texto fw-bold">${precioFormateado}</small>
+                </div>
+                <a class="btn btn-success w-100 py-2 rounded-pill d-flex align-items-center justify-content-center" data-bs-toggle="modal" data-bs-target="#reservaModal">
+                  <i class="bi bi-calendar-check me-2"></i>Reservar turno
+                </a>
               </div>
             </div>
           </div>
         </div>
       `;
-      serviciosContainer.innerHTML += addCardHTML;
+    });
+  }
 
-      // Agregar event listener
-      const addCard = serviciosContainer
-        .querySelector(".add-service-card")
-        .closest(".col-md-3");
-      addCard.addEventListener("click", mostrarFormularioAgregar);
-      addCard.style.cursor = "pointer";
-    }
+  // Agregar tarjeta "Añadir servicio"
+  if (isAdmin) {
+    serviciosContainer.innerHTML += renderAddServiceCardHTML();
+    document
+      .querySelector(".add-service-card")
+      ?.addEventListener("click", mostrarFormularioAgregar);
+  }
 
-    // Agregar event listeners para los botones de admin
-    if (isAdmin) {
-      document.querySelectorAll(".delete-btn").forEach((btn) => {
-        btn.addEventListener("click", eliminarServicio);
-      });
+  // Listeners para botones de admin
+  if (isAdmin) {
+    document
+      .querySelectorAll(".delete-btn")
+      .forEach((btn) => btn.addEventListener("click", eliminarServicio));
+    document
+      .querySelectorAll(".edit-btn")
+      .forEach((btn) => btn.addEventListener("click", iniciarEdicion));
+  }
 
-      document.querySelectorAll(".edit-btn").forEach((btn) => {
-        btn.addEventListener("click", iniciarEdicion);
-      });
-    }
-  } catch (error) {
-    console.error("Error:", error);
-    serviciosContainer.innerHTML = `
-      <div class="col-12">
-        <p class="text-danger">Error al cargar servicios.</p>
-      </div>
-      ${
-        isAdmin
-          ? `
-        <div class="col-md-3 col-sm-6 col-12">
-          <div class="card h-100 border-2 border-dashed add-service-card">
-            <div class="card-body d-flex flex-column justify-content-center align-items-center text-center p-4">
-              <div class="add-service-content">
-                <i class="bi bi-plus-lg fs-1 text-muted mb-3"></i>
-                <h5 class="text-muted mb-0">Agregar servicio</h5>
-              </div>
-            </div>
+  // Transición suave después de renderizar
+  setTimeout(() => {
+    serviciosContainer.style.transition = "opacity 0.5s ease";
+    serviciosContainer.style.opacity = "1";
+  }, 50);
+}
+
+function renderAddServiceCardHTML() {
+  return `
+    <div class="col-md-3 col-sm-6 col-12">
+      <div class="card h-100 border-2 border-dashed add-service-card" style="cursor:pointer;">
+        <div class="card-body d-flex flex-column justify-content-center align-items-center text-center p-4">
+          <div class="add-service-content">
+            <i class="bi bi-plus-lg fs-1 text-muted mb-3"></i>
+            <h5 class="text-muted mb-0">Agregar servicio</h5>
           </div>
         </div>
-      `
-          : ""
-      }
-    `;
-  }
+      </div>
+    </div>
+  `;
 }
 
 // Función para eliminar servicio
@@ -277,18 +362,23 @@ function iniciarEdicion(e) {
 
   // Obtener valores actuales con selectores más robustos
   const currentValues = {
-    title: card.querySelector(".card-title").textContent,
-    description: card.querySelector(".card-text").textContent,
-    duration: card
-      .querySelector(".servicio-texto:nth-of-type(1)")
-      .textContent.replace(" min", "")
-      .trim(),
-    price: card
-      .querySelector(".servicio-texto.fw-bold")
-      .textContent.replace("$", "")
-      .replace(",", ""),
-    imageUrl: card.querySelector("img").src,
+    title: card.querySelector(".card-title")?.textContent || "",
+    description: card.querySelector(".card-text")?.textContent || "",
+    duration:
+      card
+        .querySelector(".servicio-duracion")
+        ?.textContent.replace(" min", "")
+        .trim() || "0", // Asegúrate de que este selector esté apuntando al valor correcto
+    price:
+      card
+        .querySelector(".servicio-texto.fw-bold")
+        ?.textContent.replace("$", "")
+        .replace(",", "")
+        .replace(" ", "") || "0", // Limpiar caracteres extraños
+    imageUrl: card.querySelector("img")?.src || "",
   };
+
+  console.log("Valores actuales:", currentValues);
 
   // Crear modal de edición
   const modalHTML = `
@@ -360,7 +450,7 @@ function iniciarEdicion(e) {
         title: formData.get("title"),
         description: formData.get("description"),
         duration: formData.get("duration"),
-        price: parseFloat(formData.get("price")),
+        price: parseFloat(formData.get("price")), // Asegurarse de convertir correctamente el precio
         imageUrl: formData.get("imageUrl"),
         updatedAt: new Date(),
       };
@@ -385,4 +475,3 @@ function iniciarEdicion(e) {
       document.getElementById(`editModal-${id}`).remove();
     });
 }
-
