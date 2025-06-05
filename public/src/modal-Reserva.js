@@ -1,4 +1,39 @@
+let servicioReservaActual = null;
+
 function initializeReservaModalFeatures() {
+  // Esta función se llama cuando el modal se ha cargado completamente
+  console.log("Inicializando características del modal de reserva");
+
+  // Configurar el modal para recibir datos del servicio
+  window.abrirModalReserva = function (servicioData) {
+    servicioReservaActual = servicioData;
+    actualizarVistaReserva();
+
+    const reservaModal = new bootstrap.Modal(
+      document.getElementById("reservaModal")
+    );
+    reservaModal.show();
+  };
+
+  // Función para actualizar la vista con los datos del servicio
+  function actualizarVistaReserva() {
+    if (!servicioReservaActual) return;
+
+    // Actualizar título del modal
+    const tituloModal = document.getElementById("reservaModalLabel");
+    if (tituloModal) {
+      tituloModal.textContent = `Reserva para ${servicioReservaActual.title}`;
+    }
+
+    // Actualizar resumen de reserva
+    const resumenServicio = document.getElementById("summary-servicio");
+    if (resumenServicio) {
+      resumenServicio.textContent = servicioReservaActual.title;
+    }
+
+    // Puedes agregar más campos aquí según necesites
+  }
+
   // Elementos del DOM
   const modal = new bootstrap.Modal(document.getElementById("reservaModal"));
   const steps = document.querySelectorAll(".reserva-step");
@@ -277,4 +312,4 @@ function initializeReservaModalFeatures() {
 
     updateButtons();
   }
-};
+}

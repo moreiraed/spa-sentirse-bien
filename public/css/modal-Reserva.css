@@ -1,50 +1,42 @@
 /* Estilos para el botón de reserva */
 .btn-spa-primary {
-    background-color: #9d8189;
-    border-color: #9d8189;
+    background-color: #8C6E5F;
+    border-color: #8C6E5F;
     color: white;
 }
 
 .btn-spa-primary:hover {
-    background-color: #7d636a;
-    border-color: #7d636a;
-}
-
-.btn-outline-spa-primary {
-    color: #9d8189;
-    border-color: #9d8189;
-}
-
-.btn-outline-spa-primary:hover {
-    background-color: #9d8189;
+    background-color: #6F5448;
+    border-color: #6F5448;
     color: white;
 }
 
-.btn-spa-secondary {
-    background-color: #d8e2dc;
-    border-color: #d8e2dc;
-    color: #333;
+.btn-outline-spa-primary {
+    border-color: #8C6E5F;
+    color: #8C6E5F;
 }
 
-.btn-spa-secondary:hover {
-    background-color: #c8d6cb;
-    border-color: #c8d6cb;
+.btn-outline-spa-primary:hover {
+    background-color: #8C6E5F;
+    border-color: #8C6E5F;
+    color: white;
 }
 
 .btn-spa-success {
-    background-color: #a5a58d;
-    border-color: #a5a58d;
+    background-color: #8C6E5F;
+    border-color: #8C6E5F;
     color: white;
 }
 
 .btn-spa-success:hover {
-    background-color: #8a8a73;
-    border-color: #8a8a73;
+    background-color: #6F5448;
+    border-color: #6F5448;
+    color: white;
 }
 
 /* Columna decorativa del modal */
 .spa-decorative-column {
-    background: linear-gradient(135deg, #f3e9e9 0%, #e3d3d3 100%);
+    background: linear-gradient(135deg, #C1A18F 0%, #8C6E5F 100%);
     padding: 2rem;
     display: flex;
     align-items: center;
@@ -57,7 +49,7 @@
 
 .spa-brand {
     font-family: 'Playfair Display', serif;
-    color: #9d8189;
+    color: #F5F5F5;
     font-weight: 600;
     text-align: center;
     margin-bottom: 2rem;
@@ -88,8 +80,8 @@
     justify-content: center;
     width: 28px;
     height: 28px;
-    background-color: #9d8189;
-    color: white;
+    background-color: #F5F5F5;
+    color: #333;
     border-radius: 50%;
     margin-right: 1rem;
     font-weight: 500;
@@ -97,7 +89,7 @@
 
 .spa-step-text {
     font-weight: 500;
-    color: #333;
+    color: white;
 }
 
 .spa-step:not(:last-child):after {
@@ -107,7 +99,7 @@
     top: 38px;
     height: calc(100% - 28px);
     width: 2px;
-    background-color: #9d8189;
+    background-color: #F5F5F5;
     opacity: 0.3;
 }
 
@@ -129,7 +121,7 @@
 }
 
 .profesional-card.selected {
-    border: 2px solid #9d8189;
+    border: 2px solid #8C6E5F;
 }
 
 .profesional-card .card-img-top {
@@ -163,7 +155,7 @@
     grid-template-columns: repeat(7, 1fr);
     text-align: center;
     font-weight: 500;
-    color: #9d8189;
+    color: #8C6E5F;
     margin-bottom: 0.5rem;
 }
 
@@ -182,11 +174,12 @@
 }
 
 .calendar-day:hover {
-    background-color: #f3e9e9;
+    background-color: #B29A86;
+    color: white;
 }
 
 .calendar-day.selected {
-    background-color: #9d8189;
+    background-color: #8C6E5F;
     color: white;
 }
 
@@ -208,17 +201,20 @@
 }
 
 .btn-time-slot:hover {
-    background-color: #f3e9e9;
+    background-color: #B29A86;
+    color: white;
 }
 
 .btn-time-slot.selected {
-    background-color: #9d8189 !important;
+    background-color: #8C6E5F !important;
     color: white !important;
-    border-color: #9d8189 !important;
+    border-color: #8C6E5F !important;
 }
 
 .btn-time-slot.selected:hover {
-    background-color: #8a737a !important;
+    background-color: #6F5448 !important;
+    border-color: #6F5448 !important;
+    color: white !important;
 }
 
 .time-section {
@@ -226,7 +222,7 @@
 }
 
 .time-section-title {
-    color: #9d8189;
+    color: #8C6E5F;
     font-size: 1rem;
     margin-bottom: 0.8rem;
     display: flex;

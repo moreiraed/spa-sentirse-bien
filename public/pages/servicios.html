@@ -308,15 +308,28 @@
                     .then((html) => {
                         document.getElementById("modal-reserva-container").innerHTML = html;
 
-                        // Cargar manualmente el JS del modal
+                        // Cargar el JS del modal
                         const script = document.createElement("script");
                         script.src = "../src/modal-Reserva.js";
+
                         script.onload = () => {
                             console.log("Script modal-Reserva.js cargado correctamente");
+
+                            // Verificar si la función de inicialización existe
                             if (typeof initializeReservaModalFeatures === "function") {
                                 initializeReservaModalFeatures();
+
+                                // Opcional: emitir evento cuando el modal está listo
+                                document.dispatchEvent(new Event('modalReservaReady'));
+                            } else {
+                                console.error("La función initializeReservaModalFeatures no está definida");
                             }
                         };
+
+                        script.onerror = () => {
+                            console.error("Error al cargar modal-Reserva.js");
+                        };
+
                         document.body.appendChild(script);
                     })
                     .catch((error) => console.error("Error al cargar modal de reserva:", error));

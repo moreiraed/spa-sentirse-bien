@@ -248,50 +248,9 @@ function renderServices(querySnapshot) {
   } else {
     querySnapshot.forEach((doc) => {
       const servicio = doc.data();
-      const precioFormateado = new Intl.NumberFormat("es-AR", {
-        style: "currency",
-        currency: "ARS",
-        minimumFractionDigits: 0,
-      })
-        .format(servicio.price)
-        .replace("ARS", "$");
 
-      const adminButtons = isAdmin
-        ? `
-        <div class="admin-controls">
-          <button class="btn btn-sm btn-danger position-absolute top-0 start-0 m-2 delete-btn" data-id="${doc.id}" title="Eliminar servicio">
-            <i class="bi bi-x-lg"></i>
-          </button>
-          <button class="btn btn-sm btn-warning position-absolute top-0 end-0 m-2 edit-btn" data-id="${doc.id}" title="Editar servicio">
-            <i class="bi bi-pencil-fill"></i>
-          </button>
-        </div>
-      `
-        : "";
-
-      serviciosContainer.innerHTML += `
-        <div class="col-md-3 col-sm-6 col-12" id="service-${doc.id}">
-          <div class="card h-100 border-0 overflow-hidden transition-all hover-scale position-relative">
-            ${adminButtons}
-            <div class="overflow-hidden">
-              <img src="${servicio.imageUrl}" class="card-img-top transition-all" alt="${servicio.title}">
-            </div>
-            <div class="card-body d-flex flex-column servicio-fondo">
-              <h5 class="card-title mb-3 fw-bold servicio-titulo">${servicio.title}</h5>
-              <p class="card-text servicio-texto">${servicio.description}</p>
-              <div class="mt-auto pt-3 border-top">
-                <div class="d-flex justify-content-between align-items-center mb-2">
-                  <small class="servicio-texto"><i class="bi bi-clock"></i> <span class="servicio-duracion">${servicio.duration}</span> min</small>
-                  <small class="servicio-texto fw-bold">${precioFormateado}</small>
-                </div>
-                <a class="btn btn-success w-100 py-2 rounded-pill d-flex align-items-center justify-content-center" data-bs-toggle="modal" data-bs-target="#reservaModal">
-                  <i class="bi bi-calendar-check me-2"></i>Reservar turno
-                </a>
-              </div>
-            </div>
-          </div>
-        </div>
-      `;
+      // Crear la tarjeta de servicio usando la función crearCardServicio
+      crearCardServicio(servicio, doc.id);
     });
   }
 
@@ -319,6 +278,98 @@ function renderServices(querySnapshot) {
     serviciosContainer.style.opacity = "1";
   }, 50);
 }
+
+function crearCardServicio(servicio, id) {
+  const serviciosContainer = document.getElementById("servicios-container");
+
+  // Crear la tarjeta
+  const card = document.createElement("div");
+  card.classList.add("col-md-3", "col-sm-6", "col-12");
+  card.id = `service-${id}`;
+
+  // Crear el HTML de la tarjeta
+  card.innerHTML = `
+    <div class="card h-100 border-0 overflow-hidden transition-all hover-scale position-relative">
+      ${
+        isAdmin
+          ? `
+        <div class="admin-controls">
+          <button class="btn btn-sm btn-danger position-absolute top-0 start-0 m-2 delete-btn" data-id="${id}" title="Eliminar servicio">
+            <i class="bi bi-x-lg"></i>
+          </button>
+          <button class="btn btn-sm btn-warning position-absolute top-0 end-0 m-2 edit-btn" data-id="${id}" title="Editar servicio">
+            <i class="bi bi-pencil-fill"></i>
+          </button>
+        </div>
+      `
+          : ""
+      }
+      <div class="overflow-hidden">
+        <img src="${
+          servicio.imageUrl
+        }" class="card-img-top transition-all" alt="${servicio.title}">
+      </div>
+      <div class="card-body d-flex flex-column servicio-fondo">
+        <h5 class="card-title mb-3 fw-bold servicio-titulo">${
+          servicio.title
+        }</h5>
+        <p class="card-text servicio-texto">${servicio.description}</p>
+        <div class="mt-auto pt-3 border-top">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <small class="servicio-texto"><i class="bi bi-clock"></i> <span class="servicio-duracion">${
+              servicio.duration
+            }</span> min</small>
+            <small class="servicio-texto fw-bold">${new Intl.NumberFormat(
+              "es-AR",
+              {
+                style: "currency",
+                currency: "ARS",
+                minimumFractionDigits: 0,
+              }
+            )
+              .format(servicio.price)
+              .replace("ARS", "$")}</small>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+
+  // Crear el botón de reserva
+  const botonReserva = document.createElement("a");
+  botonReserva.href = "#";
+  botonReserva.className =
+    "btn btn-success w-100 py-2 rounded-pill d-flex align-items-center justify-content-center";
+  botonReserva.innerHTML =
+    '<i class="bi bi-calendar-check me-2"></i>Reservar turno';
+
+    botonReserva.addEventListener("click", async (e) => {
+      e.preventDefault();
+
+      // Verificar si la función está disponible (modal cargado)
+      if (typeof abrirModalReserva === "function") {
+        abrirModalReserva({
+          id: id,
+          title: servicio.title,
+          duration: servicio.duration,
+          price: servicio.price,
+          // ... otros campos que necesites
+        });
+      } else {
+        console.error("El modal de reserva no está cargado correctamente");
+        // Opcional: cargar el modal aquí si falla
+      }
+    });
+
+  // Agregar el botón a la tarjeta
+  card
+    .querySelector(".card-body .mt-auto.pt-3.border-top")
+    .appendChild(botonReserva);
+
+  // Agregar la tarjeta al contenedor
+  serviciosContainer.appendChild(card);
+}
+
 
 function renderAddServiceCardHTML() {
   return `
