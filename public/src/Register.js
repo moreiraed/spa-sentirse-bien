@@ -56,6 +56,7 @@ window.register = async function (event) {
             nombre: "",
             apellido: "",
             dni: "",
+            rol: "usuario"
         });
         await sendEmailVerification(user);
 

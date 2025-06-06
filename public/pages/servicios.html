@@ -302,39 +302,30 @@
     </footer>
 
     <script>
-        document.addEventListener("DOMContentLoaded", () => {
-                fetch("modal-Reserva.html")
-                    .then((response) => response.text())
-                    .then((html) => {
-                        document.getElementById("modal-reserva-container").innerHTML = html;
+        document.addEventListener("DOMContentLoaded", async () => {
+            try {
+                const response = await fetch("modal-Reserva.html");
+                const html = await response.text();
+                document.getElementById("modal-reserva-container").innerHTML = html;
 
-                        // Cargar el JS del modal
-                        const script = document.createElement("script");
-                        script.src = "../src/modal-Reserva.js";
+                // Esperar a que el DOM se actualice
+                await new Promise(resolve => setTimeout(resolve, 100));
 
-                        script.onload = () => {
-                            console.log("Script modal-Reserva.js cargado correctamente");
-
-                            // Verificar si la función de inicialización existe
-                            if (typeof initializeReservaModalFeatures === "function") {
-                                initializeReservaModalFeatures();
-
-                                // Opcional: emitir evento cuando el modal está listo
-                                document.dispatchEvent(new Event('modalReservaReady'));
-                            } else {
-                                console.error("La función initializeReservaModalFeatures no está definida");
-                            }
-                        };
-
-                        script.onerror = () => {
-                            console.error("Error al cargar modal-Reserva.js");
-                        };
-
-                        document.body.appendChild(script);
-                    })
-                    .catch((error) => console.error("Error al cargar modal de reserva:", error));
-            });
+                const module = await import("../src/modal-Reserva.js");
+                if (module.initializeReservaModalFeatures) {
+                    module.initializeReservaModalFeatures();
+                    document.dispatchEvent(new Event('modalReservaReady'));
+                    console.log("Modal de reserva inicializado correctamente");
+                } else {
+                    console.error("La función initializeReservaModalFeatures no está exportada");
+                }
+            } catch (error) {
+                console.error("Error al cargar el modal de reserva:", error);
+            }
+        });
     </script>
+
+    <script type="module" src="../src/test.js"></script>
 
     <script src="../src/CargarModal.js"></script>
     <script type="module" src="../src/chatBot.js"></script>

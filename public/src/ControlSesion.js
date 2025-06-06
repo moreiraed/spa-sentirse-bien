@@ -1,5 +1,9 @@
 import { onAuthStateChanged,signOut } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
-import { auth } from "./firebase-config.js";
+import {
+    doc,
+    getDoc,
+} from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+import { auth, db} from "./firebase-config.js";
 
 // Función para cerrar sesión
 window.logout = function() {

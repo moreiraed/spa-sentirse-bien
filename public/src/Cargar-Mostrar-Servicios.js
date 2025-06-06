@@ -176,10 +176,10 @@ async function mostrarFormularioAgregar() {
         cargarServicios();
 
         // Mostrar notificación de éxito
-        alert("Servicio agregado correctamente");
+        mostrarToast("Servicio agregado correctamente");
       } catch (error) {
         console.error("Error agregando servicio:", error);
-        alert("Error al agregar el servicio");
+        mostrarToast("Error al agregar el servicio", "danger");
       }
     });
 
@@ -346,18 +346,88 @@ function crearCardServicio(servicio, id) {
     botonReserva.addEventListener("click", async (e) => {
       e.preventDefault();
 
-      // Verificar si la función está disponible (modal cargado)
-      if (typeof abrirModalReserva === "function") {
-        abrirModalReserva({
-          id: id,
-          title: servicio.title,
-          duration: servicio.duration,
-          price: servicio.price,
-          // ... otros campos que necesites
+      // Esperar a que el modal esté listo si se carga dinámicamente
+      if (!window.abrirModalReserva) {
+        console.log("Esperando carga del modal...");
+        await new Promise((resolve) => {
+          document.addEventListener("modalReservaReady", resolve);
         });
-      } else {
-        console.error("El modal de reserva no está cargado correctamente");
-        // Opcional: cargar el modal aquí si falla
+      }
+
+      // Verificar autenticación
+      const user = auth.currentUser;
+      if (!user) {
+        mostrarToast("Debes iniciar sesión para reservar", "warning");
+        
+        // Esperar a que el modal de login esté cargado
+        if (!document.getElementById("modalLogin")) {
+          // Disparar evento para cargar el modal de login
+          const event = new CustomEvent("cargarModalLogin");
+          document.dispatchEvent(event);
+          
+          // Esperar a que el modal esté cargado
+          await new Promise((resolve) => {
+            const checkModal = setInterval(() => {
+              if (document.getElementById("modalLogin")) {
+                clearInterval(checkModal);
+                resolve();
+              }
+            }, 100);
+          });
+        }
+        
+        // Ahora que el modal está cargado, podemos abrirlo
+        const modalLogin = new bootstrap.Modal(document.getElementById("modalLogin"));
+        modalLogin.show();
+        return;
+      }
+
+      try {
+        const userDoc = await getDoc(doc(db, "users", user.uid));
+        if (!userDoc.exists) {
+          mostrarToast("Completa tu perfil antes de reservar", "warning");
+          window.location.href = "perfil.html";
+          return;
+        }
+
+        const userData = userDoc.data();
+        const camposFaltantes = [];
+        
+        if (!userData.nombre?.trim()) camposFaltantes.push("Nombre");
+        if (!userData.apellido?.trim()) camposFaltantes.push("Apellido");
+        if (!userData.dni?.trim()) camposFaltantes.push("DNI");
+
+        if (camposFaltantes.length > 0) {
+          const botonesAccion = `
+            <button type="button" class="btn btn-sm btn-light me-2" onclick="window.location.href='perfil.html'">
+              Ir al perfil
+            </button>
+            <button type="button" class="btn btn-sm btn-outline-light" data-bs-dismiss="toast">
+              Más tarde
+            </button>
+          `;
+          
+          mostrarToast(
+            `Completa estos campos en tu perfil: ${camposFaltantes.join(", ")}`,
+            "warning",
+            botonesAccion
+          );
+          return;
+        }
+
+        // Abrir modal con los datos del servicio
+        if (typeof abrirModalReserva === "function") {
+          abrirModalReserva({
+            id: id,
+            title: servicio.title,
+            duration: servicio.duration,
+            price: servicio.price,
+            imageUrl: servicio.imageUrl,
+          });
+        }
+      } catch (error) {
+        console.error("Error verificando usuario:", error);
+        mostrarToast("Error al verificar tus datos", "danger");
       }
     });
 
@@ -395,7 +465,7 @@ async function eliminarServicio(e) {
       document.getElementById(`service-${id}`).remove();
     } catch (error) {
       console.error("Error eliminando:", error);
-      alert("Error al eliminar servicio");
+      mostrarToast("Error al eliminar servicio", "danger");
     }
   }
 }
@@ -512,10 +582,10 @@ function iniciarEdicion(e) {
         cargarServicios();
 
         // Mostrar notificación de éxito
-        alert("Servicio actualizado correctamente");
+        mostrarToast("Servicio actualizado correctamente");
       } catch (error) {
         console.error("Error actualizando:", error);
-        alert("Error al actualizar el servicio");
+        mostrarToast("Error al actualizar el servicio", "danger");
       }
     });
 
@@ -525,4 +595,57 @@ function iniciarEdicion(e) {
     .addEventListener("hidden.bs.modal", () => {
       document.getElementById(`editModal-${id}`).remove();
     });
+}
+
+// Función para mostrar toasts con acciones
+function mostrarToast(mensaje, tipo = 'info', acciones = null) {
+  const toastContainer = document.getElementById('toast-container') || crearToastContainer();
+  
+  const toast = document.createElement('div');
+  toast.className = `toast align-items-center text-white bg-${tipo} border-0`;
+  toast.setAttribute('role', 'alert');
+  toast.setAttribute('aria-live', 'assertive');
+  toast.setAttribute('aria-atomic', 'true');
+  
+  let toastContent = `
+    <div class="d-flex">
+      <div class="toast-body">
+        ${mensaje}
+  `;
+
+  if (acciones) {
+    toastContent += `
+        <div class="mt-2 pt-2 border-top border-light">
+          ${acciones}
+        </div>
+    `;
+  }
+
+  toastContent += `
+      </div>
+      <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+    </div>
+  `;
+  
+  toast.innerHTML = toastContent;
+  toastContainer.appendChild(toast);
+  
+  const bsToast = new bootstrap.Toast(toast, {
+    autohide: false // Desactivamos el autohide para toasts con acciones
+  });
+  bsToast.show();
+  
+  // Eliminar el toast del DOM después de que se oculte
+  toast.addEventListener('hidden.bs.toast', () => {
+    toast.remove();
+  });
+}
+
+// Función para crear el contenedor de toasts si no existe
+function crearToastContainer() {
+  const container = document.createElement('div');
+  container.id = 'toast-container';
+  container.className = 'toast-container position-fixed bottom-0 end-0 p-3';
+  document.body.appendChild(container);
+  return container;
 }

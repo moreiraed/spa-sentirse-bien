@@ -13,6 +13,7 @@ import {
   setDoc,
   updateDoc,
 } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+import { solicitarRolProfesional, mostrarEstadoSolicitud } from "./SolicitudProfesional.js";
 
 function actualizarEstadoVerificacion(user) {
   const emailInput = document.getElementById("email");
@@ -117,6 +118,24 @@ onAuthStateChanged(auth, async (user) => {
     document
       .getElementById("guardarPassword")
       .addEventListener("click", cambiarPassword);
+
+    // Configurar el botón de solicitud de rol profesional
+    const btnSolicitar = document.getElementById("btnSolicitarProfesional");
+    if (btnSolicitar) {
+      btnSolicitar.addEventListener("click", () => {
+        const modal = new bootstrap.Modal(document.getElementById("modalSolicitudProfesional"));
+        modal.show();
+      });
+    }
+
+    // Configurar el formulario de solicitud
+    const formSolicitud = document.getElementById("formSolicitudProfesional");
+    if (formSolicitud) {
+      formSolicitud.addEventListener("submit", solicitarRolProfesional);
+    }
+
+    // Mostrar estado actual de la solicitud
+    await mostrarEstadoSolicitud();
   }
 });
 

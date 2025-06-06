@@ -184,6 +184,7 @@
                 <button class="btn btn-success px-4 rounded-pill" id="btnGuardarPerfil" onclick="guardarPerfil()">
                     <i class="bi bi-check-circle me-2"></i>Guardar Cambios
                 </button>
+                <button type="button" class="btn btn-primary w-100 mb-3" id="btnSolicitarProfesional">Solicitar rol profesional</button>
             </div>
         </div>
     </div>
@@ -349,9 +350,76 @@
         </div>
     </div>
 
+    <!-- Modal de Solicitud de Rol Profesional -->
+    <div class="modal fade" id="modalSolicitudProfesional" tabindex="-1" aria-labelledby="modalSolicitudProfesionalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalSolicitudProfesionalLabel">Solicitar Rol Profesional</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="formSolicitudProfesional">
+                        <div class="mb-3">
+                            <label for="nombreCompleto" class="form-label">Nombre Completo</label>
+                            <input type="text" class="form-control" id="nombreCompleto" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="profesion" class="form-label">Profesión</label>
+                            <input type="text" class="form-control" id="profesion" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="matricula" class="form-label">Matrícula/Licencia</label>
+                            <input type="text" class="form-control" id="matricula" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Servicios en los que se especializa</label>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-check mb-2">
+                                        <input class="form-check-input" type="checkbox" value="Criofrecuencia Facial" id="servicio1">
+                                        <label class="form-check-label" for="servicio1">Criofrecuencia Facial</label>
+                                    </div>
+                                    <div class="form-check mb-2">
+                                        <input class="form-check-input" type="checkbox" value="Criofrecuencia Corporal" id="servicio2">
+                                        <label class="form-check-label" for="servicio2">Criofrecuencia Corporal</label>
+                                    </div>
+                                    <div class="form-check mb-2">
+                                        <input class="form-check-input" type="checkbox" value="Cavitación" id="servicio3">
+                                        <label class="form-check-label" for="servicio3">Cavitación</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-check mb-2">
+                                        <input class="form-check-input" type="checkbox" value="Radiofrecuencia" id="servicio4">
+                                        <label class="form-check-label" for="servicio4">Radiofrecuencia</label>
+                                    </div>
+                                    <div class="form-check mb-2">
+                                        <input class="form-check-input" type="checkbox" value="Presoterapia" id="servicio5">
+                                        <label class="form-check-label" for="servicio5">Presoterapia</label>
+                                    </div>
+                                    <div class="form-check mb-2">
+                                        <input class="form-check-input" type="checkbox" value="Drenaje Linfático" id="servicio6">
+                                        <label class="form-check-label" for="servicio6">Drenaje Linfático</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <div class="alert alert-info">
+                                <i class="bi bi-info-circle me-2"></i>
+                                Para completar tu solicitud, por favor envía tus documentos de verificación a través de nuestro correo electrónico: <strong>info@spasentirsebien.com</strong>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-success w-100">Enviar Solicitud</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Contenedor de Toasts -->
     <div id="toast-container" class="toast-container position-fixed top-0 end-0 p-3"></div>
-    <!-- Contenedor de Toasts -->
 
     <!-- ----------------------- Footer ----------------------- -->
     <footer class="pt-5 pb-3" style="background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);">
@@ -452,10 +520,11 @@
         });
     </script>
 
+    <script type="module" src="../src/firebase-config.js"></script>
     <script type="module" src="../src/Perfil.js"></script>
     <script type="module" src="../src/ControlSesion.js"></script>
-    <script type="module" src="../src/ConsultaPages.js"></script>
     <script type="module" src="../src/DeleteAccount.js"></script>
+    <script type="module" src="../src/SolicitudProfesional.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
