@@ -12,13 +12,37 @@ import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.0/fi
 
 // Verificar si el usuario es administrador
 async function verificarAdmin(user) {
+    // Si no hay usuario, retornamos false (no es admin)
     if (!user) return false;
-    
+
+    // Mostrar el loader mientras verificamos
+    document.getElementById('loading-container').style.display = 'flex';
+
+    // Obtenemos el documento del usuario desde Firebase
     const userDoc = await getDoc(doc(db, "users", user.uid));
-    if (!userDoc.exists()) return false;
     
+    // Si no existe el documento del usuario, retornamos false (no es admin)
+    if (!userDoc.exists()) {
+        document.getElementById('loading-container').style.display = 'none';
+        return false;
+    }
+
+    // Obtenemos los datos del usuario
     const userData = userDoc.data();
-    return userData.rol === "admin";
+
+    // Si es admin, mostramos el contenido
+    if (userData.rol === "admin") {
+        document.getElementById('loading-container').style.display = 'none';  // Ocultamos el loader
+        document.getElementById('contenido').style.display = 'block';          // Mostramos el contenido
+        return true;
+    } else {
+        // Si no es admin, mostramos el loader y luego redirigimos o mostramos mensaje
+        document.getElementById('loading-container').style.display = 'none'; // Ocultamos el loader
+        alert("No tienes permisos para acceder a esta página.");
+        // Puedes redirigir a otra página aquí si lo deseas
+        // window.location.href = "/no-autorizado"; 
+        return false;
+    }
 }
 
 // Cargar solicitudes pendientes

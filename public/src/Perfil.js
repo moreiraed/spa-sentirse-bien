@@ -41,6 +41,9 @@ onAuthStateChanged(auth, async (user) => {
   if (!user) {
     window.location.href = "../index.html";
   } else {
+    document.getElementById("loading-container").style.display = "none";
+    document.getElementById("contenido").style.display = "block";
+    
     document.getElementById("email").value = user.email;
 
     // Establecer placeholders en "Cargando..." hasta que los datos estén listos
@@ -63,6 +66,43 @@ onAuthStateChanged(auth, async (user) => {
       document.getElementById("apellido").value = data.apellido || "";
       document.getElementById("dni").value = data.dni || "";
       document.getElementById("usuario").value = data.username || "";
+
+      // Mostrar servicios de especialización si es profesional
+      if (data.rol === "profesional" && data.solicitudProfesional?.servicios) {
+        const serviciosEspecializacion = document.getElementById("serviciosEspecializacion");
+        const listaServicios = document.getElementById("listaServicios");
+        
+        serviciosEspecializacion.classList.remove("d-none");
+        listaServicios.innerHTML = "";
+
+        data.solicitudProfesional.servicios.forEach(servicio => {
+          const servicioElement = document.createElement("div");
+          servicioElement.className = "col-12 col-md-6 col-lg-4";
+          servicioElement.innerHTML = `
+            <div class="card h-100 border-0 shadow-sm">
+              <div class="card-body text-center">
+                <i class="bi bi-check-circle-fill text-success fs-4 mb-2"></i>
+                <h6 class="card-title mb-0">${servicio}</h6>
+              </div>
+            </div>
+          `;
+          listaServicios.appendChild(servicioElement);
+        });
+      }
+
+      // Manejar la visibilidad del botón de solicitud profesional
+      const btnSolicitar = document.getElementById("btnSolicitarProfesional");
+      const loaderSolicitud = document.getElementById("loaderSolicitud");
+      
+      // Ocultar el loader
+      loaderSolicitud.classList.add("d-none");
+      
+      // Mostrar el botón solo si el usuario no tiene un rol específico
+      if (!data.rol || data.rol === "usuario") {
+        btnSolicitar.classList.remove("d-none");
+      } else {
+        btnSolicitar.classList.add("d-none");
+      }
 
       // Actualizar los placeholders en caso de que estén vacíos
       document.getElementById("nombre").placeholder =

@@ -181,19 +181,38 @@ onAuthStateChanged(auth, async (user) => {
 let toastCooldown = false;
 
 function mostrarToastSeguro(message, type) {
-  if (toastCooldown) return; // Bloquea si está en cooldown
+  if (toastCooldown) return;
+
+  const existingToasts = document.querySelectorAll(
+    "#toast-container .toast.show, #toast-container .toast.fade:not(.hide)"
+  );
+  if (existingToasts.length > 0) return; // Evita mostrar si hay uno visible
 
   toastCooldown = true;
-  mostrarToast(message, type); // Llama a tu función real
 
+  const toastElement = mostrarToast(message, type);
+  if (!toastElement) {
+    toastCooldown = false;
+    return;
+  }
+
+  const bsToast = new bootstrap.Toast(toastElement);
+  bsToast.show();
+
+  // Ocultar el toast después de 3s
   setTimeout(() => {
-    toastCooldown = false; // Se desbloquea después de 2s
-  }, 2000);
+    bsToast.hide();
+  }, 3000);
+
+  // Cuando se oculta completamente
+  toastElement.addEventListener("hidden.bs.toast", () => {
+    toastElement.remove();
+    toastCooldown = false;
+  });
 }
 
 
 function mostrarToast(message, type) {
-  // Crear un nuevo div para el toast
   const toast = document.createElement("div");
   toast.classList.add(
     "toast",
@@ -202,76 +221,55 @@ function mostrarToast(message, type) {
     "fade",
     `bg-${type}`
   );
-
-  // Cambiar el color del texto según tipo
-  if (type === "warning") {
-    toast.classList.add("text-dark"); // Texto negro para warning
-  } else {
-    toast.classList.add("text-white"); // Blanco para success, danger
-  }
-
   toast.setAttribute("role", "alert");
   toast.setAttribute("aria-live", "assertive");
   toast.setAttribute("aria-atomic", "true");
 
-  // Crear la cabecera del toast
-  const toastHeader = document.createElement("div");
-  toastHeader.classList.add("toast-header");
+  if (type === "warning") toast.classList.add("text-dark");
+  else toast.classList.add("text-white");
 
-  // Crear la imagen
+  const header = document.createElement("div");
+  header.classList.add("toast-header");
+
   const currentPath = window.location.pathname;
-  const isInPagesFolder = currentPath.includes("/pages/");
   const img = document.createElement("img");
-
-  img.src = isInPagesFolder
+  img.src = currentPath.includes("/pages/")
     ? "../assets/icon/icon.png"
     : "assets/icon/icon.png";
   img.classList.add("rounded", "me-2");
   img.alt = "Icono";
 
-  // Crear el texto de la cabecera
   const strong = document.createElement("strong");
   strong.classList.add("me-auto");
   strong.textContent = "Notificación";
 
-  // Crear la hora
   const small = document.createElement("small");
   small.textContent = "Hace un momento";
 
-  // Crear el botón de cierre
-  const closeButton = document.createElement("button");
-  closeButton.type = "button";
-  closeButton.classList.add("btn-close");
-  closeButton.setAttribute("data-bs-dismiss", "toast");
-  closeButton.setAttribute("aria-label", "Cerrar");
+  const closeBtn = document.createElement("button");
+  closeBtn.type = "button";
+  closeBtn.classList.add("btn-close");
+  closeBtn.setAttribute("data-bs-dismiss", "toast");
+  closeBtn.setAttribute("aria-label", "Cerrar");
 
-  // Añadir los elementos a la cabecera
-  toastHeader.appendChild(img);
-  toastHeader.appendChild(strong);
-  toastHeader.appendChild(small);
-  toastHeader.appendChild(closeButton);
+  header.appendChild(img);
+  header.appendChild(strong);
+  header.appendChild(small);
+  header.appendChild(closeBtn);
 
-  // Crear el cuerpo del toast
-  const toastBody = document.createElement("div");
-  toastBody.classList.add("toast-body");
-  toastBody.textContent = message;
+  const body = document.createElement("div");
+  body.classList.add("toast-body");
+  body.textContent = message;
 
-  // Añadir la cabecera y el cuerpo al toast
-  toast.appendChild(toastHeader);
-  toast.appendChild(toastBody);
+  toast.appendChild(header);
+  toast.appendChild(body);
 
-  // Añadir el toast al contenedor de toasts
-  const toastContainer = document.getElementById("toast-container");
-  if (toastContainer) {
-    toastContainer.appendChild(toast);
-    const bootstrapToast = new bootstrap.Toast(toast);
-    bootstrapToast.show();
-
-    // Eliminar el toast después de un tiempo
-    setTimeout(() => {
-      toast.remove();
-    }, 3000); // El toast se elimina después de 5 segundos
+  const container = document.getElementById("toast-container");
+  if (container) {
+    container.appendChild(toast);
+    return toast; // ✅ devolvemos el DOM
   } else {
     console.error("El contenedor de toasts no existe en el DOM");
+    return null;
   }
-}
+}  
