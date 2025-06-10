@@ -6,6 +6,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../css/modal-Reserva.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        /* ... existing styles ... */
+
+        .tarjeta-seleccionable {
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .tarjeta-seleccionable:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1) !important;
+        }
+
+        .tarjeta-seleccionable.selected {
+            border: 2px solid #28a745 !important;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(40, 167, 69, 0.2) !important;
+        }
+
+        .form-check-input:checked {
+            background-color: #28a745;
+            border-color: #28a745;
+        }
+    </style>
 </head>
 
 <body>
@@ -138,9 +162,9 @@
                                     <div class="payment-methods mb-4">
                                         <div class="form-check mb-3">
                                             <input class="form-check-input" type="radio" name="paymentMethod"
-                                                id="creditCard" checked>
-                                            <label class="form-check-label" for="creditCard">
-                                                <i class="fab fa-cc-visa"></i> Tarjeta de crédito/débito
+                                                id="debitCard" checked>
+                                            <label class="form-check-label" for="debitCard">
+                                                <i class="fab fa-cc-visa"></i> Tarjeta de débito
                                             </label>
                                         </div>
                                         <div class="form-check mb-3">
@@ -205,6 +229,32 @@
                             </button>                  
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para Selección de Tarjeta -->
+    <div class="modal fade" id="modalSeleccionTarjeta" tabindex="-1" aria-labelledby="modalSeleccionTarjetaLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalSeleccionTarjetaLabel">Selecciona una tarjeta</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="contenedorTarjetasReserva" class="row g-3">
+                        <!-- Las tarjetas se cargarán dinámicamente aquí -->
+                        <div class="col-12 text-center py-4" id="mensajeSinTarjetasReserva">
+                            <i class="bi bi-credit-card-2-front fs-1 text-muted"></i>
+                            <p class="text-muted mt-2">No tienes tarjetas registradas</p>
+                            <a href="perfil.html" class="btn btn-outline-primary mt-3">Agregar una tarjeta</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-success" id="btnConfirmarTarjeta" disabled>Seleccionar Tarjeta</button>
                 </div>
             </div>
         </div>

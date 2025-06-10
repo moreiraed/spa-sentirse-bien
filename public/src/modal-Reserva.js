@@ -10,6 +10,7 @@ import { db, auth } from "./firebase-config.js";
 
 let servicioReservaActual = null;
 let selectedProfesional = null;
+let selectedCard = null;
 
 export function initializeReservaModalFeatures() {
   console.log("Inicializando características del modal de reserva");
@@ -232,6 +233,17 @@ export function initializeReservaModalFeatures() {
       return;
     }
 
+    if (currentStep === 4) {
+      const selectedPaymentMethod = document.querySelector('input[name="paymentMethod"]:checked').id;
+      if (selectedPaymentMethod === 'debitCard') {
+        // Mostrar modal de selección de tarjeta
+        const modalTarjeta = new bootstrap.Modal(document.getElementById('modalSeleccionTarjeta'));
+        cargarTarjetasUsuario();
+        modalTarjeta.show();
+        return; // No avanzar al siguiente paso hasta seleccionar tarjeta
+      }
+    }
+
     if (currentStep < steps.length) {
       document
         .querySelector(`.reserva-step[data-step="${currentStep}"]`)
@@ -326,6 +338,7 @@ export function initializeReservaModalFeatures() {
     console.log("Fecha:", selectedDate);
     console.log("Hora:", selectedTime);
     console.log("Pago:", selectedPayment);
+    console.log("Tarjeta seleccionada:", selectedCard);
 
     document.getElementById("summary-profesional").textContent = selectedProfesional;
     document.getElementById("summary-fecha").textContent = selectedDate;
@@ -333,8 +346,8 @@ export function initializeReservaModalFeatures() {
 
     let paymentText = "";
     switch (selectedPayment) {
-      case "creditCard":
-        paymentText = "Tarjeta de crédito";
+      case "debitCard":
+        paymentText = selectedCard ? `Tarjeta de débito (****${selectedCard.ultimos4})` : "Tarjeta de débito";
         break;
       case "paypal":
         paymentText = "PayPal";
@@ -363,6 +376,7 @@ export function initializeReservaModalFeatures() {
         fecha: selectedDate,
         hora: selectedTime,
         pago: selectedPayment,
+        tarjetaId: selectedCard ? selectedCard.id : null,
         servicio: servicioReservaActual ? servicioReservaActual.title : null,
         timestamp: new Date(),
       };
@@ -388,6 +402,7 @@ export function initializeReservaModalFeatures() {
     selectedDate = null;
     selectedTime = null;
     selectedPayment = "creditCard";
+    selectedCard = null;
 
     steps.forEach((step) => step.classList.remove("active"));
     document
@@ -404,5 +419,103 @@ export function initializeReservaModalFeatures() {
     generateCalendar(currentMonth, currentYear);
 
     updateButtons();
+  }
+
+  // Función para cargar las tarjetas del usuario
+  async function cargarTarjetasUsuario() {
+    const contenedorTarjetas = document.getElementById('contenedorTarjetasReserva');
+    const mensajeSinTarjetas = document.getElementById('mensajeSinTarjetasReserva');
+    const btnConfirmarTarjeta = document.getElementById('btnConfirmarTarjeta');
+    
+    try {
+      const userId = auth.currentUser.uid;
+      const tarjetasRef = collection(db, 'tarjetas');
+      const q = query(tarjetasRef, where('userId', '==', userId));
+      const querySnapshot = await getDocs(q);
+
+      if (querySnapshot.empty) {
+        mensajeSinTarjetas.style.display = 'block';
+        contenedorTarjetas.innerHTML = '';
+        contenedorTarjetas.appendChild(mensajeSinTarjetas);
+        btnConfirmarTarjeta.disabled = true;
+        return;
+      }
+
+      mensajeSinTarjetas.style.display = 'none';
+      contenedorTarjetas.innerHTML = '';
+
+      querySnapshot.forEach((doc) => {
+        const tarjeta = doc.data();
+        const tarjetaElement = crearTarjetaElementReserva(tarjeta, doc.id);
+        contenedorTarjetas.appendChild(tarjetaElement);
+      });
+
+      // Agregar evento al botón de confirmar tarjeta
+      btnConfirmarTarjeta.addEventListener('click', function() {
+        if (selectedCard) {
+          const modalTarjeta = bootstrap.Modal.getInstance(document.getElementById('modalSeleccionTarjeta'));
+          modalTarjeta.hide();
+          // Continuar con el siguiente paso
+          document
+            .querySelector(`.reserva-step[data-step="${currentStep}"]`)
+            .classList.remove("active");
+          currentStep++;
+          document
+            .querySelector(`.reserva-step[data-step="${currentStep}"]`)
+            .classList.add("active");
+          updateReservationSummary();
+          updateButtons();
+        }
+      });
+
+    } catch (error) {
+      console.error('Error al cargar tarjetas:', error);
+      mostrarToast('Error al cargar las tarjetas', 'error');
+    }
+  }
+
+  // Función para crear el elemento HTML de una tarjeta en el modal de reserva
+  function crearTarjetaElementReserva(tarjeta, tarjetaId) {
+    const col = document.createElement('div');
+    col.className = 'col-12';
+    
+    const ultimos4 = tarjeta.numeroTarjeta.slice(-4);
+
+    col.innerHTML = `
+      <div class="card h-100 border-0 shadow-sm tarjeta-seleccionable" data-tarjeta-id="${tarjetaId}" style="background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);">
+        <div class="card-body text-white">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <h6 class="mb-1">Tarjeta de Débito</h6>
+              <small class="text-white-50">Termina en ${ultimos4}</small>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="tarjetaSeleccionada" value="${tarjetaId}">
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+
+    // Agregar evento de selección
+    const radio = col.querySelector('input[type="radio"]');
+    radio.addEventListener('change', function() {
+      if (this.checked) {
+        selectedCard = {
+          id: tarjetaId,
+          ultimos4: ultimos4
+        };
+        document.getElementById('btnConfirmarTarjeta').disabled = false;
+        // Remover selección de otras tarjetas
+        document.querySelectorAll('.tarjeta-seleccionable').forEach(card => {
+          if (card.dataset.tarjetaId !== tarjetaId) {
+            card.classList.remove('selected');
+          }
+        });
+        col.querySelector('.card').classList.add('selected');
+      }
+    });
+
+    return col;
   }
 }
