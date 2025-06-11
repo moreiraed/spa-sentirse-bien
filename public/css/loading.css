@@ -1,0 +1,51 @@
+/* Ocultamos el contenido al principio */
+#contenido {
+    display: none;
+}
+
+/* Contenedor del loader y el texto */
+#loading-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; /* 100% de la altura de la ventana */
+    width: 100vw;  /* 100% del ancho de la ventana */
+    position: absolute; /* Asegura que el contenedor se posicione de forma absoluta */
+    top: 0;
+    left: 0;
+    text-align: center;
+    flex-direction: column; /* Colocamos los elementos de forma vertical */
+}
+
+/* Texto "Cargando..." */
+#loading-text {
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+/* Loader que gira */
+#loader {
+    width: 30px;
+    height: 30px;
+    border: 4px solid transparent;
+    border-top: 4px solid #3498db;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    /* No es necesario margen aquí */
+}
+
+/* Animación de rotación */
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/* Estilo para ocultar el texto si es necesario */
+#loading-text.hidden {
+    visibility: hidden;
+}

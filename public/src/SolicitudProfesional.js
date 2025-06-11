@@ -72,14 +72,20 @@ export async function mostrarEstadoSolicitud() {
 
     const userRef = doc(db, "users", user.uid);
     const userSnap = await getDoc(userRef);
+    const btnSolicitar = document.getElementById("btnSolicitarProfesional");
+    const loaderSolicitud = document.getElementById("loaderSolicitud");
+
+    // Mostrar loader mientras se verifica
+    loaderSolicitud.classList.remove("d-none");
+    btnSolicitar.classList.add("d-none");
 
     if (userSnap.exists()) {
         const userData = userSnap.data();
-        const btnSolicitar = document.getElementById("btnSolicitarProfesional");
 
         // Si el usuario es admin, ocultar el botón
         if (userData.rol === "admin") {
             btnSolicitar.style.display = "none";
+            loaderSolicitud.classList.add("d-none");
             return;
         }
 
@@ -88,13 +94,20 @@ export async function mostrarEstadoSolicitud() {
             btnSolicitar.disabled = true;
             btnSolicitar.classList.remove("btn-success");
             btnSolicitar.classList.add("btn-secondary");
+            btnSolicitar.classList.add("d-none");
         } else if (userData.rol === "profesional") {
             btnSolicitar.textContent = "Profesional Verificado";
             btnSolicitar.disabled = true;
             btnSolicitar.classList.remove("btn-success");
             btnSolicitar.classList.add("btn-success");
+            btnSolicitar.classList.add("d-none");
+        } else if (!userData.rol || userData.rol === "usuario") {
+            btnSolicitar.classList.remove("d-none");
         }
     }
+
+    // Ocultar loader después de verificar
+    loaderSolicitud.classList.add("d-none");
 }
 
 // Función auxiliar para mostrar toasts

@@ -5,11 +5,12 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet" />
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <link rel="stylesheet" href="../css/main.css">
     <link rel="stylesheet" href="../css/animationNav.css">
     <link rel="stylesheet" href="../css/perfil.css">
     <link rel="stylesheet" href="../css/toast.css">
+    <link rel="stylesheet" href="../css/loading.css">
     <link rel="icon" href="../assets/icon/icon.png" type="image/x-icon" />
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -19,12 +20,21 @@
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
-    <title>Spa Sentirse Bien</title>
+    <title>Perfil - Spa Sentirse Bien</title>
 
 </head>
 
 <body>
 
+    <!-- Contenedor del loader y el texto -->
+    <div id="loading-container">
+        <!-- Texto "Cargando..." -->
+        <div id="loading-text" class="hidden">Cargando...</div>
+        <!-- Loader -->
+        <div id="loader"></div>
+    </div>
+
+    <div id="contenido">
     <!-- ----------------------- Nav ----------------------- -->
     <nav class="navbar navbar-expand-lg fixed-top navbar-dark transparent-navbar">
         <div class="container">
@@ -50,7 +60,7 @@
                         <a class="nav-link px-3 fw-semibold text-dark" href="servicios.html">Servicios</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link px-3 fw-semibold text-dark" href="#contacto">Contacto</a>
+                        <a class="nav-link px-3 fw-semibold text-dark" href="contacto.html">Contacto</a>
                     </li>
                     <li class="nav-item" id="loginNavItem">
                         <button class="btn btn-outline-success ms-2 px-4 rounded-pill" data-bs-toggle="modal"
@@ -69,11 +79,11 @@
                         </button>
                         <ul class="dropdown-menu dropdown-menu-end mt-2 shadow">
                             <li>
-                                <a class="dropdown-item hover-item" href="pages/perfil.html"><i
+                                <a class="dropdown-item hover-item" href="perfil.html"><i
                                         class="bi bi-person-square me-2"></i>Perfil</a>
                             </li>
                             <li>
-                                <a class="dropdown-item hover-item" href="pages/turnos.html"><i
+                                <a class="dropdown-item hover-item" href="turnos.html"><i
                                         class="bi bi-journal-check me-2"></i>Turnos</a>
                             </li>
                             <li>
@@ -179,12 +189,32 @@
                 </div>
             </div>
 
+            <!-- Sección de Servicios de Especialización (solo visible para profesionales) -->
+            <div id="serviciosEspecializacion" class="mt-4 d-none">
+                <h5 class="text-center mb-4 fw-bold servicio-titulo">Servicios en los que me especializo</h5>
+                <div id="listaServicios" class="row g-3">
+                    <!-- Los servicios se cargarán dinámicamente aquí -->
+                </div>
+            </div>
+
             <!-- Botón Guardar Cambios centrado -->
             <div class="text-center mt-5">
-                <button class="btn btn-success px-4 rounded-pill" id="btnGuardarPerfil" onclick="guardarPerfil()">
-                    <i class="bi bi-check-circle me-2"></i>Guardar Cambios
-                </button>
-                <button type="button" class="btn btn-primary w-100 mb-3" id="btnSolicitarProfesional">Solicitar rol profesional</button>
+                <div class="mb-3">
+                    <button class="btn btn-success px-4 rounded-pill" id="btnGuardarPerfil" onclick="guardarPerfil()">
+                        <i class="bi bi-check-circle me-2"></i>Guardar Cambios
+                    </button>
+                </div>
+                
+                <div>
+                    <div id="loaderSolicitud" class="d-none">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Cargando...</span>
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn-primary px-4 rounded-pill d-none" id="btnSolicitarProfesional">
+                        <i class="bi bi-briefcase-fill me-2"></i>Solicitar rol profesional
+                    </button>      
+                </div>
             </div>
         </div>
     </div>
@@ -426,37 +456,98 @@
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Servicios en los que se especializa</label>
+                            <!-- Categoría: Masajes -->
+                            <h6 class="mt-3">Categoría Masajes</h6>
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-check mb-2">
-                                        <input class="form-check-input" type="checkbox" value="Criofrecuencia Facial" id="servicio1">
-                                        <label class="form-check-label" for="servicio1">Criofrecuencia Facial</label>
+                                        <input class="form-check-input" type="checkbox" value="Masaje Antiestrés" id="masaje1">
+                                        <label class="form-check-label" for="masaje1">Masaje Antiestrés</label>
                                     </div>
                                     <div class="form-check mb-2">
-                                        <input class="form-check-input" type="checkbox" value="Criofrecuencia Corporal" id="servicio2">
-                                        <label class="form-check-label" for="servicio2">Criofrecuencia Corporal</label>
-                                    </div>
-                                    <div class="form-check mb-2">
-                                        <input class="form-check-input" type="checkbox" value="Cavitación" id="servicio3">
-                                        <label class="form-check-label" for="servicio3">Cavitación</label>
+                                        <input class="form-check-input" type="checkbox" value="Masaje Descontracturante" id="masaje2">
+                                        <label class="form-check-label" for="masaje2">Masaje Descontracturante</label>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-check mb-2">
-                                        <input class="form-check-input" type="checkbox" value="Radiofrecuencia" id="servicio4">
-                                        <label class="form-check-label" for="servicio4">Radiofrecuencia</label>
+                                        <input class="form-check-input" type="checkbox" value="Piedras Calientes" id="masaje3">
+                                        <label class="form-check-label" for="masaje3">Piedras Calientes</label>
                                     </div>
                                     <div class="form-check mb-2">
-                                        <input class="form-check-input" type="checkbox" value="Presoterapia" id="servicio5">
-                                        <label class="form-check-label" for="servicio5">Presoterapia</label>
-                                    </div>
-                                    <div class="form-check mb-2">
-                                        <input class="form-check-input" type="checkbox" value="Drenaje Linfático" id="servicio6">
-                                        <label class="form-check-label" for="servicio6">Drenaje Linfático</label>
+                                        <input class="form-check-input" type="checkbox" value="Masaje Circulatorio" id="masaje4">
+                                        <label class="form-check-label" for="masaje4">Masaje Circulatorio</label>
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        
+                            <!-- Categoría: Belleza -->
+                            <h6 class="mt-3">Categoría Belleza</h6>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-check mb-2">
+                                        <input class="form-check-input" type="checkbox" value="Lifting de Pestañas" id="belleza1">
+                                        <label class="form-check-label" for="belleza1">Lifting de Pestañas</label>
+                                    </div>
+                                    <div class="form-check mb-2">
+                                        <input class="form-check-input" type="checkbox" value="Manos y Pies" id="belleza2">
+                                        <label class="form-check-label" for="belleza2">Manos y Pies</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-check mb-2">
+                                        <input class="form-check-input" type="checkbox" value="Depilación Facial" id="belleza3">
+                                        <label class="form-check-label" for="belleza3">Depilación Facial</label>
+                                    </div>
+                                </div>
+                            </div>
+                        
+                            <!-- Categoría: Tratamientos Faciales -->
+                            <h6 class="mt-3">Categoría Tratamientos Faciales</h6>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-check mb-2">
+                                        <input class="form-check-input" type="checkbox" value="Criofrecuencia Facial" id="facial1">
+                                        <label class="form-check-label" for="facial1">Criofrecuencia Facial</label>
+                                    </div>
+                                    <div class="form-check mb-2">
+                                        <input class="form-check-input" type="checkbox" value="Limpieza + Hidratación" id="facial2">
+                                        <label class="form-check-label" for="facial2">Limpieza + Hidratación</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-check mb-2">
+                                        <input class="form-check-input" type="checkbox" value="Punta de Diamante" id="facial3">
+                                        <label class="form-check-label" for="facial3">Punta de Diamante</label>
+                                    </div>
+                                </div>
+                            </div>
+                        
+                            <!-- Categoría: Tratamientos Corporales -->
+                            <h6 class="mt-3">Categoría Tratamientos Corporales</h6>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-check mb-2">
+                                        <input class="form-check-input" type="checkbox" value="Criofrecuencia Corporal" id="corporal1">
+                                        <label class="form-check-label" for="corporal1">Criofrecuencia Corporal</label>
+                                    </div>
+                                    <div class="form-check mb-2">
+                                        <input class="form-check-input" type="checkbox" value="Ultracavitación" id="corporal2">
+                                        <label class="form-check-label" for="corporal2">Ultracavitación</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-check mb-2">
+                                        <input class="form-check-input" type="checkbox" value="DermoHealth" id="corporal3">
+                                        <label class="form-check-label" for="corporal3">DermoHealth</label>
+                                    </div>
+                                    <div class="form-check mb-2">
+                                        <input class="form-check-input" type="checkbox" value="VelaSlim" id="corporal4">
+                                        <label class="form-check-label" for="corporal4">VelaSlim</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>                        
                         <div class="mb-3">
                             <div class="alert alert-info">
                                 <i class="bi bi-info-circle me-2"></i>
@@ -548,6 +639,7 @@
             </div>
         </div>
     </footer>
+    </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {

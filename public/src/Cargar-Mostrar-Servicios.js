@@ -598,46 +598,100 @@ function iniciarEdicion(e) {
 }
 
 // Función para mostrar toasts con acciones
-function mostrarToast(mensaje, tipo = 'info', acciones = null) {
-  const toastContainer = document.getElementById('toast-container') || crearToastContainer();
-  
-  const toast = document.createElement('div');
-  toast.className = `toast align-items-center text-white bg-${tipo} border-0`;
-  toast.setAttribute('role', 'alert');
-  toast.setAttribute('aria-live', 'assertive');
-  toast.setAttribute('aria-atomic', 'true');
-  
-  let toastContent = `
-    <div class="d-flex">
-      <div class="toast-body">
-        ${mensaje}
-  `;
+let toastCooldown = false;
+
+function mostrarToast(
+  mensaje,
+  tipo = "info",
+  acciones = null
+) {
+  if (toastCooldown) return;
+
+  const existingToasts = document.querySelectorAll(
+    "#toast-container .toast.show, #toast-container .toast.fade:not(.hide)"
+  );
+  if (existingToasts.length > 0) return;
+
+  toastCooldown = true;
+
+  const container =
+    document.getElementById("toast-container") || crearToastContainer();
+
+  const toast = document.createElement("div");
+  toast.classList.add(
+    "toast",
+    "align-items-center",
+    "border-0",
+    "fade",
+    `bg-${tipo}`
+  );
+  toast.setAttribute("role", "alert");
+  toast.setAttribute("aria-live", "assertive");
+  toast.setAttribute("aria-atomic", "true");
+
+  if (tipo === "warning") toast.classList.add("text-dark");
+  else toast.classList.add("text-white");
+
+  // Header con ícono y título
+  const header = document.createElement("div");
+  header.classList.add("toast-header");
+
+  const currentPath = window.location.pathname;
+  const img = document.createElement("img");
+  img.src = currentPath.includes("/pages/")
+    ? "../assets/icon/icon.png"
+    : "assets/icon/icon.png";
+  img.classList.add("rounded", "me-2");
+  img.alt = "Icono";
+
+  const strong = document.createElement("strong");
+  strong.classList.add("me-auto");
+  strong.textContent = "Notificación";
+
+  const small = document.createElement("small");
+  small.textContent = "Hace un momento";
+
+  const closeBtn = document.createElement("button");
+  closeBtn.type = "button";
+  closeBtn.classList.add("btn-close");
+  closeBtn.setAttribute("data-bs-dismiss", "toast");
+  closeBtn.setAttribute("aria-label", "Cerrar");
+
+  header.appendChild(img);
+  header.appendChild(strong);
+  header.appendChild(small);
+  header.appendChild(closeBtn);
+
+  // Cuerpo del toast
+  const body = document.createElement("div");
+  body.classList.add("toast-body");
+  body.innerHTML = mensaje;
 
   if (acciones) {
-    toastContent += `
-        <div class="mt-2 pt-2 border-top border-light">
-          ${acciones}
-        </div>
-    `;
+    const accionesWrapper = document.createElement("div");
+    accionesWrapper.classList.add("mt-2", "pt-2", "border-top", "border-light");
+    accionesWrapper.innerHTML = acciones;
+    body.appendChild(accionesWrapper);
   }
 
-  toastContent += `
-      </div>
-      <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
-    </div>
-  `;
-  
-  toast.innerHTML = toastContent;
-  toastContainer.appendChild(toast);
-  
+  toast.appendChild(header);
+  toast.appendChild(body);
+  container.appendChild(toast);
+
   const bsToast = new bootstrap.Toast(toast, {
-    autohide: false // Desactivamos el autohide para toasts con acciones
+    autohide: acciones ? false : true,
+    delay: 3000
   });
+
   bsToast.show();
-  
-  // Eliminar el toast del DOM después de que se oculte
-  toast.addEventListener('hidden.bs.toast', () => {
+
+  if (!acciones) {
+    setTimeout(() => bsToast.hide(), 3000);
+  }
+
+  toast.addEventListener("hidden.bs.toast", () => {
     toast.remove();
+    toastCooldown = false;
   });
 }
 
