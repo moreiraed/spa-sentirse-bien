@@ -102,12 +102,18 @@ onAuthStateChanged(auth, async (user) => {
   const turnosRef = collection(db, "reservas");
   const q = query(
     turnosRef,
-    where("uid", "==", user.uid),
+    where("userId", "==", user.uid),
     orderBy("fecha", "asc"),
     orderBy("hora", "asc")
   );
 
   const snapshot = await getDocs(q);
+
+  console.log("Fetching reservations for user:", user.uid);
+  console.log("Number of reservations found:", snapshot.size);
+  snapshot.forEach((doc) => {
+    console.log("Reservation data:", doc.id, doc.data());
+  });
 
   if (snapshot.empty) {
     // Si no hay turnos, mostramos el mensaje de que no hay turnos
