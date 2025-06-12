@@ -4,6 +4,37 @@ import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.0/fi
 
 console.log("Script TarjetasDebito.js iniciado");
 
+// Variable global para mantener el usuario actual
+let currentUser = null;
+
+// Función para obtener los elementos del DOM necesarios
+function getDOMElements() {
+    const contenedorTarjetas = document.getElementById('contenedorTarjetas');
+    const mensajeSinTarjetas = document.getElementById('mensajeSinTarjetas');
+    
+    if (!contenedorTarjetas) {
+        console.error("Error: No se encontró el contenedor de tarjetas");
+        return null;
+    }
+
+    // Si no existe el mensaje sin tarjetas, lo creamos
+    if (!mensajeSinTarjetas) {
+        console.log("Creando elemento mensajeSinTarjetas");
+        const mensajeElement = document.createElement('div');
+        mensajeElement.id = 'mensajeSinTarjetas';
+        mensajeElement.className = 'col-12 text-center py-4';
+        mensajeElement.innerHTML = `
+            <i class="bi bi-credit-card-2-front fs-1 text-muted"></i>
+            <p class="text-muted mt-2">No tienes tarjetas registradas</p>
+        `;
+        mensajeElement.style.display = 'none';
+        contenedorTarjetas.appendChild(mensajeElement);
+        return { contenedorTarjetas, mensajeSinTarjetas: mensajeElement };
+    }
+    
+    return { contenedorTarjetas, mensajeSinTarjetas };
+}
+
 // Función para esperar a que la autenticación esté lista
 function waitForAuth() {
     return new Promise((resolve, reject) => {
@@ -16,9 +47,11 @@ function waitForAuth() {
             unsubscribe(); // Desuscribirse después del primer cambio
             if (user) {
                 console.log("Usuario autenticado encontrado:", user.uid);
+                currentUser = user; // Guardar el usuario actual
                 resolve(user);
             } else {
                 console.log("No hay usuario autenticado");
+                currentUser = null;
                 reject(new Error("No hay usuario autenticado"));
             }
         });
@@ -26,27 +59,30 @@ function waitForAuth() {
 }
 
 // Función para cargar las tarjetas del usuario
-async function cargarTarjetas(user) {
-    if (!user || !user.uid) {
+async function cargarTarjetas() {
+    if (!currentUser || !currentUser.uid) {
         console.error("Error: Usuario no válido para cargar tarjetas");
         return;
     }
 
-    console.log("Iniciando carga de tarjetas para userId:", user.uid);
+    console.log("Iniciando carga de tarjetas para userId:", currentUser.uid);
     
-    const contenedorTarjetas = document.getElementById('contenedorTarjetas');
-    const mensajeSinTarjetas = document.getElementById('mensajeSinTarjetas');
-    
-    if (!contenedorTarjetas || !mensajeSinTarjetas) {
-        console.error("Error: No se encontraron elementos del DOM necesarios");
+    const elements = getDOMElements();
+    if (!elements) {
+        console.error("No se pudieron obtener los elementos del DOM");
         return;
     }
+    
+    const { contenedorTarjetas, mensajeSinTarjetas } = elements;
 
     try {
-        console.log("Buscando tarjetas para el usuario:", user.uid);
+        // Limpiar el contenedor primero
+        contenedorTarjetas.innerHTML = '';
+        mensajeSinTarjetas.style.display = 'none';
+
+        console.log("Buscando tarjetas para el usuario:", currentUser.uid);
         const tarjetasRef = collection(db, 'tarjetas');
-        const q = query(tarjetasRef, where('userId', '==', user.uid));
-        console.log("Query creada, ejecutando getDocs...");
+        const q = query(tarjetasRef, where('userId', '==', currentUser.uid));
         const querySnapshot = await getDocs(q);
 
         console.log("Número de tarjetas encontradas:", querySnapshot.size);
@@ -54,18 +90,21 @@ async function cargarTarjetas(user) {
         if (querySnapshot.empty) {
             console.log("No se encontraron tarjetas");
             mensajeSinTarjetas.style.display = 'block';
-            contenedorTarjetas.innerHTML = '';
             return;
         }
 
-        mensajeSinTarjetas.style.display = 'none';
-        contenedorTarjetas.innerHTML = '';
-
+        // Crear un fragmento para mejorar el rendimiento
+        const fragment = document.createDocumentFragment();
+        
         querySnapshot.forEach((doc) => {
             const tarjeta = doc.data();
             const tarjetaElement = crearTarjetaElement(tarjeta, doc.id);
-            contenedorTarjetas.appendChild(tarjetaElement);
+            fragment.appendChild(tarjetaElement);
         });
+
+        // Agregar todas las tarjetas de una vez
+        contenedorTarjetas.appendChild(fragment);
+        
     } catch (error) {
         console.error('Error al cargar tarjetas:', error);
         mostrarToast('Error al cargar las tarjetas', 'error');
@@ -133,42 +172,38 @@ function crearTarjetaElement(tarjeta, tarjetaId) {
 }
 
 // Función para agregar una nueva tarjeta
-async function agregarTarjeta(event, user) {
-    if (!user || !user.uid) {
+async function agregarTarjeta(event) {
+    if (!currentUser || !currentUser.uid) {
         console.error("Error: Usuario no válido para agregar tarjeta");
         return;
     }
 
-    console.log("Iniciando proceso de agregar tarjeta...");
     event.preventDefault();
     
-    const numeroTarjeta = document.getElementById('numeroTarjeta').value;
-    const fechaVencimiento = document.getElementById('fechaVencimiento').value;
-    const cvv = document.getElementById('cvv').value;
-    const tipoTarjeta = document.getElementById('tipoTarjeta').value;
+    const form = event.target;
+    const numeroTarjeta = form.numeroTarjeta.value;
+    const fechaVencimiento = form.fechaVencimiento.value;
+    const cvv = form.cvv.value;
+    const tipoTarjeta = form.tipoTarjeta.value;
 
     try {
-        console.log("Agregando tarjeta para el usuario:", user.uid);
-        
         // Agregar la nueva tarjeta
         await addDoc(collection(db, 'tarjetas'), {
-            userId: user.uid,
+            userId: currentUser.uid,
             numeroTarjeta,
             fechaVencimiento,
             cvv,
             tipoTarjeta,
             fechaCreacion: new Date()
         });
-        console.log("Tarjeta agregada exitosamente");
 
-        // Cerrar modal y recargar tarjetas
+        // Cerrar modal y limpiar formulario
         const modal = bootstrap.Modal.getInstance(document.getElementById('modalAgregarTarjeta'));
         modal.hide();
-        document.getElementById('formAgregarTarjeta').reset();
+        form.reset();
         
-        // Recargar las tarjetas con el usuario actual
-        await cargarTarjetas(user);
-        
+        // Recargar las tarjetas inmediatamente
+        await cargarTarjetas();
         mostrarToast('Tarjeta agregada exitosamente', 'success');
     } catch (error) {
         console.error('Error al agregar tarjeta:', error);
@@ -183,21 +218,16 @@ async function eliminarTarjeta(tarjetaId) {
     }
 
     try {
-        // Obtener el usuario actual antes de eliminar
-        const user = await waitForAuth();
-        if (!user) {
+        if (!currentUser || !currentUser.uid) {
             throw new Error("No hay usuario autenticado");
         }
 
         // Eliminar la tarjeta
         await deleteDoc(doc(db, 'tarjetas', tarjetaId));
-        console.log("Tarjeta eliminada exitosamente");
         
-        // Mostrar mensaje de éxito
+        // Recargar las tarjetas inmediatamente
+        await cargarTarjetas();
         mostrarToast('Tarjeta eliminada exitosamente', 'success');
-        
-        // Recargar las tarjetas con el usuario actual
-        await cargarTarjetas(user);
     } catch (error) {
         console.error('Error al eliminar tarjeta:', error);
         mostrarToast('Error al eliminar la tarjeta', 'error');
@@ -243,17 +273,23 @@ try {
         
         try {
             // Esperar a que la autenticación esté lista
-            const user = await waitForAuth();
-            console.log("Autenticación lista, usuario:", user.uid);
+            await waitForAuth();
+            console.log("Autenticación lista, usuario:", currentUser.uid);
+
+            // Verificar que los elementos del DOM estén disponibles
+            const elements = getDOMElements();
+            if (!elements) {
+                throw new Error("No se encontraron los elementos necesarios del DOM");
+            }
 
             // Cargar tarjetas inicialmente
-            await cargarTarjetas(user);
+            await cargarTarjetas();
 
             // Configurar el formulario de agregar tarjeta
             const formAgregarTarjeta = document.getElementById('formAgregarTarjeta');
             if (formAgregarTarjeta) {
                 console.log("Formulario de tarjeta encontrado, configurando evento...");
-                formAgregarTarjeta.addEventListener('submit', (event) => agregarTarjeta(event, user));
+                formAgregarTarjeta.addEventListener('submit', agregarTarjeta);
             } else {
                 console.log("Formulario de tarjeta no encontrado en el DOM");
             }
@@ -286,8 +322,8 @@ try {
                 });
             }
         } catch (error) {
-            console.error("Error en la autenticación:", error);
-            window.location.href = "../index.html";
+            console.error("Error en la inicialización:", error);
+            mostrarToast('Error al inicializar la página', 'error');
         }
     });
 } catch (error) {
