@@ -99,7 +99,7 @@ onAuthStateChanged(auth, async (user) => {
   </div>
 `;
 
-  const turnosRef = collection(db, "turnos");
+  const turnosRef = collection(db, "reservas");
   const q = query(
     turnosRef,
     where("uid", "==", user.uid),
@@ -168,7 +168,7 @@ async function cancelarTurno(turnoId, turnoDiv) {
   if (!confirmar) return;
 
   try {
-    await deleteDoc(doc(db, "turnos", turnoId));
+    await deleteDoc(doc(db, "reservas", turnoId));
 
     // Agregar animación para que el turno desaparezca
     turnoDiv.style.transition = "opacity 0.5s ease, transform 0.5s ease";
