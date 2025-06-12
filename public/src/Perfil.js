@@ -14,6 +14,7 @@ import {
   updateDoc,
 } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
 import { solicitarRolProfesional, mostrarEstadoSolicitud } from "./SolicitudProfesional.js";
+import { verificarAdminButton } from "./adminButton.js";
 
 function actualizarEstadoVerificacion(user) {
   const emailInput = document.getElementById("email");
@@ -66,6 +67,9 @@ onAuthStateChanged(auth, async (user) => {
       document.getElementById("apellido").value = data.apellido || "";
       document.getElementById("dni").value = data.dni || "";
       document.getElementById("usuario").value = data.username || "";
+
+      // Verificar y mostrar botón de admin si corresponde
+      await verificarAdminButton();
 
       // Mostrar servicios de especialización si es profesional
       if (data.rol === "profesional" && data.solicitudProfesional?.servicios) {

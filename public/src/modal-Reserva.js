@@ -3,7 +3,9 @@ import {
   addDoc,
   query,
   where,
-  getDocs
+  getDocs,
+  getDoc,
+  doc
 } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
 
 import { db, auth } from "./firebase-config.js";
@@ -369,21 +371,36 @@ export function initializeReservaModalFeatures() {
         return;
       }
 
+      // Obtener datos del usuario
+      const userDoc = await getDoc(doc(db, "users", user.uid));
+      if (!userDoc.exists()) {
+        alert("Error al obtener los datos del usuario");
+        return;
+      }
+
+      const userData = userDoc.data();
+
       const reservaData = {
         userId: user.uid,
         userEmail: user.email,
+        nombreUsuario: userData.username || "",
+        nombre: userData.nombre || "",
+        apellido: userData.apellido || "",
+        dni: userData.dni || "",
         profesional: selectedProfesional,
         fecha: selectedDate,
         hora: selectedTime,
         pago: selectedPayment,
         tarjetaId: selectedCard ? selectedCard.id : null,
         servicio: servicioReservaActual ? servicioReservaActual.title : null,
+        comentario: document.querySelector("#comentarios").value || "",
         timestamp: new Date(),
+        estado: "activo"
       };
 
       const docRef = await addDoc(collection(db, "reservas"), reservaData);
 
-      alert("Reserva confirmada con éxito. ID: " + docRef.id);
+      alert("Reserva confirmada con éxito.");
 
       setTimeout(() => {
         modal.hide();
