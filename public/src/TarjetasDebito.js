@@ -1,18 +1,57 @@
 import { getFirestore, collection, addDoc, getDocs, query, where, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
 import { db, auth } from "./firebase-config.js";
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
+
+console.log("Script TarjetasDebito.js iniciado");
+
+// Función para esperar a que la autenticación esté lista
+function waitForAuth() {
+    return new Promise((resolve, reject) => {
+        if (!auth) {
+            reject(new Error("Auth no está inicializado"));
+            return;
+        }
+
+        const unsubscribe = onAuthStateChanged(auth, (user) => {
+            unsubscribe(); // Desuscribirse después del primer cambio
+            if (user) {
+                console.log("Usuario autenticado encontrado:", user.uid);
+                resolve(user);
+            } else {
+                console.log("No hay usuario autenticado");
+                reject(new Error("No hay usuario autenticado"));
+            }
+        });
+    });
+}
 
 // Función para cargar las tarjetas del usuario
-export async function cargarTarjetas() {
+async function cargarTarjetas(user) {
+    if (!user || !user.uid) {
+        console.error("Error: Usuario no válido para cargar tarjetas");
+        return;
+    }
+
+    console.log("Iniciando carga de tarjetas para userId:", user.uid);
     const contenedorTarjetas = document.getElementById('contenedorTarjetas');
     const mensajeSinTarjetas = document.getElementById('mensajeSinTarjetas');
     
+    if (!contenedorTarjetas || !mensajeSinTarjetas) {
+        console.error("Error: No se encontraron elementos del DOM necesarios");
+        return;
+    }
+
     try {
-        const userId = auth.currentUser.uid;
+        console.log("Buscando tarjetas para el usuario:", user.uid);
         const tarjetasRef = collection(db, 'tarjetas');
-        const q = query(tarjetasRef, where('userId', '==', userId));
+        const q = query(tarjetasRef, where('userId', '==', user.uid));
+        console.log("Query creada, ejecutando getDocs...");
         const querySnapshot = await getDocs(q);
 
+        console.log("Número de tarjetas encontradas:", querySnapshot.size);
+
         if (querySnapshot.empty) {
+            console.log("No se encontraron tarjetas");
             mensajeSinTarjetas.style.display = 'block';
             return;
         }
@@ -75,30 +114,37 @@ function crearTarjetaElement(tarjeta, tarjetaId) {
 }
 
 // Función para agregar una nueva tarjeta
-export async function agregarTarjeta(event) {
+async function agregarTarjeta(event, user) {
+    if (!user || !user.uid) {
+        console.error("Error: Usuario no válido para agregar tarjeta");
+        return;
+    }
+
+    console.log("Iniciando proceso de agregar tarjeta...");
     event.preventDefault();
     
     const numeroTarjeta = document.getElementById('numeroTarjeta').value;
-    const fechaVencimiento = document.getElementById('  ').value;
+    const fechaVencimiento = document.getElementById('fechaVencimiento').value;
     const cvv = document.getElementById('cvv').value;
 
     try {
-        const userId = auth.currentUser.uid;
+        console.log("Agregando tarjeta para el usuario:", user.uid);
         
         // Agregar la nueva tarjeta
         await addDoc(collection(db, 'tarjetas'), {
-            userId,
+            userId: user.uid,
             numeroTarjeta,
             fechaVencimiento,
             cvv,
             fechaCreacion: new Date()
         });
+        console.log("Tarjeta agregada exitosamente");
 
         // Cerrar modal y recargar tarjetas
         const modal = bootstrap.Modal.getInstance(document.getElementById('modalAgregarTarjeta'));
         modal.hide();
         document.getElementById('formAgregarTarjeta').reset();
-        await cargarTarjetas();
+        await cargarTarjetas(user);
         
         mostrarToast('Tarjeta agregada exitosamente', 'success');
     } catch (error) {
@@ -151,40 +197,61 @@ function mostrarToast(mensaje, tipo) {
 }
 
 // Inicializar eventos cuando el DOM esté cargado
-document.addEventListener('DOMContentLoaded', () => {
-    const formAgregarTarjeta = document.getElementById('formAgregarTarjeta');
-    if (formAgregarTarjeta) {
-        formAgregarTarjeta.addEventListener('submit', agregarTarjeta);
-    }
+try {
+    console.log("Intentando inicializar TarjetasDebito.js");
+    
+    document.addEventListener('DOMContentLoaded', async () => {
+        console.log("DOM cargado, esperando autenticación...");
+        
+        try {
+            // Esperar a que la autenticación esté lista
+            const user = await waitForAuth();
+            console.log("Autenticación lista, usuario:", user.uid);
 
-    // Formatear número de tarjeta mientras se escribe
-    const numeroTarjeta = document.getElementById('numeroTarjeta');
-    if (numeroTarjeta) {
-        numeroTarjeta.addEventListener('input', (e) => {
-            e.target.value = e.target.value.replace(/\D/g, '');
-        });
-    }
+            // Cargar tarjetas inicialmente
+            await cargarTarjetas(user);
 
-    // Formatear fecha de vencimiento mientras se escribe
-    const fechaVencimiento = document.getElementById('fechaVencimiento');
-    if (fechaVencimiento) {
-        fechaVencimiento.addEventListener('input', (e) => {
-            let value = e.target.value.replace(/\D/g, '');
-            if (value.length >= 2) {
-                value = value.slice(0, 2) + '/' + value.slice(2);
+            // Configurar el formulario de agregar tarjeta
+            const formAgregarTarjeta = document.getElementById('formAgregarTarjeta');
+            if (formAgregarTarjeta) {
+                console.log("Formulario de tarjeta encontrado, configurando evento...");
+                formAgregarTarjeta.addEventListener('submit', (event) => agregarTarjeta(event, user));
+            } else {
+                console.log("Formulario de tarjeta no encontrado en el DOM");
             }
-            e.target.value = value;
-        });
-    }
 
-    // Formatear CVV mientras se escribe
-    const cvv = document.getElementById('cvv');
-    if (cvv) {
-        cvv.addEventListener('input', (e) => {
-            e.target.value = e.target.value.replace(/\D/g, '');
-        });
-    }
+            // Formatear número de tarjeta mientras se escribe
+            const numeroTarjeta = document.getElementById('numeroTarjeta');
+            if (numeroTarjeta) {
+                numeroTarjeta.addEventListener('input', (e) => {
+                    e.target.value = e.target.value.replace(/\D/g, '');
+                });
+            }
 
-    // Cargar tarjetas al iniciar
-    cargarTarjetas();
-}); 
+            // Formatear fecha de vencimiento mientras se escribe
+            const fechaVencimiento = document.getElementById('fechaVencimiento');
+            if (fechaVencimiento) {
+                fechaVencimiento.addEventListener('input', (e) => {
+                    let value = e.target.value.replace(/\D/g, '');
+                    if (value.length >= 2) {
+                        value = value.slice(0, 2) + '/' + value.slice(2);
+                    }
+                    e.target.value = value;
+                });
+            }
+
+            // Formatear CVV mientras se escribe
+            const cvv = document.getElementById('cvv');
+            if (cvv) {
+                cvv.addEventListener('input', (e) => {
+                    e.target.value = e.target.value.replace(/\D/g, '');
+                });
+            }
+        } catch (error) {
+            console.error("Error en la autenticación:", error);
+            window.location.href = "../index.html";
+        }
+    });
+} catch (error) {
+    console.error("Error crítico en la inicialización de TarjetasDebito.js:", error);
+} 
