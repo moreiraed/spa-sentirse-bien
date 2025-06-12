@@ -254,6 +254,13 @@
                 <div class="modal-body">
                     <form id="formAgregarTarjeta">
                         <div class="mb-3">
+                            <label for="tipoTarjeta" class="form-label">Tipo de Tarjeta</label>
+                            <select class="form-select" id="tipoTarjeta" required>
+                                <option value="visa">Visa</option>
+                                <option value="mastercard">MasterCard</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
                             <label for="numeroTarjeta" class="form-label">Número de Tarjeta</label>
                             <input type="text" class="form-control" id="numeroTarjeta" maxlength="16" required>
                         </div>

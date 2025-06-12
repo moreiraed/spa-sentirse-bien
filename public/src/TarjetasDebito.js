@@ -33,6 +33,7 @@ async function cargarTarjetas(user) {
     }
 
     console.log("Iniciando carga de tarjetas para userId:", user.uid);
+    
     const contenedorTarjetas = document.getElementById('contenedorTarjetas');
     const mensajeSinTarjetas = document.getElementById('mensajeSinTarjetas');
     
@@ -53,6 +54,7 @@ async function cargarTarjetas(user) {
         if (querySnapshot.empty) {
             console.log("No se encontraron tarjetas");
             mensajeSinTarjetas.style.display = 'block';
+            contenedorTarjetas.innerHTML = '';
             return;
         }
 
@@ -76,13 +78,30 @@ function crearTarjetaElement(tarjeta, tarjetaId) {
     col.className = 'col-md-6 col-lg-4';
     
     const ultimos4 = tarjeta.numeroTarjeta.slice(-4);
+    const tipoTarjeta = tarjeta.tipoTarjeta || 'visa'; // Por defecto visa si no está especificado
+
+    // Definir estilos según el tipo de tarjeta
+    const estilosTarjeta = {
+        visa: {
+            background: 'linear-gradient(135deg, #1a1f71 0%, #0d47a1 100%)',
+            logo: 'bi-credit-card-2-front',
+            logoColor: '#ffffff'
+        },
+        mastercard: {
+            background: 'linear-gradient(135deg, #ff8008 0%, #ffc837 100%)',
+            logo: 'bi-credit-card',
+            logoColor: '#ffffff'
+        }
+    };
+
+    const estilo = estilosTarjeta[tipoTarjeta] || estilosTarjeta.visa;
 
     col.innerHTML = `
-        <div class="card h-100 border-0 shadow-sm" style="background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);">
+        <div class="card h-100 border-0 shadow-sm" style="background: ${estilo.background};">
             <div class="card-body text-white">
                 <div class="d-flex justify-content-between align-items-start mb-3">
                     <div>
-                        <h6 class="mb-1">Tarjeta de Débito</h6>
+                        <h6 class="mb-1">Tarjeta ${tipoTarjeta === 'visa' ? 'Visa' : 'MasterCard'}</h6>
                         <small class="text-white-50">Termina en ${ultimos4}</small>
                     </div>
                     <div class="dropdown">
@@ -98,7 +117,7 @@ function crearTarjetaElement(tarjeta, tarjetaId) {
                 </div>
                 <div class="mb-3">
                     <div class="d-flex align-items-center">
-                        <i class="bi bi-credit-card-2-front me-2"></i>
+                        <i class="bi ${estilo.logo} me-2" style="color: ${estilo.logoColor}"></i>
                         <span>**** **** **** ${ultimos4}</span>
                     </div>
                     <div class="d-flex align-items-center mt-2">
@@ -126,6 +145,7 @@ async function agregarTarjeta(event, user) {
     const numeroTarjeta = document.getElementById('numeroTarjeta').value;
     const fechaVencimiento = document.getElementById('fechaVencimiento').value;
     const cvv = document.getElementById('cvv').value;
+    const tipoTarjeta = document.getElementById('tipoTarjeta').value;
 
     try {
         console.log("Agregando tarjeta para el usuario:", user.uid);
@@ -136,6 +156,7 @@ async function agregarTarjeta(event, user) {
             numeroTarjeta,
             fechaVencimiento,
             cvv,
+            tipoTarjeta,
             fechaCreacion: new Date()
         });
         console.log("Tarjeta agregada exitosamente");
@@ -144,6 +165,8 @@ async function agregarTarjeta(event, user) {
         const modal = bootstrap.Modal.getInstance(document.getElementById('modalAgregarTarjeta'));
         modal.hide();
         document.getElementById('formAgregarTarjeta').reset();
+        
+        // Recargar las tarjetas con el usuario actual
         await cargarTarjetas(user);
         
         mostrarToast('Tarjeta agregada exitosamente', 'success');
@@ -154,20 +177,35 @@ async function agregarTarjeta(event, user) {
 }
 
 // Función para eliminar una tarjeta
-export async function eliminarTarjeta(tarjetaId) {
+async function eliminarTarjeta(tarjetaId) {
     if (!confirm('¿Estás seguro de que deseas eliminar esta tarjeta?')) {
         return;
     }
 
     try {
+        // Obtener el usuario actual antes de eliminar
+        const user = await waitForAuth();
+        if (!user) {
+            throw new Error("No hay usuario autenticado");
+        }
+
+        // Eliminar la tarjeta
         await deleteDoc(doc(db, 'tarjetas', tarjetaId));
-        await cargarTarjetas();
+        console.log("Tarjeta eliminada exitosamente");
+        
+        // Mostrar mensaje de éxito
         mostrarToast('Tarjeta eliminada exitosamente', 'success');
+        
+        // Recargar las tarjetas con el usuario actual
+        await cargarTarjetas(user);
     } catch (error) {
         console.error('Error al eliminar tarjeta:', error);
         mostrarToast('Error al eliminar la tarjeta', 'error');
     }
 }
+
+// Hacer la función eliminarTarjeta disponible globalmente
+window.eliminarTarjeta = eliminarTarjeta;
 
 // Función para mostrar toasts
 function mostrarToast(mensaje, tipo) {
