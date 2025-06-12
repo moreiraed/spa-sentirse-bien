@@ -13,6 +13,23 @@ import { db, auth } from "./firebase-config.js";
 let servicioReservaActual = null;
 let selectedProfesional = null;
 let selectedCard = null;
+let originalPrice = null;
+
+// Move monthNames array to global scope
+const monthNames = [
+  "Enero",
+  "Febrero",
+  "Marzo",
+  "Abril",
+  "Mayo",
+  "Junio",
+  "Julio",
+  "Agosto",
+  "Septiembre",
+  "Octubre",
+  "Noviembre",
+  "Diciembre",
+];
 
 export function initializeReservaModalFeatures() {
   console.log("Inicializando características del modal de reserva");
@@ -55,6 +72,8 @@ export function initializeReservaModalFeatures() {
   window.abrirModalReserva = async function (servicioData) {
     console.log("Abriendo modal con servicio:", servicioData);
     servicioReservaActual = servicioData;
+    // Extract price from service data
+    originalPrice = parseFloat(servicioData.price) || 0;
     resetForm(); // Resetear el formulario antes de abrir el modal
     await actualizarVistaReserva();
 
@@ -194,6 +213,11 @@ export function initializeReservaModalFeatures() {
       timeSlots.forEach((s) => s.classList.remove("selected"));
       this.classList.add("selected");
       selectedTime = this.textContent;
+      
+      // If we're on the last step, update the summary
+      if (currentStep === steps.length) {
+        updateReservationSummary();
+      }
     });
   });
 
@@ -218,6 +242,10 @@ export function initializeReservaModalFeatures() {
   document.querySelectorAll('input[name="paymentMethod"]').forEach((radio) => {
     radio.addEventListener("change", function () {
       selectedPayment = this.id;
+      // Update price display when payment method changes
+      if (currentStep === steps.length) {
+        updateReservationSummary();
+      }
     });
   });
 
@@ -246,6 +274,111 @@ export function initializeReservaModalFeatures() {
     });
   }
 
+  function generateCalendar(month, year) {
+    calendarMonth.textContent = `${monthNames[month]} ${year}`;
+
+    const firstDay = new Date(year, month, 1);
+    const lastDay = new Date(year, month + 1, 0);
+
+    calendarDays.innerHTML = "";
+
+    for (let i = 0; i < firstDay.getDay(); i++) {
+      const emptyDay = document.createElement("div");
+      emptyDay.classList.add("calendar-day", "disabled");
+      calendarDays.appendChild(emptyDay);
+    }
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    // Calculate minimum booking date (48 hours from now)
+    const minBookingDate = new Date(today);
+    minBookingDate.setHours(today.getHours() + 48);
+
+    for (let day = 1; day <= lastDay.getDate(); day++) {
+      const dayElement = document.createElement("div");
+      dayElement.classList.add("calendar-day");
+      dayElement.textContent = day;
+
+      const currentDate = new Date(year, month, day);
+      currentDate.setHours(0, 0, 0, 0);
+
+      // Check if the date is before the minimum booking date
+      if (currentDate < minBookingDate) {
+        dayElement.classList.add("disabled");
+        dayElement.style.opacity = "0.5";
+        dayElement.style.cursor = "not-allowed";
+        dayElement.title = "Las reservas deben hacerse con al menos 48 horas de anticipación";
+      } else {
+        dayElement.addEventListener("click", function () {
+          document
+            .querySelectorAll(".calendar-day")
+            .forEach((d) => d.classList.remove("selected"));
+          this.classList.add("selected");
+
+          const selectedDay = this.textContent;
+          selectedDate = `${selectedDay} de ${monthNames[month]}, ${year}`;
+        });
+      }
+
+      calendarDays.appendChild(dayElement);
+    }
+  }
+
+  // Add a function to validate the selected date and time
+  function validateDateTime() {
+    if (!selectedDate || !selectedTime) return false;
+
+    try {
+      // Parse the date (format: "15 de Junio, 2025")
+      const dateParts = selectedDate.split(" de ");
+      const day = parseInt(dateParts[0]);
+      
+      // Split month and year (format: "Junio, 2025")
+      const monthYearParts = dateParts[1].split(", ");
+      const month = monthYearParts[0];
+      const year = parseInt(monthYearParts[1]);
+      
+      const monthIndex = monthNames.indexOf(month);
+      if (monthIndex === -1) {
+        console.error("Invalid month:", month);
+        return false;
+      }
+
+      // Create date object with the correct year
+      const selectedDateTime = new Date(year, monthIndex, day);
+      
+      // Parse the time (format: "10:30 AM")
+      const [time, period] = selectedTime.split(" ");
+      let [hours, minutes] = time.split(":").map(Number);
+      
+      // Convert to 24-hour format
+      if (period === "PM" && hours !== 12) {
+        hours += 12;
+      } else if (period === "AM" && hours === 12) {
+        hours = 0;
+      }
+      
+      selectedDateTime.setHours(hours, minutes, 0, 0);
+
+      // Calculate minimum booking time (48 hours from now)
+      const now = new Date();
+      const minBookingDateTime = new Date(now);
+      minBookingDateTime.setHours(now.getHours() + 48);
+
+      console.log("Selected Date Parts:", { day, month, year });
+      console.log("Selected DateTime:", selectedDateTime);
+      console.log("Min Booking DateTime:", minBookingDateTime);
+      console.log("Is valid:", selectedDateTime >= minBookingDateTime);
+
+      return selectedDateTime >= minBookingDateTime;
+    } catch (error) {
+      console.error("Error validating date and time:", error);
+      return false;
+    }
+  }
+
+  // Modify the nextStep function to include better validation
   function nextStep() {
     console.log("Intentando avanzar al siguiente paso");
     console.log("Paso actual:", currentStep);
@@ -265,9 +398,17 @@ export function initializeReservaModalFeatures() {
       return;
     }
 
-    if (currentStep === 3 && !selectedTime) {
-      alert("Por favor selecciona un horario");
-      return;
+    if (currentStep === 3) {
+      if (!selectedTime) {
+        alert("Por favor selecciona un horario");
+        return;
+      }
+      
+      // Validate the selected date and time
+      if (!validateDateTime()) {
+        alert("Las reservas deben hacerse con al menos 48 horas de anticipación");
+        return;
+      }
     }
 
     if (currentStep === 4) {
@@ -311,64 +452,6 @@ export function initializeReservaModalFeatures() {
     }
   }
 
-  function generateCalendar(month, year) {
-    const monthNames = [
-      "Enero",
-      "Febrero",
-      "Marzo",
-      "Abril",
-      "Mayo",
-      "Junio",
-      "Julio",
-      "Agosto",
-      "Septiembre",
-      "Octubre",
-      "Noviembre",
-      "Diciembre",
-    ];
-    calendarMonth.textContent = `${monthNames[month]} ${year}`;
-
-    const firstDay = new Date(year, month, 1);
-    const lastDay = new Date(year, month + 1, 0);
-
-    calendarDays.innerHTML = "";
-
-    for (let i = 0; i < firstDay.getDay(); i++) {
-      const emptyDay = document.createElement("div");
-      emptyDay.classList.add("calendar-day", "disabled");
-      calendarDays.appendChild(emptyDay);
-    }
-
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-
-    for (let day = 1; day <= lastDay.getDate(); day++) {
-      const dayElement = document.createElement("div");
-      dayElement.classList.add("calendar-day");
-      dayElement.textContent = day;
-
-      const currentDate = new Date(year, month, day);
-
-      if (currentDate < today) {
-        dayElement.classList.add("disabled");
-        dayElement.style.opacity = "0.5";
-        dayElement.style.cursor = "not-allowed";
-      } else {
-        dayElement.addEventListener("click", function () {
-          document
-            .querySelectorAll(".calendar-day")
-            .forEach((d) => d.classList.remove("selected"));
-          this.classList.add("selected");
-
-          const selectedDay = this.textContent;
-          selectedDate = `${selectedDay} de ${monthNames[month]}, ${year}`;
-        });
-      }
-
-      calendarDays.appendChild(dayElement);
-    }
-  }
-
   function updateReservationSummary() {
     console.log("Actualizando resumen de reserva");
     console.log("Profesional:", selectedProfesional);
@@ -382,9 +465,15 @@ export function initializeReservaModalFeatures() {
     document.getElementById("summary-hora").textContent = selectedTime;
 
     let paymentText = "";
+    let finalPrice = originalPrice;
+    let discountApplied = false;
+
     switch (selectedPayment) {
       case "debitCard":
         paymentText = selectedCard ? `Tarjeta de débito (****${selectedCard.ultimos4})` : "Tarjeta de débito";
+        // Apply 15% discount for debit card
+        finalPrice = originalPrice * 0.85;
+        discountApplied = true;
         break;
       case "paypal":
         paymentText = "PayPal";
@@ -395,6 +484,20 @@ export function initializeReservaModalFeatures() {
     }
 
     document.getElementById("summary-pago").textContent = paymentText;
+
+    // Update price display in summary
+    const priceElement = document.getElementById("summary-precio");
+    if (priceElement) {
+      if (discountApplied) {
+        priceElement.innerHTML = `
+          <span class="text-decoration-line-through text-muted me-2">$${originalPrice.toFixed(2)}</span>
+          <span class="text-success">$${finalPrice.toFixed(2)}</span>
+          <span class="badge bg-success ms-2">-15%</span>
+        `;
+      } else {
+        priceElement.textContent = `$${originalPrice.toFixed(2)}`;
+      }
+    }
   }
 
   async function confirmReservation() {
