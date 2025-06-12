@@ -194,14 +194,11 @@ async function mostrarFormularioAgregar() {
 // Función principal para cargar los servicios (puede filtrar por categoría)
 async function cargarServicios(category = null) {
   const serviciosContainer = document.getElementById("servicios-container");
-  serviciosContainer.innerHTML = `
-  <div class="col-12 text-center my-5">
-    <div class="spinner-grow" role="status">
-      <span class="visually-hidden">Cargando...</span>
-    </div>
-    <p class="mt-2 custom-loader-text">Cargando servicios...</p>
-  </div>
-  `;
+  const serviciosLoader = document.getElementById("servicios-loader");
+
+  // Mostrar loader y ocultar contenedor
+  serviciosLoader.style.display = "block";
+  serviciosContainer.style.display = "none";
 
   try {
     let q;
@@ -229,6 +226,10 @@ async function cargarServicios(category = null) {
     if (isAdmin) {
       document.querySelector('.add-service-card')?.addEventListener("click", mostrarFormularioAgregar);
     }
+  } finally {
+    // Ocultar loader y mostrar contenedor
+    serviciosLoader.style.display = "none";
+    serviciosContainer.style.display = "flex";
   }
 }
 
@@ -248,8 +249,6 @@ function renderServices(querySnapshot) {
   } else {
     querySnapshot.forEach((doc) => {
       const servicio = doc.data();
-
-      // Crear la tarjeta de servicio usando la función crearCardServicio
       crearCardServicio(servicio, doc.id);
     });
   }

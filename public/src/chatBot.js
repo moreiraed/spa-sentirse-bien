@@ -26,7 +26,7 @@ chatbotClose.addEventListener("click", () => {
 // Respuestas del bot (con opciones interactivas)
 const botResponses = {
   inicio: `
-        ¡Hola! 😊 Soy el asistente del <strong>Spa Relax</strong>. ¿En qué puedo ayudarte?<br><br>
+        ¡Hola! 😊 Soy el asistente del <strong>Spa Sentirse Bien</strong>. ¿En qué puedo ayudarte?<br><br>
         <div class="bot-options">
             <button class="btn btn-sm btn-outline-success" onclick="sendOption('1')">
                 <i class="fas fa-spa"></i> Servicios
