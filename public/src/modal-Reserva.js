@@ -17,10 +17,45 @@ let selectedCard = null;
 export function initializeReservaModalFeatures() {
   console.log("Inicializando características del modal de reserva");
 
+  function resetForm() {
+    // Resetear variables de estado
+    currentStep = 1;
+    selectedDate = null;
+    selectedTime = null;
+    selectedPayment = "creditCard";
+    selectedProfesional = null;
+    selectedCard = null;
+
+    // Resetear UI
+    document.querySelectorAll(".reserva-step").forEach(step => {
+      step.classList.remove("active");
+    });
+    document.querySelector(`.reserva-step[data-step="1"]`).classList.add("active");
+
+    document.querySelectorAll(".spa-step").forEach(step => {
+      step.classList.remove("active", "completed");
+    });
+    document.querySelector(`.spa-step[data-step="1"]`).classList.add("active");
+
+    // Resetear selecciones
+    document.querySelectorAll(".profesional-card").forEach(card => {
+      card.classList.remove("selected");
+    });
+    document.querySelectorAll(".btn-time-slot").forEach(slot => {
+      slot.classList.remove("selected");
+    });
+    document.querySelectorAll('input[name="paymentMethod"]').forEach(radio => {
+      radio.checked = radio.id === "creditCard";
+    });
+
+    // Resetear botones
+    updateButtons();
+  }
+
   window.abrirModalReserva = async function (servicioData) {
     console.log("Abriendo modal con servicio:", servicioData);
     servicioReservaActual = servicioData;
-    selectedProfesional = null;
+    resetForm(); // Resetear el formulario antes de abrir el modal
     await actualizarVistaReserva();
 
     const reservaModal = new bootstrap.Modal(
@@ -371,6 +406,15 @@ export function initializeReservaModalFeatures() {
         return;
       }
 
+      // Mostrar loader en el botón
+      const btnConfirm = document.querySelector(".btn-confirm");
+      const originalText = btnConfirm.innerHTML;
+      btnConfirm.innerHTML = `
+        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+        Procesando...
+      `;
+      btnConfirm.disabled = true;
+
       // Obtener datos del usuario
       const userDoc = await getDoc(doc(db, "users", user.uid));
       if (!userDoc.exists()) {
@@ -400,42 +444,51 @@ export function initializeReservaModalFeatures() {
 
       const docRef = await addDoc(collection(db, "reservas"), reservaData);
 
-      alert("Reserva confirmada con éxito.");
+      // Cerrar el modal
+      const modal = bootstrap.Modal.getInstance(document.getElementById("reservaModal"));
+      modal.hide();
 
-      setTimeout(() => {
-        modal.hide();
-        resetForm();
-      }, 2000);
+      // Mostrar toast de éxito
+      const toastContainer = document.createElement('div');
+      toastContainer.className = 'position-fixed bottom-0 end-0 p-3';
+      toastContainer.style.zIndex = '11100';
+      toastContainer.innerHTML = `
+        <div id="reservaToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true" style="background-color: white; box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);">
+          <div class="toast-header bg-success text-white">
+            <i class="fas fa-check-circle me-2"></i>
+            <strong class="me-auto">¡Reserva exitosa!</strong>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+          </div>
+          <div class="toast-body" style="background-color: white;">
+            Tu reserva ha sido confirmada. Y se agrego en el apartado de <strong>Turnos</strong>.
+          </div>
+        </div>
+      `;
+      document.body.appendChild(toastContainer);
+
+      const toast = new bootstrap.Toast(document.getElementById('reservaToast'), {
+        autohide: true,
+        delay: 5000
+      });
+      toast.show();
+
+      // Limpiar el toast después de que se oculte
+      document.getElementById('reservaToast').addEventListener('hidden.bs.toast', function () {
+        toastContainer.remove();
+      });
+
+      // Resetear el formulario
+      resetForm();
 
     } catch (error) {
       console.error("Error al guardar la reserva:", error);
       alert("Error al guardar la reserva. Por favor, intenta nuevamente.");
+    } finally {
+      // Restaurar el botón
+      const btnConfirm = document.querySelector(".btn-confirm");
+      btnConfirm.innerHTML = originalText;
+      btnConfirm.disabled = false;
     }
-  }
-
-  function resetForm() {
-    currentStep = 1;
-    selectedProfesional = null;
-    selectedDate = null;
-    selectedTime = null;
-    selectedPayment = "creditCard";
-    selectedCard = null;
-
-    steps.forEach((step) => step.classList.remove("active"));
-    document
-      .querySelector(`.reserva-step[data-step="1"]`)
-      .classList.add("active");
-
-    document.querySelectorAll(".profesional-card").forEach(card => card.classList.remove("selected"));
-    timeSlots.forEach((slot) => slot.classList.remove("selected"));
-    document.querySelector("#creditCard").checked = true;
-    document.querySelector("#comentarios").value = "";
-
-    currentMonth = new Date().getMonth();
-    currentYear = new Date().getFullYear();
-    generateCalendar(currentMonth, currentYear);
-
-    updateButtons();
   }
 
   // Función para cargar las tarjetas del usuario
