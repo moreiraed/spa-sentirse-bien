@@ -14,66 +14,89 @@ import { db, auth } from "./firebase-config.js";
 
 // Inyectar CSS dinámicamente
 const css = `
-  /* Estilos para el contenedor de los turnos */
   #lista-turnos {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr); /* 3 columnas */
-    gap: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
     margin-top: 20px;
+    padding-bottom: 100px;
   }
 
-  /* Estilo individual para cada turno */
   .turno-item {
-    padding: 20px;
-    border-radius: 12px;
-    background-color: #f8f9fa;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    background: #fff;
+    border-radius: 18px;
+    box-shadow: 0 4px 16px rgba(168, 159, 145, 0.08);
+    padding: 1.5rem 1.5rem 1rem 1.5rem;
+    margin-bottom: 0;
+    border: 1.5px solid #D9D2C5;
+    transition: box-shadow 0.2s, border-color 0.2s;
+    position: relative;
   }
-
   .turno-item:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 8px 24px rgba(168, 159, 145, 0.15);
+    border-color: #A89F91;
   }
-
-  /* Colores para el fondo de los turnos */
-  .turno-item-info {
-    background-color: #e9f7df; /* Fondo verde suave */
+  .turno-fecha {
+    font-size: 1.1em;
+    color: #A89F91;
+    font-weight: 600;
+    margin-bottom: 8px;
   }
-
-  .turno-item-warning {
-    background-color: #ffefdb; /* Fondo amarillo suave */
+  .turno-servicio {
+    font-size: 1.15em;
+    color: #222;
+    font-weight: 500;
+    margin-bottom: 6px;
   }
-
-  .turno-item-danger {
-    background-color: #ffdddd; /* Fondo rojo suave */
+  .turno-profesional {
+    color: #666;
+    margin-bottom: 6px;
   }
-
-  /* Estilo para el botón de cancelar */
-  .cancelar-btn {
-    background-color: #ff4d4d;
-    color: white;
-    border: none;
-    padding: 8px 15px;
+  .turno-hora {
+    color: #A89F91;
+    font-weight: 500;
+    margin-bottom: 8px;
+  }
+  .turno-comentario {
+    background: #f8f9fa;
+    color: #4F4F4F;
     border-radius: 8px;
-    transition: background-color 0.3s ease;
+    padding: 8px 12px;
+    margin: 10px 0 8px 0;
+    font-size: 0.98em;
   }
-
+  .turno-metodo-pago {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 8px 0 0 0;
+    color: #A89F91;
+    font-weight: 500;
+  }
+  .turno-metodo-pago i {
+    color: #A89F91;
+  }
+  .turno-timestamp {
+    font-size: 0.85em;
+    color: #888;
+    margin-top: 8px;
+  }
+  .cancelar-btn {
+    background-color:  #6F5448;
+    color: #fff;
+    border: none;
+    padding: 8px 0;
+    border-radius: 8px;
+    width: 100%;
+    margin-top: 18px;
+    font-weight: 500;
+    transition: background 0.2s, box-shadow 0.2s;
+    box-shadow: 0 2px 8px rgba(168, 159, 145, 0.08);
+  }
   .cancelar-btn:hover {
-    background-color: #cc3f3f;
-  }
-
-  /* Animación de carga */
-  .alert-info {
-    font-size: 16px;
-    font-weight: bold;
-  }
-
-  @media (max-width: 768px) {
-    /* Estilos para el contenedor de los turnos */
-    #lista-turnos {
-      grid-template-columns: repeat(1, 1fr); /* 1 columna */
-    }
+    background-color:rgba(116, 58, 4, 0.6);
+    border-color: #6F5448;
+    color: black;
   }
 `;
 
@@ -135,27 +158,46 @@ onAuthStateChanged(auth, async (user) => {
     // Creamos el contenedor para el turno
     const div = document.createElement("div");
     div.classList.add(
-      "turno-item",
-      "col-12",
-      "mb-3",
-      turno.estado === "activo" ? "turno-item-info" : "turno-item-warning"
+      "turno-item"
     );
 
     // Añadimos el contenido dinámico de cada turno
     div.innerHTML = `
-      <p><strong>Fecha:</strong> ${turno.fecha}</p>
-      <p><strong>Hora:</strong> ${turno.hora}</p>
-      <p><strong>Servicio:</strong> ${turno.servicio}</p>
-      <p><strong>Comentario:</strong> ${
-        turno.comentario || "Sin comentario"
-      }</p>
-      <p><strong>Medio de Pago:</strong> ${
-        turno.metodoPago || "No especificado"
-      }</p>
-      <p class="text-muted"><small>Reservado el ${new Date(
-        turno.timestamp?.toDate()
-      ).toLocaleString()}</small></p>
-      <button class="btn btn-danger btn-sm cancelar-btn">Cancelar</button>
+      <div class="turno-info">
+        <div class="turno-fecha">
+          <i class="bi bi-calendar-date me-2"></i>
+          ${turno.fecha}
+        </div>
+        <div class="turno-servicio">
+          <i class="bi bi-spa me-2"></i>
+          ${turno.servicio}
+        </div>
+        <div class="turno-profesional">
+          <i class="bi bi-person me-2"></i>
+          ${turno.profesional}
+        </div>
+        <div class="turno-hora">
+          <i class="bi bi-clock me-2"></i>
+          ${turno.hora}
+        </div>
+        ${turno.comentario ? `
+          <div class="turno-comentario">
+            <i class="bi bi-chat-left-text me-2"></i>
+            ${turno.comentario}
+          </div>
+        ` : ''}
+        <div class="turno-metodo-pago">
+          <i class="bi bi-credit-card"></i>
+          ${turno.pago || "No especificado"}
+        </div>
+        <div class="turno-timestamp">
+          <i class="bi bi-clock-history me-2"></i>
+          Reservado el ${new Date(turno.timestamp?.toDate()).toLocaleString()}
+        </div>
+      </div>
+      <button class="cancelar-btn">
+        <i class="bi bi-x-circle me-2"></i>Cancelar turno
+      </button>
     `;
 
     // Añadimos el evento al botón "Cancelar"

@@ -23,11 +23,77 @@
             margin: 0;
             display: flex;
             flex-direction: column;
-            padding-top: 50px;
+            padding-top: 20px;
+            background: var(--color-principal-fondo, #F5F0E6);
         }
 
         main {
             flex: 1;
+            padding: 0 1.5rem;
+            margin-bottom: 4rem;
+        }
+
+        .servicio-fondo {
+            background-color: #4F4F4F ;
+            border-radius: 24px;
+            box-shadow: 0 4px 24px rgba(40, 167, 69, 0.07);
+            padding: 2.5rem 2rem;
+        }
+
+        .servicio-titulo {
+            font-family: 'quicksand', sans-serif;
+            color: #4F463B;
+            background-color: #D9D2C5;
+            padding: 1.5rem;
+            text-align: center;
+            margin: -2rem -2rem 2rem -2rem;
+            border-radius: 24px 24px 0 0;
+            font-size: 2.5rem;
+            font-weight: 400;
+        }
+
+        .servicio-texto {
+            color: #4F4F4F;
+        }
+
+        .btn-spa-primary {
+            background-color: #4F4F4F;
+            color: #fff;
+            border: none;
+        }
+
+        .btn-spa-primary:hover {
+            background-color: #4F4F4F;
+            color: #fff;
+        }
+
+        .turnos-container {
+            background: #fff;
+            border-radius: 24px;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+            margin-top: 2rem;
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+
+        #lista-turnos {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 24px;
+            padding-bottom: 2rem;
+        }
+
+        .turno-item {
+            background: #fff;
+            border-radius: 18px;
+            box-shadow: 0 4px 16px rgba(168, 159, 145, 0.08);
+            padding: 1.5rem 1.5rem 1rem 1.5rem;
+            margin-bottom: 0;
+            border: 1.5px solid #D9D2C5;
+            transition: box-shadow 0.2s, border-color 0.2s;
+            position: relative;
+            height: 100%;
         }
     </style>
 </head>
@@ -100,13 +166,10 @@
 
     <!-- Turnos -->
     <main class="container mt-5">
-        <h2>Mis Turnos</h2>
-        <!-- Cartel de Cargando -->
-        <div id="loading" class="text-center my-5" style="display: none;">
-            <h4>Cargando...</h4>
+        <div class="turnos-container">
+            <h2 class="servicio-titulo">Mis Turnos</h2>
+            <div id="lista-turnos" class="mt-4"></div>
         </div>
-        <!-- Lista de turnos -->
-        <div id="lista-turnos" class="mt-4"></div>
     </main>
 
     <div id="toast-container" aria-live="polite" aria-atomic="true" class="position-fixed top-0 end-0 p-3"></div>

@@ -550,41 +550,80 @@ export function initializeReservaModalFeatures() {
     col.className = 'col-12';
     
     const ultimos4 = tarjeta.numeroTarjeta.slice(-4);
+    const tipoTarjeta = tarjeta.tipoTarjeta || 'visa'; // Por defecto visa si no está especificado
+
+    // Definir estilos según el tipo de tarjeta
+    const estilosTarjeta = {
+      visa: {
+        background: 'linear-gradient(135deg, #1a1f71 0%, #0d47a1 100%)',
+        logo: 'bi-credit-card-2-front',
+        logoColor: '#ffffff'
+      },
+      mastercard: {
+        background: 'linear-gradient(135deg, #ff8008 0%, #ffc837 100%)',
+        logo: 'bi-credit-card',
+        logoColor: '#ffffff'
+      }
+    };
+
+    const estilo = estilosTarjeta[tipoTarjeta] || estilosTarjeta.visa;
 
     col.innerHTML = `
-      <div class="card h-100 border-0 shadow-sm tarjeta-seleccionable" data-tarjeta-id="${tarjetaId}" style="background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);">
+      <div class="card h-100 border-0 shadow-sm tarjeta-seleccionable" data-tarjeta-id="${tarjetaId}" style="background: ${estilo.background}; cursor: pointer;">
         <div class="card-body text-white">
-          <div class="d-flex justify-content-between align-items-center">
+          <div class="d-flex justify-content-between align-items-start mb-3">
             <div>
-              <h6 class="mb-1">Tarjeta de Débito</h6>
+              <h6 class="mb-1">Tarjeta ${tipoTarjeta === 'visa' ? 'Visa' : 'MasterCard'}</h6>
               <small class="text-white-50">Termina en ${ultimos4}</small>
             </div>
             <div class="form-check">
               <input class="form-check-input" type="radio" name="tarjetaSeleccionada" value="${tarjetaId}">
             </div>
           </div>
+          <div class="mb-3">
+            <div class="d-flex align-items-center">
+              <i class="bi ${estilo.logo} me-2" style="color: ${estilo.logoColor}"></i>
+              <span>**** **** **** ${ultimos4}</span>
+            </div>
+            <div class="d-flex align-items-center mt-2">
+              <i class="bi bi-calendar me-2"></i>
+              <span>Vence: ${tarjeta.fechaVencimiento}</span>
+            </div>
+          </div>
         </div>
       </div>
     `;
 
-    // Agregar evento de selección
+    // Agregar evento de selección a toda la tarjeta
+    const card = col.querySelector('.card');
     const radio = col.querySelector('input[type="radio"]');
-    radio.addEventListener('change', function() {
-      if (this.checked) {
-        selectedCard = {
-          id: tarjetaId,
-          ultimos4: ultimos4
-        };
-        document.getElementById('btnConfirmarTarjeta').disabled = false;
-        // Remover selección de otras tarjetas
-        document.querySelectorAll('.tarjeta-seleccionable').forEach(card => {
-          if (card.dataset.tarjetaId !== tarjetaId) {
-            card.classList.remove('selected');
-          }
-        });
-        col.querySelector('.card').classList.add('selected');
+
+    function selectCard() {
+      radio.checked = true;
+      selectedCard = {
+        id: tarjetaId,
+        ultimos4: ultimos4
+      };
+      document.getElementById('btnConfirmarTarjeta').disabled = false;
+      // Remover selección de otras tarjetas
+      document.querySelectorAll('.tarjeta-seleccionable').forEach(c => {
+        if (c.dataset.tarjetaId !== tarjetaId) {
+          c.classList.remove('selected');
+        }
+      });
+      card.classList.add('selected');
+    }
+
+    // Agregar evento de clic a toda la tarjeta
+    card.addEventListener('click', function(e) {
+      // Evitar la propagación del evento si se hace clic en el radio button
+      if (e.target !== radio) {
+        selectCard();
       }
     });
+
+    // Mantener el evento del radio button también
+    radio.addEventListener('change', selectCard);
 
     return col;
   }
