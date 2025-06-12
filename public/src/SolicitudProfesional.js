@@ -36,6 +36,15 @@ export async function solicitarRolProfesional(event) {
         return;
     }
 
+    // Obtener el botón de envío y mostrar loader
+    const submitButton = document.querySelector('#formSolicitudProfesional button[type="submit"]');
+    const originalButtonText = submitButton.innerHTML;
+    submitButton.innerHTML = `
+        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+        Enviando...
+    `;
+    submitButton.disabled = true;
+
     try {
         // Actualizar datos del usuario
         const userRef = doc(db, "users", user.uid);
@@ -51,6 +60,10 @@ export async function solicitarRolProfesional(event) {
             }
         });
 
+        // Cerrar el modal
+        const modal = bootstrap.Modal.getInstance(document.getElementById("modalSolicitudProfesional"));
+        modal.hide();
+
         // Actualizar UI
         const btnSolicitar = document.getElementById("btnSolicitarProfesional");
         btnSolicitar.textContent = "Verificación en proceso";
@@ -62,6 +75,10 @@ export async function solicitarRolProfesional(event) {
     } catch (error) {
         console.error("Error al procesar la solicitud:", error);
         mostrarToast("Error al procesar la solicitud", "danger");
+        
+        // Restaurar el botón en caso de error
+        submitButton.innerHTML = originalButtonText;
+        submitButton.disabled = false;
     }
 }
 

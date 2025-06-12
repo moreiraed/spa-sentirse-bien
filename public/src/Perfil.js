@@ -128,16 +128,30 @@ onAuthStateChanged(auth, async (user) => {
     document
       .getElementById("btnGuardarPerfil")
       .addEventListener("click", async () => {
+        const btnGuardar = document.getElementById("btnGuardarPerfil");
+        const originalButtonText = btnGuardar.innerHTML;
+        
+        // Mostrar loader y deshabilitar botón
+        btnGuardar.innerHTML = `
+          <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+          Guardando...
+        `;
+        btnGuardar.disabled = true;
+
         const nombre = document.getElementById("nombre").value;
         const apellido = document.getElementById("apellido").value;
         const dni = document.getElementById("dni").value;
 
         try {
           await setDoc(userRef, { nombre, apellido, dni }, { merge: true });
-          alert("Datos guardados correctamente.");
+          mostrarToast("Datos guardados correctamente", "success");
         } catch (error) {
           console.error("Error al guardar perfil:", error);
-          alert("Hubo un error al guardar tus datos.");
+          mostrarToast("Hubo un error al guardar tus datos", "danger");
+        } finally {
+          // Restaurar el botón
+          btnGuardar.innerHTML = originalButtonText;
+          btnGuardar.disabled = false;
         }
       });
 
