@@ -345,35 +345,25 @@ export function initializeReservaModalFeatures() {
         return false;
       }
 
-      // Create date object with the correct year
-      const selectedDateTime = new Date(year, monthIndex, day);
-      
-      // Parse the time (format: "10:30 AM")
-      const [time, period] = selectedTime.split(" ");
-      let [hours, minutes] = time.split(":").map(Number);
-      
-      // Convert to 24-hour format
-      if (period === "PM" && hours !== 12) {
-        hours += 12;
-      } else if (period === "AM" && hours === 12) {
-        hours = 0;
-      }
-      
-      selectedDateTime.setHours(hours, minutes, 0, 0);
+      // Create date object for selected date (set to start of day)
+      const selectedDateObj = new Date(year, monthIndex, day);
+      selectedDateObj.setHours(0, 0, 0, 0);
 
-      // Calculate minimum booking time (48 hours from now)
-      const now = new Date();
-      const minBookingDateTime = new Date(now);
-      minBookingDateTime.setHours(now.getHours() + 48);
+      // Get current date (set to start of day)
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
 
-      console.log("Selected Date Parts:", { day, month, year });
-      console.log("Selected DateTime:", selectedDateTime);
-      console.log("Min Booking DateTime:", minBookingDateTime);
-      console.log("Is valid:", selectedDateTime >= minBookingDateTime);
+      // Calculate minimum booking date (48 hours = 2 days)
+      const minBookingDate = new Date(today);
+      minBookingDate.setDate(today.getDate() + 2);
 
-      return selectedDateTime >= minBookingDateTime;
+      console.log("Selected Date:", selectedDateObj);
+      console.log("Min Booking Date:", minBookingDate);
+      console.log("Is valid:", selectedDateObj >= minBookingDate);
+
+      return selectedDateObj >= minBookingDate;
     } catch (error) {
-      console.error("Error validating date and time:", error);
+      console.error("Error validating date:", error);
       return false;
     }
   }
