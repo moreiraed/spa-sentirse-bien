@@ -77,6 +77,23 @@ const css = `
   .turno-metodo-pago i {
     color: #A89F91;
   }
+  .turno-estado-pago {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 0.9em;
+    font-weight: 500;
+    margin-top: 8px;
+  }
+  .turno-estado-pago.abonado {
+    background-color: rgba(40, 167, 69, 0.1);
+    color: #28a745;
+  }
+  .turno-estado-pago.pendiente {
+    background-color: rgba(255, 193, 7, 0.1);
+    color: #ffc107;
+  }
   .turno-timestamp {
     font-size: 0.85em;
     color: #888;
@@ -233,6 +250,10 @@ onAuthStateChanged(auth, async (user) => {
         <div class="turno-metodo-pago">
           <i class="bi bi-credit-card"></i>
           ${turno.pago || "No especificado"}
+        </div>
+        <div class="turno-estado-pago ${turno.pago === 'debitCard' ? 'abonado' : 'pendiente'}">
+          <i class="bi ${turno.pago === 'debitCard' ? 'bi-check-circle' : 'bi-clock'} me-2"></i>
+          ${turno.pago === 'debitCard' ? 'Abonado' : 'Pago pendiente'}
         </div>
         <div class="turno-timestamp">
           <i class="bi bi-clock-history me-2"></i>
