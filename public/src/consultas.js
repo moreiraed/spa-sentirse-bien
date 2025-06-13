@@ -59,7 +59,7 @@ function mostrarConsultas() {
       : new Date(consulta.fecha).toLocaleDateString();
 
     const card = document.createElement("div");
-    card.className = `card mb-3 ${consulta.atendido ? 'border-success' : 'border-warning'}`;
+    card.className = `card mb-3 consulta-card ${consulta.atendido ? 'atendido' : 'pendiente'}`;
     card.innerHTML = `
       <div class="card-body">
         <div class="d-flex justify-content-between align-items-start">
@@ -67,14 +67,14 @@ function mostrarConsultas() {
             <h5 class="card-title">${consulta.nombre}</h5>
             <h6 class="card-subtitle mb-2 text-muted">${consulta.tipoConsulta}</h6>
           </div>
-          <span class="badge ${consulta.atendido ? 'bg-success' : 'bg-warning'}">
+          <span class="badge consulta-status ${consulta.atendido ? 'atendido' : 'pendiente'}">
             ${consulta.atendido ? 'Atendido' : 'Pendiente'}
           </span>
         </div>
         <p class="card-text">${consulta.mensaje.substring(0, 100)}${consulta.mensaje.length > 100 ? '...' : ''}</p>
         <div class="d-flex justify-content-between align-items-center">
           <small class="text-muted">Fecha: ${fecha}</small>
-          <button class="btn btn-primary btn-sm" onclick="verDetalleConsulta('${consulta.id}')">
+          <button class="btn btn-sm btn-details me-2" onclick="verDetalleConsulta('${consulta.id}')">
             Ver Detalles
           </button>
         </div>

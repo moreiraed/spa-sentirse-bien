@@ -12,39 +12,29 @@ import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.0/fi
 
 // Verificar si el usuario es administrador
 async function verificarAdmin(user) {
-    // Si no hay usuario, retornamos false (no es admin)
     if (!user) return false;
 
-    // Mostrar el loader mientras verificamos
     document.getElementById('loading-container').style.display = 'flex';
 
-    // Obtenemos el documento del usuario desde Firebase
     const userDoc = await getDoc(doc(db, "users", user.uid));
     
-    // Si no existe el documento del usuario, retornamos false (no es admin)
     if (!userDoc.exists()) {
         document.getElementById('loading-container').style.display = 'none';
         return false;
     }
 
-    // Obtenemos los datos del usuario
     const userData = userDoc.data();
 
-    // Si es admin, mostramos el contenido
     if (userData.rol === "admin") {
-        document.getElementById('loading-container').style.display = 'none';  // Ocultamos el loader
-        document.getElementById('contenido').style.display = 'block';          // Mostramos el contenido
+        document.getElementById('loading-container').style.display = 'none';
+        document.getElementById('contenido').style.display = 'block';
         return true;
     } else {
-        // Si no es admin, mostramos el loader y luego redirigimos o mostramos mensaje
-        document.getElementById('loading-container').style.display = 'none'; // Ocultamos el loader
+        document.getElementById('loading-container').style.display = 'none';
         alert("No tienes permisos para acceder a esta página.");
-        // Puedes redirigir a otra página aquí si lo deseas
-        // window.location.href = "/no-autorizado"; 
         return false;
     }
 }
-
 // Cargar solicitudes pendientes
 async function cargarSolicitudes() {
     const solicitudesRef = collection(db, "users");
@@ -65,18 +55,100 @@ async function cargarSolicitudes() {
             <td>${solicitud.profesion}</td>
             <td>${solicitud.matricula}</td>
             <td>${new Date(solicitud.fechaSolicitud.toDate()).toLocaleDateString()}</td>
-            <td>
-                <button class="btn btn-sm btn-success" onclick="aprobarSolicitud('${doc.id}')">
-                    Aprobar
+            <td class="text-nowrap">
+                <button class="btn btn-sm btn-details me-2" onclick="aprobarSolicitud('${doc.id}')">
+                    <i class="bi bi-check-circle"></i> Aprobar
                 </button>
-                <button class="btn btn-sm btn-danger" onclick="rechazarSolicitud('${doc.id}')">
-                    Rechazar
+                <button class="btn btn-sm btn-delete" onclick="rechazarSolicitud('${doc.id}')">
+                    <i class="bi bi-x-circle"></i> Rechazar
                 </button>
             </td>
         `;
         tbody.appendChild(tr);
     });
 }
+
+// Cargar profesionales ordenados alfabéticamente (versión simplificada)
+async function cargarProfesionales() {
+    const profesionalesRef = collection(db, "users");
+    const q = query(profesionalesRef, where("rol", "==", "profesional"));
+    const querySnapshot = await getDocs(q);
+    
+    const profesionales = [];
+    querySnapshot.forEach((doc) => {
+        const data = doc.data();
+        profesionales.push({
+            id: doc.id,
+            ...data,
+            nombreCompleto: `${data.nombre} ${data.apellido}`.toLowerCase(),
+            fechaSolicitud: data.solicitudProfesional?.fechaSolicitud || null
+        });
+    });
+    
+    profesionales.sort((a, b) => a.nombreCompleto.localeCompare(b.nombreCompleto));
+    
+    const tbody = document.getElementById("profesionalesTableBody");
+    tbody.innerHTML = "";
+    
+    profesionales.forEach((profesional) => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+            <td>${profesional.nombre} ${profesional.apellido}</td>
+            <td>${profesional.email}</td>
+            <td>${profesional.rol}</td>
+            <td class="text-nowrap">
+                <button class="btn btn-sm btn-details me-2" onclick="mostrarDetallesProfesional('${profesional.id}')">
+                    <i class="bi bi-eye"></i> Detalles
+                </button>
+                <button class="btn btn-sm btn-delete" onclick="mostrarConfirmacionEliminar('${profesional.id}')">
+                    <i class="bi bi-trash"></i> Eliminar
+                </button>
+            </td>
+        `;
+        tbody.appendChild(tr);
+    });
+}
+
+// Mostrar detalles del profesional en modal
+window.mostrarDetallesProfesional = async function(userId) {
+    try {
+        const userRef = doc(db, "users", userId);
+        const docSnap = await getDoc(userRef);
+        
+        if (docSnap.exists()) {
+            const data = docSnap.data();
+            const solicitud = data.solicitudProfesional || {};
+            
+            // Llenar el modal con los datos
+            document.getElementById('detalle-nombre').textContent = `${data.nombre} ${data.apellido}`;
+            document.getElementById('detalle-username').textContent = data.username;
+            document.getElementById('detalle-email').textContent = data.email;
+            document.getElementById('detalle-dni').textContent = data.dni || 'No especificado';
+            document.getElementById('detalle-rol').textContent = data.rol;
+            document.getElementById('detalle-matricula').textContent = solicitud.matricula || 'No especificado';
+            document.getElementById('detalle-profesion').textContent = solicitud.profesion || 'No especificado';
+            
+            // Formatear fecha
+            const fecha = solicitud.fechaSolicitud?.toDate();
+            document.getElementById('detalle-fecha').textContent = fecha ? fecha.toLocaleDateString() : 'No especificada';
+            
+            // Formatear servicios
+            const servicios = solicitud.servicios || [];
+            document.getElementById('detalle-servicios').textContent = servicios.length > 0 
+                ? servicios.join(', ') 
+                : 'No especificado';
+            
+            // Mostrar el modal
+            const modal = new bootstrap.Modal(document.getElementById('detallesProfesionalModal'));
+            modal.show();
+        } else {
+            mostrarToast("No se encontraron datos del profesional", "warning");
+        }
+    } catch (error) {
+        console.error("Error al obtener detalles del profesional:", error);
+        mostrarToast("Error al cargar los detalles", "danger");
+    }
+};
 
 // Aprobar solicitud
 window.aprobarSolicitud = async function(userId) {
@@ -89,6 +161,7 @@ window.aprobarSolicitud = async function(userId) {
         
         mostrarToast("Solicitud aprobada correctamente", "success");
         await cargarSolicitudes();
+        await cargarProfesionales();
     } catch (error) {
         console.error("Error al aprobar solicitud:", error);
         mostrarToast("Error al aprobar la solicitud", "danger");
@@ -111,6 +184,47 @@ window.rechazarSolicitud = async function(userId) {
         mostrarToast("Error al rechazar la solicitud", "danger");
     }
 };
+
+// Eliminar profesional
+// Variable para almacenar el ID del profesional a eliminar
+let profesionalAEliminar = null;
+
+// Función para mostrar el modal de confirmación
+window.mostrarConfirmacionEliminar = function(userId) {
+    profesionalAEliminar = userId;
+    const modal = new bootstrap.Modal(document.getElementById('confirmDeleteModal'));
+    modal.show();
+};
+
+// Función para eliminar profesional (ahora se llama desde el modal)
+window.eliminarProfesional = async function() {
+    if (!profesionalAEliminar) return;
+    
+    try {
+        const userRef = doc(db, "users", profesionalAEliminar);
+        await updateDoc(userRef, {
+            rol: "usuario",
+            "solicitudProfesional.estado": "eliminado"
+        });
+        
+        mostrarToast("Profesional eliminado correctamente", "success");
+        await cargarProfesionales();
+        
+        // Cerrar el modal
+        const modal = bootstrap.Modal.getInstance(document.getElementById('confirmDeleteModal'));
+        modal.hide();
+    } catch (error) {
+        console.error("Error al eliminar profesional:", error);
+        mostrarToast("Error al eliminar al profesional", "danger");
+    } finally {
+        profesionalAEliminar = null;
+    }
+};
+
+// Event listener para el botón de confirmación
+document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('confirmDeleteBtn').addEventListener('click', eliminarProfesional);
+});
 
 // Función para mostrar toasts
 function mostrarToast(mensaje, tipo) {
@@ -152,6 +266,6 @@ onAuthStateChanged(auth, async (user) => {
         return;
     }
 
-    // Cargar solicitudes pendientes
     await cargarSolicitudes();
-}); 
+    await cargarProfesionales();
+});
