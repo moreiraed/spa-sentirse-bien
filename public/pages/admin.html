@@ -323,6 +323,53 @@
             </div>
         </div>
 
+        <!-- Modal para ver detalles de turno -->
+        <div class="modal fade" id="detallesTurnoModal" tabindex="-1" aria-labelledby="detallesTurnoModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="detallesTurnoModalLabel">Detalles del Turno</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p><strong>Cliente:</strong> <span id="detalle-turno-nombre"></span></p>
+                                <p><strong>Email:</strong> <span id="detalle-turno-email"></span></p>
+                                <p><strong>DNI:</strong> <span id="detalle-turno-dni"></span></p>
+                                <p><strong>Fecha:</strong> <span id="detalle-turno-fecha"></span></p>
+                            </div>
+                            <div class="col-md-6">
+                                <p><strong>Hora:</strong> <span id="detalle-turno-hora"></span></p>
+                                <p><strong>Servicio:</strong> <span id="detalle-turno-servicio"></span></p>
+                                <p><strong>Profesional:</strong> <span id="detalle-turno-profesional"></span></p>
+                                <p><strong>Método de pago:</strong> <span id="detalle-turno-pago"></span></p>
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col-12">
+                                <p><strong>Comentario:</strong></p>
+                                <div class="p-3 bg-light rounded">
+                                    <p id="detalle-turno-comentario" class="mb-0"></p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col-12">
+                                <p><strong>Fecha de reserva:</strong> <span id="detalle-turno-timestamp"></span></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                        <button type="button" class="btn btn-success" onclick="imprimirTurno()">
+                            <i class="bi bi-printer me-2"></i>Imprimir
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Contenedor de Toasts -->
         <div id="toast-container" class="toast-container position-fixed top-0 end-0 p-3"></div>
 

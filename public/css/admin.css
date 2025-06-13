@@ -393,6 +393,94 @@
     margin-top: 1rem;
 }
 
+/* Estilos para la gestión de turnos */
+.turnos-container {
+    margin-top: 1.5rem;
+}
+
+.turnos-fecha {
+    color: var(--color-principal-fondo);
+    font-weight: 600;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid rgba(143, 110, 95, 0.2);
+    background-color: var(--color-button);
+    padding: 5px 10px;
+}
+
+.card-header {
+    background-color: rgba(143, 110, 95, 0.1);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    border-top: 1px solid rgba(0, 0, 0, 0.25);
+    border-left: 1px solid rgba(0, 0, 0, 0.25);
+    border-right: 1px solid rgba(0, 0, 0, 0.25);
+}
+
+.card-body {
+    padding: 1.5rem;
+    background-color: rgba(143, 110, 95, 0.05);
+    border-left: 1px solid rgba(0, 0, 0, 0.25);
+    border-right: 1px solid rgba(0, 0, 0, 0.25);
+}
+
+.list-group-item {
+    border-left: 1px solid rgba(0, 0, 0, 0.25);
+    border-right: 1px solid rgba(0, 0, 0, 0.25);
+    transition: all 0.2s ease;
+}
+
+.list-group-item:hover {
+    background-color: rgba(143, 110, 95, 0.10);
+}
+
+.card-footer {
+    background-color: rgba(143, 110, 95, 0.05) !important;
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+    border-left: 1px solid rgba(0, 0, 0, 0.25);
+    border-right: 1px solid rgba(0, 0, 0, 0.25);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.25);
+}
+
+.dropdown-toggle::after {
+    display: none;
+}
+
+/* Ajustes para los dropdowns en la gestión de turnos */
+.turnos-container {
+  position: relative;
+  z-index: 1;
+}
+
+.card {
+  overflow: visible; /* Permite que el dropdown se muestre fuera de la tarjeta */
+}
+
+.dropdown-menu {
+  z-index: 1000; /* Asegura que el dropdown esté por encima de otros elementos */
+  position: absolute;
+  inset: auto auto 0px 0px;
+  margin: 0px;
+  transform: translate(0px, -34px);
+}
+
+.list-group-item {
+  position: relative; /* Contexto de posicionamiento para el dropdown */
+  overflow: visible; /* Permite que el menú se muestre fuera del ítem */
+}
+
+/* Asegurar que el dropdown no se corte en los bordes de la tarjeta */
+.card-body {
+  overflow: visible !important;
+}
+
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .turnos-container .col-md-6, 
+    .turnos-container .col-lg-4 {
+        margin-bottom: 1.5rem;
+    }
+}
+
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
