@@ -340,7 +340,7 @@ function mostrarToast(message, type) {
   const toastHeader = document.createElement("div");
   toastHeader.classList.add("toast-header");
   const img = document.createElement("img");
-  img.src = "../assets/icon/icon.png";
+  img.src = "../assets/icon/LogoSpa2.png";
   img.classList.add("rounded", "me-2");
   img.alt = "Icono";
 
@@ -494,7 +494,7 @@ function imprimirTurno(turno) {
       </head>
       <body>
         <div class="header">
-          <img src="../assets/icon/icon.png" alt="Spa Logo" class="logo">
+          <img src="../assets/icon/LogoSpa2.png" alt="Spa Logo" class="logo">
           <h1>Turno Reservado</h1>
         </div>
         <div class="info-turno">
@@ -503,12 +503,20 @@ function imprimirTurno(turno) {
           <p><strong>Profesional:</strong> ${turno.profesional}</p>
           <p><strong>Fecha:</strong> ${turno.fecha}</p>
           <p><strong>Hora:</strong> ${turno.hora}</p>
-          <p><strong>Método de pago:</strong> ${turno.pago || "No especificado"}</p>
-          ${turno.comentario ? `<p><strong>Comentario:</strong> ${turno.comentario}</p>` : ''}
+          <p><strong>Método de pago:</strong> ${
+            turno.pago || "No especificado"
+          }</p>
+          ${
+            turno.comentario
+              ? `<p><strong>Comentario:</strong> ${turno.comentario}</p>`
+              : ""
+          }
         </div>
         <div class="footer">
           <p>Spa Sentirse Bien - Tu bienestar es nuestra prioridad</p>
-          <p>Reservado el ${new Date(turno.timestamp?.toDate()).toLocaleString()}</p>
+          <p>Reservado el ${new Date(
+            turno.timestamp?.toDate()
+          ).toLocaleString()}</p>
         </div>
       </body>
     </html>

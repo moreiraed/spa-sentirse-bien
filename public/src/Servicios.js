@@ -312,7 +312,7 @@ function mostrarToast(message, type) {
 
   // Crear la imagen
   const img = document.createElement("img");
-  img.src = "../assets/icon/icon.png";
+  img.src = "../assets/icon/LogoSpa2.png";
   img.classList.add("rounded", "me-2");
   img.alt = "Icono";
 

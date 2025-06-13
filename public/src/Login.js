@@ -234,8 +234,8 @@ function mostrarToast(message, type) {
   const currentPath = window.location.pathname;
   const img = document.createElement("img");
   img.src = currentPath.includes("/pages/")
-    ? "../assets/icon/icon.png"
-    : "assets/icon/icon.png";
+    ? "../assets/icon/LogoSpa2.png"
+    : "assets/icon/LogoSpa2.png";
   img.classList.add("rounded", "me-2");
   img.alt = "Icono";
 
