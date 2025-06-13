@@ -37,7 +37,7 @@
 
 /* Asegurar que los toasts estén por encima del modal */
 #toast-container {
-    z-index: 1081;
+    z-index: 1200;
     /* Bootstrap modal usa hasta 1055 */
 }
 
