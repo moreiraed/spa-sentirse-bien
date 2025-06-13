@@ -7,6 +7,7 @@ import {
   where,
   updateDoc,
   deleteDoc,
+  addDoc,
 } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
 
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
@@ -23,6 +24,11 @@ onAuthStateChanged(auth, async (user) => {
     const userDoc = await getDoc(doc(db, "users", user.uid));
     if (userDoc.exists()) {
       isAdmin = userDoc.data().rol === 'admin';
+      // Mostrar botón de restaurar servicios solo para admin
+      const restoreBtn = document.getElementById('restore-services-btn');
+      if (restoreBtn) {
+        restoreBtn.style.display = isAdmin ? 'block' : 'none';
+      }
     }
   }
   initFiltersAndServices();
@@ -702,3 +708,51 @@ function crearToastContainer() {
   document.body.appendChild(container);
   return container;
 }
+
+// Función para restaurar servicios desde el backup
+async function restaurarServicios() {
+  if (!confirm('¿Estás seguro de que deseas restaurar los servicios desde el backup? Esta acción reemplazará los servicios actuales.')) {
+    return;
+  }
+
+  try {
+    // Obtener servicios del backup
+    const backupSnapshot = await getDocs(collection(db, "backup-services"));
+    
+    if (backupSnapshot.empty) {
+      mostrarToast("No hay servicios en el backup para restaurar", "warning");
+      return;
+    }
+
+    // Eliminar servicios actuales
+    const currentServicesSnapshot = await getDocs(collection(db, "services"));
+    const deletePromises = currentServicesSnapshot.docs.map(doc => deleteDoc(doc.ref));
+    await Promise.all(deletePromises);
+
+    // Restaurar servicios desde el backup
+    const restorePromises = backupSnapshot.docs.map(doc => {
+      const serviceData = doc.data();
+      return addDoc(collection(db, "services"), {
+        ...serviceData,
+        active: true
+      });
+    });
+
+    await Promise.all(restorePromises);
+    mostrarToast("Servicios restaurados exitosamente", "success");
+    
+    // Recargar la lista de servicios
+    cargarServicios();
+  } catch (error) {
+    console.error("Error al restaurar servicios:", error);
+    mostrarToast("Error al restaurar los servicios", "danger");
+  }
+}
+
+// Agregar event listener para el botón de restaurar
+document.addEventListener('DOMContentLoaded', () => {
+  const restoreBtn = document.getElementById('restore-services-btn');
+  if (restoreBtn) {
+    restoreBtn.addEventListener('click', restaurarServicios);
+  }
+});
