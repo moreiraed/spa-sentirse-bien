@@ -6,6 +6,7 @@ import {
   orderBy,
   doc,
   deleteDoc,
+  getDoc,
 } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
 
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
@@ -98,6 +99,28 @@ const css = `
     border-color: #6F5448;
     color: black;
   }
+  .btn-container {
+    display: flex;
+    gap: 10px;
+    margin-top: 18px;
+  }
+  .btn-container button {
+    flex: 1;
+  }
+  .imprimir-btn {
+    background-color: #6F5448;
+    color: #fff;
+    border: none;
+    padding: 8px 0;
+    border-radius: 8px;
+    font-weight: 500;
+    transition: background 0.2s, box-shadow 0.2s;
+    box-shadow: 0 2px 8px rgba(168, 159, 145, 0.08);
+  }
+  .imprimir-btn:hover {
+    background-color: rgba(116, 58, 4, 0.6);
+    border-color: #6F5448;
+  }
 `;
 
 const style = document.createElement("style");
@@ -122,15 +145,31 @@ onAuthStateChanged(auth, async (user) => {
   </div>
 `;
 
-  const turnosRef = collection(db, "reservas");
-  const q = query(
-    turnosRef,
-    where("userId", "==", user.uid),
-    orderBy("fecha", "asc"),
-    orderBy("hora", "asc")
-  );
+  // Verificar si el usuario es profesional
+  const userRef = doc(db, "users", user.uid);
+  const userSnap = await getDoc(userRef);
+  const userData = userSnap.data();
 
-  const snapshot = await getDocs(q);
+  let turnosQuery;
+  if (userData?.rol === "profesional") {
+    // Si es profesional, buscar turnos donde él es el profesional asignado
+    turnosQuery = query(
+      collection(db, "reservas"),
+      where("profesional", "==", `${userData.nombre} ${userData.apellido}`),
+      orderBy("fecha", "asc"),
+      orderBy("hora", "asc")
+    );
+  } else {
+    // Si es usuario normal, buscar sus propios turnos
+    turnosQuery = query(
+      collection(db, "reservas"),
+      where("userId", "==", user.uid),
+      orderBy("fecha", "asc"),
+      orderBy("hora", "asc")
+    );
+  }
+
+  const snapshot = await getDocs(turnosQuery);
 
   console.log("Fetching reservations for user:", user.uid);
   console.log("Number of reservations found:", snapshot.size);
@@ -141,11 +180,11 @@ onAuthStateChanged(auth, async (user) => {
   if (snapshot.empty) {
     // Si no hay turnos, mostramos el mensaje de que no hay turnos
     listaTurnos.innerHTML = `
-  <div class="alert alert-info mx-auto my-5 p-4 text-center" 
-    style="max-width: 450px; background-color: rgba(0, 123, 255, 0.1); border-radius: 12px; border: 1px solid #007bff;">
-    Aún no tenés turnos reservados.
-  </div>
-`;
+      <div class="alert alert-info mx-auto my-5 p-4 text-center" 
+        style="max-width: 450px; background-color: rgba(0, 123, 255, 0.1); border-radius: 12px; border: 1px solid #007bff;">
+        ${userData?.rol === "profesional" ? "No tenés turnos asignados." : "Aún no tenés turnos reservados."}
+      </div>
+    `;
     return;
   }
 
@@ -157,9 +196,7 @@ onAuthStateChanged(auth, async (user) => {
 
     // Creamos el contenedor para el turno
     const div = document.createElement("div");
-    div.classList.add(
-      "turno-item"
-    );
+    div.classList.add("turno-item");
 
     // Añadimos el contenido dinámico de cada turno
     div.innerHTML = `
@@ -172,10 +209,17 @@ onAuthStateChanged(auth, async (user) => {
           <i class="bi bi-spa me-2"></i>
           ${turno.servicio}
         </div>
-        <div class="turno-profesional">
-          <i class="bi bi-person me-2"></i>
-          ${turno.profesional}
-        </div>
+        ${userData?.rol !== "profesional" ? `
+          <div class="turno-profesional">
+            <i class="bi bi-person me-2"></i>
+            ${turno.profesional}
+          </div>
+        ` : `
+          <div class="turno-cliente">
+            <i class="bi bi-person me-2"></i>
+            Cliente: ${turno.nombre} ${turno.apellido}
+          </div>
+        `}
         <div class="turno-hora">
           <i class="bi bi-clock me-2"></i>
           ${turno.hora}
@@ -195,15 +239,35 @@ onAuthStateChanged(auth, async (user) => {
           Reservado el ${new Date(turno.timestamp?.toDate()).toLocaleString()}
         </div>
       </div>
-      <button class="cancelar-btn">
-        <i class="bi bi-x-circle me-2"></i>Cancelar turno
-      </button>
+      ${userData?.rol !== "profesional" ? `
+        <button class="cancelar-btn">
+          <i class="bi bi-x-circle me-2"></i>Cancelar turno
+        </button>
+      ` : `
+        <div class="btn-container">
+          <button class="btn btn-success">
+            <i class="bi bi-check-circle me-2"></i>Marcar como completado
+          </button>
+          <button class="imprimir-btn">
+            <i class="bi bi-printer me-2"></i>Imprimir
+          </button>
+        </div>
+      `}
     `;
 
-    // Añadimos el evento al botón "Cancelar"
-    div.querySelector(".cancelar-btn").addEventListener("click", () => {
-      cancelarTurno(turno.id, div);
-    });
+    // Añadimos el evento al botón según el rol
+    if (userData?.rol !== "profesional") {
+      div.querySelector(".cancelar-btn").addEventListener("click", () => {
+        cancelarTurno(turno.id, div);
+      });
+    } else {
+      div.querySelector(".btn-success").addEventListener("click", () => {
+        marcarTurnoCompletado(turno.id, div);
+      });
+      div.querySelector(".imprimir-btn").addEventListener("click", () => {
+        imprimirTurno(turno);
+      });
+    }
 
     // Añadimos el turno a la lista
     listaTurnos.appendChild(div);
@@ -294,4 +358,139 @@ function mostrarToast(message, type) {
   } else {
     console.error("El contenedor de toasts no existe en el DOM");
   }
+}
+
+// Función para marcar un turno como completado (solo para profesionales)
+async function marcarTurnoCompletado(turnoId, turnoDiv) {
+  const confirmar = confirm("¿Estás seguro de que querés marcar este turno como completado?");
+  if (!confirmar) return;
+
+  try {
+    await updateDoc(doc(db, "reservas", turnoId), {
+      estado: "completado",
+      fechaCompletado: new Date()
+    });
+
+    // Agregar animación para que el turno desaparezca
+    turnoDiv.style.transition = "opacity 0.5s ease, transform 0.5s ease";
+    turnoDiv.style.opacity = "0";
+    turnoDiv.style.transform = "scale(0.9)";
+
+    setTimeout(() => {
+      turnoDiv.remove();
+    }, 500);
+
+    // Mostrar un mensaje de éxito
+    mostrarToast("Turno marcado como completado.", "success");
+  } catch (error) {
+    console.error("Error al marcar el turno como completado:", error);
+    mostrarToast(
+      "Ocurrió un error al marcar el turno como completado. Intentá más tarde.",
+      "danger"
+    );
+  }
+}
+
+// Función para imprimir el turno
+function imprimirTurno(turno) {
+  const ventanaImpresion = window.open('', '_blank');
+  ventanaImpresion.document.write(`
+    <html>
+      <head>
+        <title>Turno - ${turno.servicio}</title>
+        <style>
+          @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap');
+          
+          body {
+            font-family: 'Poppins', Arial, sans-serif;
+            padding: 40px;
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #fff;
+            color: #333;
+          }
+          
+          .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #D9D2C5;
+          }
+          
+          .logo {
+            max-width: 200px;
+            margin-bottom: 20px;
+          }
+          
+          .header h1 {
+            color: #6F5448;
+            font-size: 28px;
+            margin: 0;
+            font-weight: 600;
+          }
+          
+          .info-turno {
+            background-color: #f8f9fa;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 2px 8px rgba(168, 159, 145, 0.08);
+          }
+          
+          .info-turno p {
+            margin: 15px 0;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+          }
+          
+          .info-turno strong {
+            color: #6F5448;
+            min-width: 150px;
+            display: inline-block;
+          }
+          
+          .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 2px solid #D9D2C5;
+            color: #666;
+            font-size: 14px;
+          }
+          
+          @media print {
+            body {
+              padding: 20px;
+            }
+            
+            .info-turno {
+              box-shadow: none;
+              border: 1px solid #D9D2C5;
+            }
+          }
+        </style>
+      </head>
+      <body>
+        <div class="header">
+          <img src="../assets/icon/icon.png" alt="Spa Logo" class="logo">
+          <h1>Turno Reservado</h1>
+        </div>
+        <div class="info-turno">
+          <p><strong>Servicio:</strong> ${turno.servicio}</p>
+          <p><strong>Cliente:</strong> ${turno.nombre} ${turno.apellido}</p>
+          <p><strong>Profesional:</strong> ${turno.profesional}</p>
+          <p><strong>Fecha:</strong> ${turno.fecha}</p>
+          <p><strong>Hora:</strong> ${turno.hora}</p>
+          <p><strong>Método de pago:</strong> ${turno.pago || "No especificado"}</p>
+          ${turno.comentario ? `<p><strong>Comentario:</strong> ${turno.comentario}</p>` : ''}
+        </div>
+        <div class="footer">
+          <p>Spa Sentirse Bien - Tu bienestar es nuestra prioridad</p>
+          <p>Reservado el ${new Date(turno.timestamp?.toDate()).toLocaleString()}</p>
+        </div>
+      </body>
+    </html>
+  `);
+  ventanaImpresion.document.close();
+  ventanaImpresion.print();
 }
