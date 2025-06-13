@@ -16,6 +16,7 @@
     <link rel="stylesheet" href="../css/loading.css">
     <link rel="stylesheet" href="../css/main.css">
     <link rel="stylesheet" href="../css/animationNav.css">
+    <link rel="stylesheet" href="../css/admin.css">
 
     <style>
         body {
@@ -107,6 +108,12 @@
             <!-- Pestañas -->
             <ul class="nav nav-tabs mb-4" id="adminTabs" role="tablist">
                 <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="profesionales-tab" data-bs-toggle="tab"
+                        data-bs-target="#profesionales" type="button" role="tab">
+                        Profesionales
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
                     <button class="nav-link active" id="solicitudes-tab" data-bs-toggle="tab"
                         data-bs-target="#solicitudes" type="button" role="tab">
                         Solicitudes de Profesionales
@@ -128,6 +135,27 @@
 
             <!-- Contenido de las pestañas -->
             <div class="tab-content" id="adminTabsContent">
+                <div class="tab-pane fade" id="profesionales" role="tabpanel" aria-labelledby="profesionales-tab">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>Nombre Completo</th>
+                                            <th>Email</th>
+                                            <th>Rol</th>
+                                            <th>Acciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="profesionalesTableBody">
+                                        <!-- Los profesionales se cargarán aquí dinámicamente -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div class="tab-pane fade show active" id="solicitudes" role="tabpanel">
                     <div class="card">
                         <div class="card-body">
@@ -136,11 +164,10 @@
                                     <thead>
                                         <tr>
                                             <th>Usuario</th>
-                                            <th>Nombre Completo</th>
-                                            <th>Descripción breve</th>
+                                            <th>Nombre</th>
+                                            <th>Profesión</th>
                                             <th>Matrícula</th>
-                                            <th>Fecha de Solicitud</th>
-                                            <th>Documentos</th>
+                                            <th>Fecha</th>
                                             <th>Acciones</th>
                                         </tr>
                                     </thead>
@@ -165,7 +192,7 @@
                 <div class="tab-pane fade" id="consultas" role="tabpanel" aria-labelledby="consultas-tab">
                     <div class="row">
                         <div class="col-12">
-                            <h3 class="mb-4">Consultas de Clientes</h3>
+                            <h3 class="mb-4 consulta-title">Consultas de Clientes</h3>
                             <div class="mb-3">
                                 <div class="btn-group" role="group">
                                     <button type="button" class="btn btn-outline-primary active" data-filter="todos">Todos</button>
@@ -177,6 +204,65 @@
                                 <!-- Las consultas se cargarán aquí -->
                             </div>
                         </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal para ver detalles del profesional -->
+        <div class="modal fade" id="detallesProfesionalModal" tabindex="-1" aria-labelledby="detallesProfesionalModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="detallesProfesionalModalLabel">Detalles del Profesional</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p><strong>Nombre Completo:</strong> <span id="detalle-nombre"></span></p>
+                                <p><strong>Username:</strong> <span id="detalle-username"></span></p>
+                                <p><strong>Email:</strong> <span id="detalle-email"></span></p>
+                                <p><strong>DNI:</strong> <span id="detalle-dni"></span></p>
+                            </div>
+                            <div class="col-md-6">
+                                <p><strong>Rol:</strong> <span id="detalle-rol"></span></p>
+                                <p><strong>Matrícula:</strong> <span id="detalle-matricula"></span></p>
+                                <p><strong>Fecha de Solicitud:</strong> <span id="detalle-fecha"></span></p>
+                                <p><strong>Profesión:</strong> <span id="detalle-profesion"></span></p>
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col-12">
+                                <p><strong>Servicios:</strong></p>
+                                <div class="p-3 bg-light rounded">
+                                    <p id="detalle-servicios" class="mb-0"></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal de Confirmación para Eliminar Profesional -->
+        <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="confirmDeleteModalLabel">Confirmar Eliminación</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>¿Estás seguro de que deseas eliminar a este profesional? Esto cambiará su rol a usuario común.</p>
+                        <p class="text-muted small">Esta acción no se puede deshacer.</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Eliminar</button>
                     </div>
                 </div>
             </div>
@@ -232,6 +318,53 @@
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
                         <button type="button" class="btn btn-success" id="btn-marcar-atendido">Marcar como Atendido</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal para ver detalles de turno -->
+        <div class="modal fade" id="detallesTurnoModal" tabindex="-1" aria-labelledby="detallesTurnoModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="detallesTurnoModalLabel">Detalles del Turno</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p><strong>Cliente:</strong> <span id="detalle-turno-nombre"></span></p>
+                                <p><strong>Email:</strong> <span id="detalle-turno-email"></span></p>
+                                <p><strong>DNI:</strong> <span id="detalle-turno-dni"></span></p>
+                                <p><strong>Fecha:</strong> <span id="detalle-turno-fecha"></span></p>
+                            </div>
+                            <div class="col-md-6">
+                                <p><strong>Hora:</strong> <span id="detalle-turno-hora"></span></p>
+                                <p><strong>Servicio:</strong> <span id="detalle-turno-servicio"></span></p>
+                                <p><strong>Profesional:</strong> <span id="detalle-turno-profesional"></span></p>
+                                <p><strong>Método de pago:</strong> <span id="detalle-turno-pago"></span></p>
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col-12">
+                                <p><strong>Comentario:</strong></p>
+                                <div class="p-3 bg-light rounded">
+                                    <p id="detalle-turno-comentario" class="mb-0"></p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col-12">
+                                <p><strong>Fecha de reserva:</strong> <span id="detalle-turno-timestamp"></span></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                        <button type="button" class="btn btn-success" onclick="imprimirTurno()">
+                            <i class="bi bi-printer me-2"></i>Imprimir
+                        </button>
                     </div>
                 </div>
             </div>
