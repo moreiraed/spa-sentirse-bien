@@ -129,13 +129,12 @@ onAuthStateChanged(auth, async (user) => {
       .getElementById("btnGuardarPerfil")
       .addEventListener("click", async () => {
         const btnGuardar = document.getElementById("btnGuardarPerfil");
-        const originalButtonText = btnGuardar.innerHTML;
+        const btnGuardarText = document.getElementById("btnGuardarText");
+        const btnGuardarLoader = document.getElementById("btnGuardarLoader");
         
         // Mostrar loader y deshabilitar botón
-        btnGuardar.innerHTML = `
-          <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-          Guardando...
-        `;
+        btnGuardarText.classList.add("d-none");
+        btnGuardarLoader.classList.remove("d-none");
         btnGuardar.disabled = true;
 
         const nombre = document.getElementById("nombre").value;
@@ -150,7 +149,8 @@ onAuthStateChanged(auth, async (user) => {
           mostrarToast("Hubo un error al guardar tus datos", "danger");
         } finally {
           // Restaurar el botón
-          btnGuardar.innerHTML = originalButtonText;
+          btnGuardarText.classList.remove("d-none");
+          btnGuardarLoader.classList.add("d-none");
           btnGuardar.disabled = false;
         }
       });
