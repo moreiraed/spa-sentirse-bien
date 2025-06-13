@@ -201,7 +201,10 @@
             <div class="text-center mt-5">
                 <div class="mb-3">
                     <button class="btn btn-success px-4 rounded-pill" id="btnGuardarPerfil" onclick="guardarPerfil()">
-                        <i class="bi bi-check-circle me-2"></i>Guardar Cambios
+                        <span id="btnGuardarText"><i class="bi bi-check-circle me-2"></i>Guardar Cambios</span>
+                        <span id="btnGuardarLoader" class="spinner-border spinner-border-sm d-none" role="status">
+                            <span class="visually-hidden">Cargando...</span>
+                        </span>
                     </button>
                 </div>
                 
