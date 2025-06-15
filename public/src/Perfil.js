@@ -131,15 +131,54 @@ onAuthStateChanged(auth, async (user) => {
         const btnGuardar = document.getElementById("btnGuardarPerfil");
         const btnGuardarText = document.getElementById("btnGuardarText");
         const btnGuardarLoader = document.getElementById("btnGuardarLoader");
-        
+
+        // Función para restaurar el botón
+        function restoreButton() {
+          btnGuardarText.classList.remove("d-none");
+          btnGuardarLoader.classList.add("d-none");
+          btnGuardar.disabled = false;
+        }
+
         // Mostrar loader y deshabilitar botón
         btnGuardarText.classList.add("d-none");
         btnGuardarLoader.classList.remove("d-none");
         btnGuardar.disabled = true;
 
-        const nombre = document.getElementById("nombre").value;
-        const apellido = document.getElementById("apellido").value;
-        const dni = document.getElementById("dni").value;
+        const nombre = document.getElementById("nombre").value.trim();
+        const apellido = document.getElementById("apellido").value.trim();
+        const dni = document.getElementById("dni").value.trim();
+
+        // Expresiones regulares para validación
+        const nombreApellidoRegex = /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]{2,50}$/;
+        const dniRegex = /^\d{8}$/;
+
+        // Validaciones
+        if (!nombreApellidoRegex.test(nombre)) {
+          mostrarToast(
+            "Nombre inválido. Solo letras y espacios (2 a 50 caracteres).",
+            "danger"
+          );
+          restoreButton();
+          return;
+        }
+
+        if (!nombreApellidoRegex.test(apellido)) {
+          mostrarToast(
+            "Apellido inválido. Solo letras y espacios (2 a 50 caracteres).",
+            "danger"
+          );
+          restoreButton();
+          return;
+        }
+
+        if (!dniRegex.test(dni)) {
+          mostrarToast(
+            "DNI inválido. Debe contener solo números (8 dígitos).",
+            "danger"
+          );
+          restoreButton();
+          return;
+        }
 
         try {
           await setDoc(userRef, { nombre, apellido, dni }, { merge: true });

@@ -10,7 +10,6 @@
   <link rel="stylesheet" href="../css/sign-in-up.css">
   <link rel="stylesheet" href="../css/animationNav.css">
   <link rel="stylesheet" href="../css/buttonColor.css">
-  <link rel="stylesheet" href="../css/chatBot.css">
   <link rel="stylesheet" href="../css/toast.css">
   <link rel="stylesheet" href="../css/loading.css">
   <link rel="stylesheet" href="../css/contacto.css">
@@ -87,30 +86,6 @@
   <!-- Contenedor de Toasts -->
   <div id="toast-container" class="toast-container position-fixed top-0 end-0 p-3"></div>
   <!-- Contenedor de Toasts -->
-
-  <!-- Ícono del Chatbot (Font Awesome) -->
-  <div id="chatbot-icon">
-    <i class="fas fa-comment-dots"></i>
-  </div>
-
-  <!-- Ventana del Chatbot -->
-  <div id="chatbot-container">
-    <div class="bg-success text-white p-3 d-flex justify-content-between align-items-center">
-      <h6 class="mb-0"></i> Asistente del Spa</h6>
-      <button id="chatbot-close" class="btn btn-sm btn-light">
-        <i class="fas fa-times"></i>
-      </button>
-    </div>
-    <div id="chatbot-messages"></div>
-    <div class="p-3 border-top">
-      <div class="input-group">
-        <input type="text" id="chatbot-input" class="form-control" placeholder="Escribe aquí...">
-        <button id="chatbot-send" class="btn btn-success">
-          <i class="fas fa-paper-plane"></i>
-        </button>
-      </div>
-    </div>
-  </div>
 
   <!-- Contenedor donde se cargarán los modales -->
   <div id="modals-container"></div>
@@ -326,8 +301,8 @@
     </div>
   </footer>
 
+  <script defer src="https://app.fastbots.ai/embed.js" data-bot-id="cmbx45tcl03xpshk4wm5cmq1b"></script>
   <script src="../src/CargarModal.js"></script>
-  <script type="module" src="../src/chatBot.js"></script>
   <script type="module" src="../src/Login.js"></script>
   <script type="module" src="../src/Register.js"></script>
   <script type="module" src="../src/contactForm.js"></script>
