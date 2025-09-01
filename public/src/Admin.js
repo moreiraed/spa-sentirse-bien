@@ -6,9 +6,15 @@ import {
   getDocs,
   doc,
   updateDoc,
-  getDoc
+  getDoc,
+  addDoc,
+  serverTimestamp,
+  setDoc,
 } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
-import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
+import {
+  onAuthStateChanged,
+  createUserWithEmailAndPassword,
+} from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
 
 // Verificar si el usuario es administrador
 async function verificarAdmin(user) {
@@ -69,45 +75,79 @@ async function cargarSolicitudes() {
 }
 
 // Cargar profesionales ordenados alfabéticamente (versión simplificada)
-async function cargarProfesionales() {
-  const profesionalesRef = collection(db, "users");
-  const q = query(profesionalesRef, where("rol", "==", "profesional"));
-  const querySnapshot = await getDocs(q);
+let usuariosGlobal = [];
 
-  const profesionales = [];
+// Cargar todos los usuarios
+async function cargarUsuarios() {
+  const usuariosRef = collection(db, "users");
+  const querySnapshot = await getDocs(usuariosRef);
+
+  usuariosGlobal = [];
   querySnapshot.forEach((doc) => {
     const data = doc.data();
-    profesionales.push({
+    usuariosGlobal.push({
       id: doc.id,
       ...data,
       nombreCompleto: `${data.nombre} ${data.apellido}`.toLowerCase(),
-      fechaSolicitud: data.solicitudProfesional?.fechaSolicitud || null
+      email: data.email.toLowerCase(),
+      rol: data.rol || "sin rol",
+      fechaSolicitud: data.solicitudProfesional?.fechaSolicitud || null,
     });
   });
 
-  profesionales.sort((a, b) => a.nombreCompleto.localeCompare(b.nombreCompleto));
+  filtrarYMostrarUsuarios();
+}
 
+// Filtrar por texto y rol
+function filtrarYMostrarUsuarios() {
+  const buscador = document.getElementById("buscadorUsuarios").value.toLowerCase();
+  const filtroRol = document.getElementById("filtroRol").value;
+
+  const usuariosFiltrados = usuariosGlobal.filter((usuario) => {
+    const coincideBusqueda =
+      usuario.nombreCompleto.includes(buscador) ||
+      usuario.email.includes(buscador);
+
+    const coincideRol = filtroRol === "" || usuario.rol === filtroRol;
+
+    return coincideBusqueda && coincideRol;
+  });
+
+  usuariosFiltrados.sort((a, b) => a.nombreCompleto.localeCompare(b.nombreCompleto));
+  renderizarUsuarios(usuariosFiltrados);
+}
+
+// Mostrar la tabla
+function renderizarUsuarios(usuarios) {
   const tbody = document.getElementById("profesionalesTableBody");
   tbody.innerHTML = "";
 
-  profesionales.forEach((profesional) => {
+  usuarios.forEach((usuario) => {
     const tr = document.createElement("tr");
     tr.innerHTML = `
-            <td>${profesional.nombre} ${profesional.apellido}</td>
-            <td>${profesional.email}</td>
-            <td>${profesional.rol}</td>
-            <td class="text-nowrap">
-                <button class="btn btn-sm btn-details me-2" onclick="mostrarDetallesProfesional('${profesional.id}')">
-                    <i class="bi bi-eye"></i> Detalles
-                </button>
-                <button class="btn btn-sm btn-delete" onclick="mostrarConfirmacionEliminar('${profesional.id}')">
-                    <i class="bi bi-trash"></i> Eliminar
-                </button>
-            </td>
-        `;
+      <td>${usuario.nombre} ${usuario.apellido}</td>
+      <td>${usuario.email}</td>
+      <td>${usuario.rol}</td>
+      <td class="text-nowrap">
+        <button class="btn btn-sm btn-details me-2" onclick="mostrarDetallesProfesional('${usuario.id}')">
+          <i class="bi bi-eye"></i> Detalles
+        </button>
+        <button class="btn btn-sm btn-delete" onclick="mostrarConfirmacionEliminar('${usuario.id}')">
+          <i class="bi bi-trash"></i> Eliminar
+        </button>
+      </td>
+    `;
     tbody.appendChild(tr);
   });
 }
+
+// Esperar a que el DOM esté listo
+document.addEventListener("DOMContentLoaded", () => {
+  cargarUsuarios();
+
+  document.getElementById("buscadorUsuarios").addEventListener("input", filtrarYMostrarUsuarios);
+  document.getElementById("filtroRol").addEventListener("change", filtrarYMostrarUsuarios);
+});
 
 // Mostrar detalles del profesional en modal
 window.mostrarDetallesProfesional = async function (userId) {
@@ -161,7 +201,7 @@ window.aprobarSolicitud = async function (userId) {
 
     mostrarToast("Solicitud aprobada correctamente", "success");
     await cargarSolicitudes();
-    await cargarProfesionales();
+    await cargarUsuarios();
   } catch (error) {
     console.error("Error al aprobar solicitud:", error);
     mostrarToast("Error al aprobar la solicitud", "danger");
@@ -208,7 +248,7 @@ window.eliminarProfesional = async function () {
     });
 
     mostrarToast("Profesional eliminado correctamente", "success");
-    await cargarProfesionales();
+    await cargarUsuarios();
 
     // Cerrar el modal
     const modal = bootstrap.Modal.getInstance(document.getElementById('confirmDeleteModal'));
@@ -532,7 +572,7 @@ onAuthStateChanged(auth, async (user) => {
   }
 
   await cargarSolicitudes();
-  await cargarProfesionales();
+  await cargarUsuarios();
   await cargarTurnos();
 });
 
@@ -552,7 +592,7 @@ onAuthStateChanged(auth, async (user) => {
   }
 
   await cargarSolicitudes();
-  await cargarProfesionales();
+  await cargarUsuarios();
 });
 
 
@@ -590,3 +630,282 @@ window.imprimirTurno = function () {
     `);
   ventanaImpresion.document.close();
 };
+
+// Mostrar/ocultar campos de profesional según el rol seleccionado
+document.getElementById("rol").addEventListener("change", function () {
+  const profesionalFields = document.getElementById("camposProfesional");
+  if (this.value === "profesional") {
+    profesionalFields.style.display = "block";
+    // Hacer requeridos los campos de profesional
+    document.getElementById("matricula").required = true;
+    document.getElementById("profesion").required = true;
+  } else {
+    profesionalFields.style.display = "none";
+    // Quitar el requerido si no es profesional
+    document.getElementById("matricula").required = false;
+    document.getElementById("profesion").required = false;
+  }
+});
+
+// Función para crear usuario como admin
+async function createUserAsAdmin(userData) {
+  try {
+    // 1. Verificar y mantener la sesión del admin
+    const adminUser = auth.currentUser;
+    if (!adminUser) throw new Error("Debes iniciar sesión como administrador");
+
+    // 2. Obtener el token del admin
+    const adminToken = await adminUser.getIdToken();
+
+    // 3. Crear usuario mediante REST API (sin iniciar sesión)
+    const authUrl = `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyCWwxt3l9j8gnU_-mByHDb9_PWEKx5OZGk`;
+
+    const authResponse = await fetch(authUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        email: userData.email,
+        password: userData.password,
+        returnSecureToken: false, // No retornar token de sesión
+      }),
+    });
+
+    const authResult = await authResponse.json();
+    if (authResult.error) throw new Error(authResult.error.message);
+
+    // 4. Preparar datos para Firestore
+    const userDoc = {
+      nombre: userData.nombre,
+      apellido: userData.apellido,
+      dni: userData.dni,
+      email: userData.email,
+      username: userData.username,
+      rol: userData.rol,
+      fechaCreacion: serverTimestamp(),
+      creadoPor: adminUser.uid,
+    };
+
+    // Campos para profesionales
+    if (userData.rol === "profesional") {
+      userDoc.solicitudProfesional = {
+        estado: "pendiente",
+        fechaSolicitud: serverTimestamp(),
+        matricula: userData.matricula,
+        nombreCompleto: `${userData.nombre} ${userData.apellido}`,
+        profesion: userData.profesion,
+        servicios: userData.servicios || [],
+      };
+    }
+
+    // 5. Guardar en Firestore usando el token del admin
+    await setDoc(doc(db, "users", authResult.localId), userDoc);
+
+    return authResult.localId;
+  } catch (error) {
+    console.error("Error en createUserAsAdmin:", error);
+    throw error;
+  }
+}
+
+// Verificación de ejecución única
+let isCreatingUser = false;
+
+// Función manejadora del evento
+async function handleSaveUser(event) {
+  // Detener el comportamiento normal
+  event.preventDefault();
+  event.stopPropagation();
+
+  // Prevenir múltiples ejecuciones
+  if (isCreatingUser) return;
+  isCreatingUser = true;
+
+  // Obtener el botón de submit correctamente
+  const submitButton =
+    event.submitter || document.querySelector('#userForm [type="submit"]');
+
+  // Guardar texto original y mostrar spinner
+  const originalText = submitButton.innerHTML;
+  submitButton.innerHTML = `
+    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+    Creando usuario...
+  `;
+  submitButton.disabled = true;
+
+  try {
+    // Obtener el formulario DE MANERA SEGURA
+    const form =
+      event.target.closest("form") || document.getElementById("userForm");
+
+    // Verificar que el formulario existe
+    if (!form) {
+      throw new Error("No se encontró el formulario");
+    }
+
+    // Obtener valores CON validación
+    const getValue = (id) => {
+      const element = form.querySelector(`#${id}`);
+      if (!element) throw new Error(`Campo ${id} no encontrado`);
+      return element.value.trim();
+    };
+
+    const userData = {
+      nombre: getValue("nombre"),
+      apellido: getValue("apellido"),
+      dni: getValue("dni"),
+      email: getValue("email"),
+      username: getValue("username"),
+      password: getValue("password"),
+      rol: getValue("rol"),
+    };
+
+    // Validación de campos obligatorios
+    const requiredFields = ["nombre", "apellido", "dni", "email", "password"];
+    for (const field of requiredFields) {
+      if (!userData[field]) {
+        throw new Error(`El campo ${field} es obligatorio`);
+      }
+    }
+
+    // Si es profesional, validar campos adicionales
+    if (userData.rol === "profesional") {
+      userData.matricula = getValue("matricula");
+      userData.profesion = getValue("profesion");
+
+      const serviciosSelect = form.querySelector("#servicios");
+      if (serviciosSelect) {
+        userData.servicios = Array.from(serviciosSelect.selectedOptions).map(
+          (option) => option.value
+        );
+      }
+
+      if (!userData.matricula || !userData.profesion) {
+        throw new Error(
+          "Para profesionales, matrícula y profesión son obligatorias"
+        );
+      }
+    }
+
+    // Crear el usuario (tu función existente)
+    await createUserAsAdmin(userData);
+
+    // Cerrar modal y resetear el formulario
+    const modal = bootstrap.Modal.getInstance(form.closest(".modal"));
+    if (modal) modal.hide();
+
+    // Resetear formulario
+    form.reset();
+    
+    // Resetear los campos profesionales si es necesario
+    const profesionalFields = document.getElementById('camposProfesional');
+    if (profesionalFields) profesionalFields.style.display = 'none';
+
+    // Mostrar mensaje de éxito
+    showSuccess("Usuario creado exitosamente!");
+
+  } catch (error) {
+    console.error("Error al crear usuario:", error);
+    showError(error.message);
+  } finally {
+    // Restaurar el botón
+    if (submitButton) {
+      submitButton.disabled = false;
+      submitButton.innerHTML = originalText;
+    }
+    isCreatingUser = false;
+  }
+}
+
+// Configurar solo una vez cuando el DOM esté listo
+document.addEventListener('DOMContentLoaded', function() {
+  setupFormHandlers();
+  
+  // Opcional: Resetear flag cuando el modal se cierre
+  document.addEventListener('hidden.bs.modal', function(e) {
+    if (e.target.id === 'userModal') {
+      formHandlersSetup = false;
+    }
+  });
+});
+
+
+// Variable para trackear si ya configuramos los handlers
+let formHandlersSetup = false;
+
+function setupFormHandlers() {
+  // Si ya están configurados, no hacer nada
+  if (formHandlersSetup) return;
+  
+  const form = document.getElementById('userForm');
+  const rolField = document.getElementById('rol');
+
+  // Configurar submit del formulario (una sola vez)
+  if (form && !form.hasListener) {
+    form.addEventListener('submit', function(e) {
+      handleSaveUser(e);
+    });
+    form.hasListener = true; // Marcar que ya tiene listener
+  }
+
+  // Configurar cambio de rol (una sola vez)
+  if (rolField && !rolField.hasListener) {
+    rolField.addEventListener('change', function() {
+      const profesionalFields = document.getElementById('camposProfesional');
+      if (profesionalFields) {
+        profesionalFields.style.display = this.value === 'profesional' ? 'block' : 'none';
+        
+        const matricula = document.getElementById('matricula');
+        const profesion = document.getElementById('profesion');
+        if (matricula && profesion) {
+          matricula.required = this.value === 'profesional';
+          profesion.required = this.value === 'profesional';
+        }
+      }
+    });
+    rolField.hasListener = true; // Marcar que ya tiene listener
+  }
+
+  formHandlersSetup = true;
+}
+
+// 3. Ejecutar cuando el DOM esté listo Y cada vez que se muestre el modal
+document.addEventListener('DOMContentLoaded', setupFormHandlers);
+
+// Para modales dinámicos de Bootstrap 5
+document.addEventListener('shown.bs.modal', function(e) {
+  if (e.target.id === 'userModal') {
+    setupFormHandlers();
+  }
+});
+
+// Funciones para mostrar notificaciones
+function showSuccess(message) {
+  const toastEl = document.getElementById('successToast');
+  const toastBody = document.getElementById('successToastBody');
+  
+  if (!toastEl || !toastBody) {
+    console.warn('Elementos de toast no encontrados, mostrando alerta simple');
+    alert(message);
+    return;
+  }
+  
+  toastBody.textContent = message;
+  const toast = new bootstrap.Toast(toastEl);
+  toast.show();
+}
+
+function showError(message) {
+  const toastEl = document.getElementById('errorToast');
+  const toastBody = document.getElementById('errorToastBody');
+  
+  if (!toastEl || !toastBody) {
+    console.warn('Elementos de toast no encontrados, mostrando alerta simple');
+    alert('Error: ' + message);
+    return;
+  }
+  
+  toastBody.textContent = message;
+  const toast = new bootstrap.Toast(toastEl);
+  toast.show();
+}
+

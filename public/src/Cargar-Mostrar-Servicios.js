@@ -756,3 +756,46 @@ document.addEventListener('DOMContentLoaded', () => {
     restoreBtn.addEventListener('click', restaurarServicios);
   }
 });
+
+// --- Lógica para botones de servicios grupales ---
+document.addEventListener('DOMContentLoaded', () => {
+  const botonesGrupales = document.querySelectorAll('.btn-reservar-grupal');
+  if (!botonesGrupales.length) return;
+
+  botonesGrupales.forEach(btn => {
+    btn.addEventListener('click', async () => {
+      // Verificar autenticación con observer
+      await new Promise((resolve) => {
+        const unsubscribe = auth.onAuthStateChanged((user) => {
+          unsubscribe(); // Dejamos de escuchar después del primer evento
+          
+          if (!user) {
+            // Usuario NO logueado
+            if (typeof mostrarToast === 'function') {
+              mostrarToast('Debes iniciar sesión para reservar', 'warning');
+            } else {
+              alert('Debes iniciar sesión para reservar');
+            }
+            resolve();
+            return;
+          }
+          
+          // Usuario SÍ logueado
+          console.log('Usuario autenticado:', user.email);
+          
+          // Proceder con la reserva
+          try {
+            const servicioData = JSON.parse(btn.getAttribute('data-servicio'));
+            if (typeof abrirModalReserva === 'function') {
+              abrirModalReserva(servicioData);
+            }
+          } catch (error) {
+            console.error('Error al procesar reserva:', error);
+          }
+          
+          resolve();
+        });
+      });
+    });
+  });
+});

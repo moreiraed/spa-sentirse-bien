@@ -1,3 +1,7 @@
+body {
+    margin-top: 100px;
+}
+
 /* Estilos específicos para el panel de administración */
 #adminTabs .nav-link {
     color: var(--color-texto);

@@ -409,6 +409,104 @@
         </div>
     </section>
 
+    <!-- Modal Política de Privacidad -->
+    <div class="modal fade" id="privacidadModal" tabindex="-1" aria-labelledby="privacidadModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content bg-dark text-light">
+                <div class="modal-header border-secondary">
+                    <h5 class="modal-title" id="privacidadModalLabel">Política de Privacidad</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <h4>Política de Privacidad de Spa Sentirse Bien</h4>
+                    <p><strong>Última actualización:</strong> 26/06/2025</p>
+    
+                    <h5>1. Información que recopilamos</h5>
+                    <p>Recopilamos información personal que nos proporcionas voluntariamente cuando utilizas nuestros
+                        servicios, como nombre, dirección de correo electrónico, número de teléfono y información de pago.
+                    </p>
+    
+                    <h5>2. Uso de la información</h5>
+                    <p>Utilizamos tu información personal para:</p>
+                    <ul>
+                        <li>Proporcionar y mantener nuestros servicios</li>
+                        <li>Notificarte sobre cambios en nuestros servicios</li>
+                        <li>Permitirte participar en funciones interactivas de nuestros servicios</li>
+                        <li>Proporcionar atención al cliente</li>
+                        <li>Recopilar análisis o información valiosa para mejorar nuestros servicios</li>
+                    </ul>
+    
+                    <h5>3. Seguridad de los datos</h5>
+                    <p>Implementamos medidas de seguridad para proteger tu información personal, pero recuerda que ningún
+                        método de transmisión por Internet o almacenamiento electrónico es 100% seguro.</p>
+    
+                    <h5>4. Cambios a esta política</h5>
+                    <p>Podemos actualizar nuestra Política de Privacidad periódicamente. Te notificaremos de cualquier
+                        cambio publicando la nueva política en esta página.</p>
+    
+                    <h5>5. Contacto</h5>
+                    <p>Si tienes preguntas sobre esta política, contáctanos en: <strong>contacto@sentirbien.com</strong></p>
+                </div>
+                <div class="modal-footer border-secondary">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal Términos y Condiciones -->
+    <div class="modal fade" id="terminosModal" tabindex="-1" aria-labelledby="terminosModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content bg-dark text-light">
+                <div class="modal-header border-secondary">
+                    <h5 class="modal-title" id="terminosModalLabel">Términos de Servicio</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <h4>Términos y Condiciones de Spa Sentirse Bien</h4>
+                    <p><strong>Última actualización:</strong> 26/06/2025</p>
+    
+                    <h5>1. Aceptación de los términos</h5>
+                    <p>Al acceder y utilizar nuestros servicios, aceptas estar sujeto a estos Términos y Condiciones.</p>
+    
+                    <h5>2. Reservas y cancelaciones</h5>
+                    <p>Las reservas pueden hacerse por teléfono o desde esta Web. Para cancelaciones, se requiere un aviso de 24
+                        horas antes de la cita.</p>
+    
+                    <h5>3. Política de pagos</h5>
+                    <p>Aceptamos los siguientes métodos de pago: 
+                        <ul>
+                            <li>Tarjeta de debito</li>
+                            <li>PayPal</li>
+                            <li>Efectivo en el local</li>
+                        </ul>
+                        Todos los precios están sujetos a cambios sin previo aviso.</p>
+    
+                    <h5>4. Responsabilidades del cliente</h5>
+                    <p>Los clientes deben:</p>
+                    <ul>
+                        <li>Proporcionar información precisa al reservar</li>
+                        <li>Llegar puntualmente a sus citas</li>
+                        <li>Informar sobre cualquier condición médica relevante</li>
+                    </ul>
+    
+                    <h5>5. Limitación de responsabilidad</h5>
+                    <p>Spa Sentirse Bien no será responsable por daños indirectos, incidentales o consecuentes resultantes
+                        del uso de nuestros servicios.</p>
+    
+                    <h5>6. Cambios en los términos</h5>
+                    <p>Nos reservamos el derecho de modificar estos términos en cualquier momento. El uso continuado del
+                        servicio constituye la aceptación de los nuevos términos.</p>
+                </div>
+                <div class="modal-footer border-secondary">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- ----------------------- Footer ----------------------- -->
     <footer class="pt-5 pb-3" style="background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);">
         <div class="container">
@@ -463,12 +561,10 @@
                     </div>
 
                     <h5 class="fw-bold text-white mb-3">Novedades</h5>
-                    <p class="text-light-80 mb-3" style="color: rgba(255,255,255,0.7);">Suscríbete para recibir
-                        promociones
-                        exclusivas.</p>
+                    <p class="text-light-80 mb-3" style="color: rgba(255,255,255,0.7);">Suscríbete para recibir promociones exclusivas.</p>
                     <div class="input-group mb-3">
-                        <input type="email" class="form-control rounded-start-pill" placeholder="Tu email">
-                        <button class="btn btn-success rounded-end-pill" type="button">
+                        <input type="email" id="email" class="form-control rounded-start-pill" placeholder="Tu email">
+                        <button id="subscribeBtn" class="btn btn-success rounded-end-pill" type="button">
                             <i class="bi bi-envelope-arrow-up"></i>
                         </button>
                     </div>
@@ -478,11 +574,61 @@
             <hr class="border-light-20 my-4" style="border-color: rgba(255,255,255,0.1);">
             <div class="text-center small" style="color: rgba(255,255,255,0.5);">
                 © 2025 Spa Sentirse Bien. Todos los derechos reservados. |
-                <a href="#" class="text-light-80" style="color: rgba(255,255,255,0.7);">Política de privacidad</a> |
-                <a href="#" class="text-light-80" style="color: rgba(255,255,255,0.7);">Términos de servicio</a>
+                <a href="#" class="text-light-80" style="color: rgba(255,255,255,0.7);" data-bs-toggle="modal" data-bs-target="#privacidadModal">Política de privacidad</a> |
+                <a href="#" class="text-light-80" style="color: rgba(255,255,255,0.7);" data-bs-toggle="modal" data-bs-target="#terminosModal">Términos de servicio</a>
             </div>
         </div>
     </footer>
+
+    <!-- Toast Notification -->
+    <div class="toast-container position-fixed top-0 end-0 p-3">
+        <div id="emailToast" class="toast align-items-center text-bg-success border-0" role="alert" aria-live="assertive"
+            aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body">
+                    Correo registrado con éxito.
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
+                    aria-label="Close"></button>
+            </div>
+        </div>
+        <!-- Toast de error -->
+        <div id="errorToast" class="toast align-items-center text-bg-danger border-0" role="alert" aria-live="assertive"
+            aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body">
+                    Por favor, ingresa un correo electrónico válido.
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
+                    aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('subscribeBtn').addEventListener('click', function () {
+            const emailInput = document.getElementById('email').value;
+
+            // Expresión regular para validar formato de correo
+            const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+            if (emailRegex.test(emailInput)) {
+                // Lógica para registrar el correo (por ejemplo, enviarlo a un servidor)
+                console.log("Correo registrado:", emailInput);
+
+                // Mostrar el toast de éxito
+                var successToast = new bootstrap.Toast(document.getElementById('emailToast'));
+                successToast.show();
+
+                // Limpiar el input de correo
+                document.getElementById('email').value = '';
+            } else {
+                // Mostrar el toast de error si el correo no es válido
+                var errorToast = new bootstrap.Toast(document.getElementById('errorToast'));
+                errorToast.show();
+            }
+        });
+    </script>                
 
     <script defer src="https://app.fastbots.ai/embed.js" data-bot-id="cmbx45tcl03xpshk4wm5cmq1b"></script>
     <script src="src/CargarModal.js"></script>
