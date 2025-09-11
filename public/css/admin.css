@@ -1,0 +1,532 @@
+body {
+    margin-top: 100px;
+}
+
+/* Estilos específicos para el panel de administración */
+#adminTabs .nav-link {
+    color: var(--color-texto);
+    font-weight: 500;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+#adminTabs .nav-link:hover {
+    color: var(--color-button);
+}
+
+#adminTabs .nav-link.active {
+    color: var(--color-button);
+    background-color: transparent;
+}
+
+#adminTabs .nav-link.active::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60%;
+    height: 3px;
+    background-color: var(--color-button);
+    border-radius: 3px;
+}
+
+.card {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+}
+
+.card-header {
+    background-color: var(--color-principal-fondo);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    padding: 1.25rem 1.5rem;
+}
+
+.card-header h5 {
+    color: var(--color-titulo);
+    margin: 0;
+    font-weight: 600;
+}
+
+.table {
+    margin-bottom: 0;
+}
+
+.table thead th {
+    background-color: var(--color-principal-fondo);
+    color: var(--color-titulo);
+    border-bottom-width: 1px;
+    font-weight: 600;
+    padding: 1rem 1.5rem;
+}
+
+.table tbody td {
+    padding: 1rem 1.5rem;
+    vertical-align: middle;
+    border-top: 1px solid rgba(0, 0, 0, 0.03);
+    color: var(--color-texto);
+}
+
+.table tbody tr:hover {
+    background-color: rgba(143, 110, 95, 0.03);
+}
+
+.btn-sm {
+    padding: 0.35rem 0.75rem;
+    font-size: 0.875rem;
+    border-radius: 6px;
+}
+
+.modal-content {
+    border: none;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.modal-header {
+    background-color: var(--color-principal-fondo);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    padding: 1.25rem 1.5rem;
+}
+
+.modal-title {
+    color: var(--color-titulo);
+    font-weight: 600;
+}
+
+.modal-body {
+    padding: 1.5rem;
+}
+
+.modal-body p {
+    margin-bottom: 0.75rem;
+}
+
+.modal-body strong {
+    color: var(--color-titulo);
+}
+
+.modal-footer {
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+    padding: 1rem 1.5rem;
+}
+
+/* Estilos para los botones de acción */
+.btn-success {
+    background-color: var(--color-button);
+    border-color: var(--color-button);
+}
+
+.btn-success:hover {
+    background-color: #6F5448;
+    border-color: #6F5448;
+}
+
+.btn-danger {
+    background-color: #dc3545;
+    border-color: #dc3545;
+}
+
+.btn-danger:hover {
+    background-color: #bb2d3b;
+    border-color: #bb2d3b;
+}
+
+.btn-primary {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+}
+
+.btn-primary:hover {
+    background-color: #0b5ed7;
+    border-color: #0a58ca;
+}
+
+/* Estilos para los toasts */
+.toast {
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.toast-body {
+    padding: 1rem;
+}
+
+/* --------------------------------- */
+/* Estilos para los botones de filtro en Consultas */
+.btn-group .btn-outline-primary {
+    color: var(--color-button);
+    border-color: var(--color-button);
+}
+
+.btn-group .btn-outline-primary:hover {
+    background-color: var(--color-button);
+    border-color: var(--color-button);
+    color: white;
+}
+
+.btn-group .btn-outline-primary.active {
+    background-color: var(--color-button);
+    border-color: var(--color-button);
+    color: white;
+}
+
+/* Estilo para el botón "Marcar como Atendido" */
+#btn-marcar-atendido {
+    background-color: var(--color-button);
+    border-color: var(--color-button);
+    color: white;
+}
+
+#btn-marcar-atendido:hover {
+    background-color: #6F5448; /* Versión más oscura del color principal */
+    border-color: #6F5448;
+}
+
+/* Estilos para los turnos */
+.turno-item {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    padding: 1rem;
+    margin-bottom: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.turno-info {
+    flex: 1;
+}
+
+.turno-actions {
+    margin-left: 1rem;
+}
+
+/* Estilos para el modal de confirmación */
+#confirmDeleteModal .modal-content {
+    border: none;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+#confirmDeleteModal .modal-header {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+#confirmDeleteModal .modal-title {
+    color: var(--color-titulo);
+    font-weight: 600;
+}
+
+#confirmDeleteModal .modal-body {
+    padding: 1.5rem;
+}
+
+#confirmDeleteModal .modal-footer {
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+#confirmDeleteBtn {
+    background-color: #dc3545;
+    border-color: #dc3545;
+    padding: 0.5rem 1.25rem;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+}
+
+#confirmDeleteBtn:hover {
+    background-color: #bb2d3b;
+    border-color: #bb2d3b;
+    transform: translateY(-1px);
+}
+
+/* Botones de acción principales */
+.btn-approve {
+    background-color: #6F8C5F; /* Verde similar al del spa pero más suave */
+    border-color: #6F8C5F;
+    color: white;
+}
+
+.btn-approve:hover {
+    background-color: #5A7350;
+    border-color: #5A7350;
+    color: white;
+}
+
+.btn-reject {
+    background-color: #8C6E5F; /* Color principal del spa para rechazar */
+    border-color: #8C6E5F;
+    color: white;
+}
+
+.btn-reject:hover {
+    background-color: #6F5448;
+    border-color: #6F5448;
+    color: white;
+}
+
+.btn-details {
+    background-color: #D9D2C5; /* Color secundario de fondo del spa */
+    border-color: #D9D2C5;
+    color: #4F463B; /* Color de título del spa */
+}
+
+.btn-details:hover {
+    background-color: #C5BCAC;
+    border-color: #C5BCAC;
+    color: #4F463B;
+}
+
+.btn-delete {
+    background-color: #A67D65; /* Variación del color principal para delete */
+    border-color: #A67D65;
+    color: white;
+}
+
+.btn-delete:hover {
+    background-color: #8C6E5F;
+    border-color: #8C6E5F;
+    color: white;
+}
+
+/* Modal de confirmación de eliminación */
+#confirmDeleteBtn {
+    background-color: #A67D65;
+    border-color: #A67D65;
+}
+
+#confirmDeleteBtn:hover {
+    background-color: #8C6E5F;
+    border-color: #8C6E5F;
+}
+
+/* Estilos para las tarjetas de consultas */
+.consulta-card {
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    border-left: 4px solid transparent;
+}
+
+.consulta-card:hover {
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+    transform: translateY(-3px);
+}
+
+.consulta-card.pendiente {
+    border-left-color: var(--color-button);
+    background-color: rgba(143, 110, 95, 0.03);
+}
+
+.consulta-card.atendido {
+    border-left-color: #6F8C5F;
+}
+
+.consulta-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.consulta-title {
+    color: var(--color-titulo);
+    font-weight: 600;
+    margin: 0;
+}
+
+.consulta-status {
+    font-size: 0.875rem;
+    padding: 0.25rem 0.75rem;
+    border-radius: 1rem;
+    font-weight: 500;
+}
+
+.consulta-status.pendiente {
+    background-color: rgba(143, 110, 95, 0.1);
+    color: var(--color-button);
+}
+
+.consulta-status.atendido {
+    background-color: rgba(111, 140, 95, 0.1);
+    color: #6F8C5F;
+}
+
+.consulta-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.consulta-meta-item {
+    display: flex;
+    align-items: center;
+    font-size: 0.875rem;
+    color: var(--color-texto);
+}
+
+.consulta-meta-item i {
+    margin-right: 0.5rem;
+    color: var(--color-button);
+}
+
+.consulta-content {
+    background-color: rgba(143, 110, 95, 0.03);
+    padding: 1rem;
+    border-radius: 8px;
+    color: var(--color-texto);
+}
+
+.consulta-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    margin-top: 1rem;
+}
+
+/* Estilos para la gestión de turnos */
+.turnos-container {
+    margin-top: 1.5rem;
+}
+
+.turnos-fecha {
+    color: var(--color-principal-fondo);
+    font-weight: 600;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid rgba(143, 110, 95, 0.2);
+    background-color: var(--color-button);
+    padding: 5px 10px;
+}
+
+.card-header {
+    background-color: rgba(143, 110, 95, 0.1);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    border-top: 1px solid rgba(0, 0, 0, 0.25);
+    border-left: 1px solid rgba(0, 0, 0, 0.25);
+    border-right: 1px solid rgba(0, 0, 0, 0.25);
+}
+
+.card-body {
+    padding: 1.5rem;
+    background-color: rgba(143, 110, 95, 0.05);
+    border-left: 1px solid rgba(0, 0, 0, 0.25);
+    border-right: 1px solid rgba(0, 0, 0, 0.25);
+}
+
+.list-group-item {
+    border-left: 1px solid rgba(0, 0, 0, 0.25);
+    border-right: 1px solid rgba(0, 0, 0, 0.25);
+    transition: all 0.2s ease;
+}
+
+.list-group-item:hover {
+    background-color: rgba(143, 110, 95, 0.10);
+}
+
+.card-footer {
+    background-color: rgba(143, 110, 95, 0.05) !important;
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+    border-left: 1px solid rgba(0, 0, 0, 0.25);
+    border-right: 1px solid rgba(0, 0, 0, 0.25);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.25);
+}
+
+.dropdown-toggle::after {
+    display: none;
+}
+
+/* Ajustes para los dropdowns en la gestión de turnos */
+.turnos-container {
+  position: relative;
+  z-index: 1;
+}
+
+.card {
+  overflow: visible; /* Permite que el dropdown se muestre fuera de la tarjeta */
+}
+
+.dropdown-menu {
+  z-index: 1000; /* Asegura que el dropdown esté por encima de otros elementos */
+  position: absolute;
+  inset: auto auto 0px 0px;
+  margin: 0px;
+  transform: translate(0px, -34px);
+}
+
+.list-group-item {
+  position: relative; /* Contexto de posicionamiento para el dropdown */
+  overflow: visible; /* Permite que el menú se muestre fuera del ítem */
+}
+
+/* Asegurar que el dropdown no se corte en los bordes de la tarjeta */
+.card-body {
+  overflow: visible !important;
+}
+
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .turnos-container .col-md-6, 
+    .turnos-container .col-lg-4 {
+        margin-bottom: 1.5rem;
+    }
+}
+
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    #adminTabs .nav-link {
+        padding: 0.5rem 1rem;
+        font-size: 0.875rem;
+    }
+    
+    .table thead th,
+    .table tbody td {
+        padding: 0.75rem;
+    }
+    
+    .btn-sm {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.75rem;
+    }
+}
+
+/* Ajustes responsivos */
+@media (max-width: 768px) {
+    .consulta-card {
+        padding: 1rem;
+    }
+    
+    .consulta-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+    
+    .consulta-meta {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .consulta-actions {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .consulta-actions .btn {
+        width: 100%;
+    }
+}

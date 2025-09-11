@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/modal-Reserva.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        /* ... existing styles ... */
+
+        .tarjeta-seleccionable {
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .tarjeta-seleccionable:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1) !important;
+        }
+
+        .tarjeta-seleccionable.selected {
+            border: 2px solid #28a745 !important;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(40, 167, 69, 0.2) !important;
+        }
+
+        .form-check-input:checked {
+            background-color: #28a745;
+            border-color: #28a745;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Modal -->
+    <div class="modal fade" id="reservaModal" tabindex="-1" aria-labelledby="reservaModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="row g-0">
+                    <!-- Columna decorativa -->
+                    <div class="col-md-4 d-none d-md-block spa-decorative-column">
+                        <div class="spa-decorative-content">
+                            <h3 class="spa-brand">Spa Sentirse Bien</h3>
+                            <div class="spa-progress-indicator">
+                                <div class="spa-step active" data-step="1">
+                                    <span class="spa-step-number">1</span>
+                                    <span class="spa-step-text">Profesional</span>
+                                </div>
+                                <div class="spa-step" data-step="2">
+                                    <span class="spa-step-number">2</span>
+                                    <span class="spa-step-text">Fecha</span>
+                                </div>
+                                <div class="spa-step" data-step="3">
+                                    <span class="spa-step-number">3</span>
+                                    <span class="spa-step-text">Hora</span>
+                                </div>
+                                <div class="spa-step" data-step="4">
+                                    <span class="spa-step-number">4</span>
+                                    <span class="spa-step-text">Pago</span>
+                                </div>
+                                <div class="spa-step" data-step="5">
+                                    <span class="spa-step-number">5</span>
+                                    <span class="spa-step-text">Confirmación</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Columna del formulario -->
+                    <div class="col-md-8">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="reservaModalLabel">Reserva tu experiencia en Spa Sentirse Bien</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <!-- Formulario progresivo -->
+                            <form id="reservaForm">
+                                <!-- Paso 1: Selección de profesional -->
+                                <div class="reserva-step active" data-step="1">
+                                    <h4>Selecciona un profesional</h4>
+                                    <p class="text-muted">Elige el profesional que realizará tu servicio</p>
+
+                                    <div class="row">
+                                        <!-- Los profesionales se cargarán dinámicamente aquí -->
+                                    </div>
+                                </div>
+
+                                <!-- Paso 2: Selección de fecha -->
+                                <div class="reserva-step" data-step="2">
+                                    <h4>Elige una fecha</h4>
+                                    <p class="text-muted">Selecciona el día para tu reserva</p>
+
+                                    <div class="calendar-container mb-4">
+                                        <div class="calendar-header">
+                                            <button type="button"
+                                                class="btn btn-sm btn-outline-spa-primary prev-month"><i
+                                                    class="fas fa-chevron-left"></i></button>
+                                            <h5 class="calendar-month">Junio 2023</h5>
+                                            <button type="button"
+                                                class="btn btn-sm btn-outline-spa-primary next-month"><i
+                                                    class="fas fa-chevron-right"></i></button>
+                                        </div>
+                                        <div class="calendar-weekdays">
+                                            <div>Lun</div>
+                                            <div>Mar</div>
+                                            <div>Mié</div>
+                                            <div>Jue</div>
+                                            <div>Vie</div>
+                                            <div>Sáb</div>
+                                            <div>Dom</div>
+                                        </div>
+                                        <div class="calendar-days">
+                                            <!-- Los días se generarán dinámicamente con JS -->
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Paso 3: Selección de hora -->
+                                <div class="reserva-step" data-step="3">
+                                    <h4>Selecciona una hora</h4>
+                                    <p class="text-muted">Elige el horario que prefieras</p>
+                                
+                                    <div class="time-sections">
+                                        <div class="time-section mb-4">
+                                            <h5 class="time-section-title"><i class="fas fa-sun"></i> Mañana</h5>
+                                            <div class="row">
+                                                <div class="col-4 mb-2">
+                                                    <button type="button" class="btn btn-time-slot">09:00 AM</button>
+                                                </div>
+                                                <div class="col-4 mb-2">
+                                                    <button type="button" class="btn btn-time-slot">10:30 AM</button>
+                                                </div>
+                                                <div class="col-4 mb-2">
+                                                    <button type="button" class="btn btn-time-slot">12:00 PM</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                
+                                        <div class="time-section">
+                                            <h5 class="time-section-title"><i class="fas fa-moon"></i> Tarde</h5>
+                                            <div class="row">
+                                                <div class="col-4 mb-2">
+                                                    <button type="button" class="btn btn-time-slot">02:00 PM</button>
+                                                </div>
+                                                <div class="col-4 mb-2">
+                                                    <button type="button" class="btn btn-time-slot">03:30 PM</button>
+                                                </div>
+                                                <div class="col-4 mb-2">
+                                                    <button type="button" class="btn btn-time-slot">05:00 PM</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Paso 4: Método de pago -->
+                                <div class="reserva-step" data-step="4">
+                                    <h4>Método de pago</h4>
+                                    <p class="text-muted">Selecciona cómo deseas pagar</p>
+
+                                    <div class="payment-methods mb-4">
+                                        <div class="form-check mb-3">
+                                            <input class="form-check-input" type="radio" name="paymentMethod"
+                                                id="debitCard" checked>
+                                            <label class="form-check-label" for="debitCard">
+                                                <i class="fab fa-cc-visa"></i> Tarjeta de débito
+                                            </label>
+                                        </div>
+                                        <div class="form-check mb-3">
+                                            <input class="form-check-input" type="radio" name="paymentMethod"
+                                                id="paypal">
+                                            <label class="form-check-label" for="paypal">
+                                                <i class="fab fa-cc-paypal"></i> PayPal
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="paymentMethod" id="cash">
+                                            <label class="form-check-label" for="cash">
+                                                <i class="fas fa-money-bill-wave"></i> Efectivo en el local
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="comentarios" class="form-label">Comentarios o notas
+                                            adicionales</label>
+                                        <textarea class="form-control" id="comentarios" rows="3"
+                                            placeholder="Ej: Alergias, preferencias especiales, etc."></textarea>
+                                    </div>
+                                </div>
+
+                                <!-- Paso 5: Confirmación -->
+                                <div class="reserva-step" data-step="5">
+                                    <div class="text-center">
+                                        <div class="mb-4">
+                                            <i class="fas fa-check-circle text-success fa-5x"></i>
+                                        </div>
+                                        <h4 class="mb-3">¡Reserva confirmada!</h4>
+                                        <p class="mb-4">Hemos recibido tu solicitud de reserva. Te enviaremos un correo
+                                            de confirmación con los detalles.</p>
+
+                                        <div class="reserva-summary mb-4 p-3">
+                                            <h5>Resumen de tu reserva</h5>
+                                            <ul class="list-unstyled">
+                                                <li><strong>Profesional:</strong> <span id="summary-profesional">María
+                                                        González</span></li>
+                                                <li><strong>Fecha:</strong> <span id="summary-fecha">15 de Junio,
+                                                        2023</span></li>
+                                                <li><strong>Hora:</strong> <span id="summary-hora">10:30 AM</span></li>
+                                                <li><strong>Método de pago:</strong> <span id="summary-pago">Tarjeta de
+                                                        crédito</span></li>
+                                                <li><strong>Precio:</strong> <span id="summary-precio">$0.00</span></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-outline-secondary me-auto" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="button" class="btn btn-outline-spa-primary btn-prev" disabled>
+                                <i class="fas fa-arrow-left"></i> Anterior
+                            </button>
+                            <button type="button" class="btn btn-spa-primary btn-next">
+                                Siguiente <i class="fas fa-arrow-right"></i>
+                            </button>
+                            <button type="button" class="btn btn-spa-success btn-confirm" style="display: none;">
+                                Confirmar Reserva
+                            </button>                  
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para Selección de Tarjeta -->
+    <div class="modal fade" id="modalSeleccionTarjeta" tabindex="-1" aria-labelledby="modalSeleccionTarjetaLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalSeleccionTarjetaLabel">Selecciona una tarjeta</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="contenedorTarjetasReserva" class="row g-3">
+                        <!-- Las tarjetas se cargarán dinámicamente aquí -->
+                        <div class="col-12 text-center py-4" id="mensajeSinTarjetasReserva">
+                            <i class="bi bi-credit-card-2-front fs-1 text-muted"></i>
+                            <p class="text-muted mt-2">No tienes tarjetas registradas</p>
+                            <a href="perfil.html" class="btn btn-outline-primary mt-3">Agregar una tarjeta</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-success" id="btnConfirmarTarjeta" disabled>Seleccionar Tarjeta</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

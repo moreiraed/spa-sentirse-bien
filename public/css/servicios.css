@@ -1,25 +1,27 @@
 :root {
-    --color-main-background: #F5F0E6;
-    --color-secondary-background: #D9D2C5;
-    --color-test: #C97E6D;
-    --color-btn: #8C6E5F;
-    --color-btn-hover: #6F5448;
-    --color-title: #4F463B;
-    --color-separator: #4F463B;
+    --accent-color: #8C6E5F;
+    --color-secundario-fondo: #D9D2C5;
+    --color-titulo: #4F463B;
+    --color-texto: #706558;
+    --color-button: #8C6E5F;
 }
 
-body.page-servicios {
-    background-color: var(--color-main-background);
-    padding-top: 80px;
+body {
+    background-color: #F5F0E6 !important;
+    padding-top: 70px;
 }
 
-body.page-servicios .section-title {
+.especial{
+    font-family: 'Quicksand', sans-serif;
+}
+
+.section-title {
     position: relative;
     margin-bottom: 3rem;
-    color: var(--color-title);
+    color: var(--color-titulo);
 }
 
-body.page-servicios .section-title:after {
+.section-title:after {
     content: "";
     position: absolute;
     bottom: -15px;
@@ -27,176 +29,218 @@ body.page-servicios .section-title:after {
     transform: translateX(-50%);
     width: 80px;
     height: 3px;
-    background: var(--color-btn);
+    background: var(--accent-color);
 }
 
-body.page-servicios .filter-buttons {
+.filter-buttons {
     display: flex;
-    flex-wrap: wrap; /* Permite que los botones se ajusten en varias filas si es necesario */
-    justify-content: center; /* Centra los botones horizontalmente */
-    gap: 10px; /* Espacio entre los botones */
+    flex-wrap: wrap;
+    /* Permite que los botones se ajusten en varias filas si es necesario */
+    justify-content: center;
+    /* Centra los botones horizontalmente */
+    gap: 10px;
+    /* Espacio entre los botones */
     margin-bottom: 30px;
 }
 
-body.page-servicios .filter-btn {
-    background-color: var(--color-main-background);
-    color: var(--color-btn);
-    border: 2px solid var(--color-btn);
+.filter-btn {
+    background-color: white;
+    color: var(--color-button);
+    border: 2px solid var(--color-button);
     padding: 10px 25px;
     border-radius: 30px;
     font-weight: 600;
     transition: all 0.3s;
-    cursor: pointer;
 }
 
-body.page-servicios .filter-btn:hover,
-body.page-servicios .filter-btn.active {
-    background-color: var(--color-btn);
+.filter-btn:hover,
+.filter-btn.active {
+    background-color: var(--color-button);
     color: white;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-/* Mejora visual para las tarjetas de servicio */
-body.page-servicios .service-card {
-    border: none;
-    border-radius: 12px;
+@media (max-width: 768px) {
+    .filter-btn {
+        font-size: 14px;
+        /* Disminuye el tamaño del texto en pantallas pequeñas */
+        padding: 8px 16px;
+        /* Ajusta el padding para que los botones no sean tan grandes */
+    }
+}
+
+@media (max-width: 480px) {
+    .filter-buttons {
+        flex-direction: column;
+        /* Cambia a columna en pantallas muy pequeñas */
+        align-items: center;
+        /* Alinea los botones al centro */
+    }
+}
+
+.service-category {
+    display: none;
+}
+
+.service-category.active {
+    display: block;
+    animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+.yoga-card {
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 15px;
+    padding: 30px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.yoga-features i {
+    color: var(--color-button);
+    font-size: 1.5rem;
+    margin-right: 10px;
+}
+
+/* ---- carrusel de "Carrusel Yoga e Hidromasaje" (servicios.html) ---- */
+
+.wellness-slide {
+    border-radius: 15px;
     overflow: hidden;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-    transition: transform 0.3s, box-shadow 0.3s;
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    background-color: var(--color-secondary-background);
 }
 
-body.page-servicios .service-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+.carousel-indicators button {
+    background-color: white;
 }
 
-body.page-servicios .service-card .card-img-top {
-    height: 200px;
-    object-fit: cover;
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+    background-color: rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    padding: 20px;
 }
 
-body.page-servicios .service-card .card-body {
-    padding: 1.5rem;
-    display: flex;
-    flex-direction: column;
-    flex-grow: 1;
+/* Estilos para la tarjeta de agregar */
+.add-service-card {
+    border-style: dashed !important;
+    border-color: #ced4da !important;
+    background-color: rgba(248, 249, 250, 0.5);
+    transition: all 0.25s ease;
 }
 
-body.page-servicios .service-card .card-title {
-    color: var(--color-title);
-    font-weight: 600;
-    margin-bottom: 1rem;
+.add-service-card:hover {
+    border-color: #0d6efd !important;
+    background-color: rgba(13, 110, 253, 0.05);
+    transform: translateY(-3px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
-body.page-servicios .service-card .card-text {
-    color: #6c757d;
-    margin-bottom: 1.5rem;
-    flex-grow: 1;
+.add-service-card .add-service-content {
+    transition: all 0.25s ease;
 }
 
-body.page-servicios .service-card hr {
-    border-top: 2px solid var(--color-separator);
-    margin: 1.5rem 0;
-}
-
-body.page-servicios .service-card .service-price {
-    color: var(--color-btn);
-    font-weight: 700;
-    font-size: 1.25rem;
-}
-
-body.page-servicios .btn-reservar {
-    background-color: var(--color-btn);
-    color: white;
-    border: none;
-    border-radius: 20px;
-    padding: 12px 25px;
-    font-weight: 600;
-    transition: all 0.3s;
-    width: 100%;
-    max-width: none;
-    margin-top: auto;
-}
-
-body.page-servicios .btn-reservar:hover {
-    background-color: var(--color-btn-hover);
+.add-service-card:hover .add-service-content {
     transform: scale(1.05);
 }
 
-/* Nuevo loader personalizado */
-body.page-servicios .custom-loader {
-    width: 80px;
-    height: 80px;
-    margin: 2rem auto;
-    position: relative;
+.add-service-card:hover .bi-plus-lg {
+    color: #0d6efd !important;
 }
 
-body.page-servicios.custom-loader:before,
-body.page-servicios .custom-loader:after {
-    content: "";
-    position: absolute;
-    border-radius: 50%;
-    border: 6px solid transparent;
-    border-top-color: var(--color-btn);
-    animation: spin 1.5s linear infinite;
+/* Asegurar consistencia visual */
+.add-service-card {
+    min-height: 380px;
+    /* Igual que las otras tarjetas */
+    border-radius: 0.5rem !important;
 }
 
-body.page-servicios .custom-loader:after {
-    border-top-color: var(--color-btn-hover);
-    animation: spin 2s linear infinite;
+/* Efecto para hacer evidente que es clickeable */
+.add-service-card:hover .add-service-content h5 {
+    color: #0d6efd !important; 
 }
 
-@keyframes spin {
-    0% {
-        transform: rotate(0deg);
-    }
-
-    100% {
-        transform: rotate(360deg);
-    }
+/* Animación al cambiar filtros */
+#servicios-container {
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    min-height: 300px;
+    /* Para evitar saltos de layout */
 }
 
-/* Animación de escalado para el loader */
-@keyframes pulse {
-    0% {
-        transform: scale(0.95);
-        opacity: 0.7;
-    }
-
-    50% {
-        transform: scale(1.05);
-        opacity: 1;
-    }
-
-    100% {
-        transform: scale(0.95);
-        opacity: 0.7;
-    }
+#servicios-container.loading {
+    opacity: 0.5;
+    pointer-events: none; 
 }
 
-body.page-servicios .loader-text {
-    color: var(--color-btn);
-    font-weight: 600;
-    margin-top: 1rem;
-    text-align: center;
-    animation: pulse 2s ease-in-out infinite;
-}
-
-/* Animación para las cards */
-.service-card {
+/* Efecto para cada tarjeta individual (opcional) */
+#servicios-container .col-md-3 {
+    animation: fadeInCard 0.5s ease forwards;
     opacity: 0;
     transform: translateY(20px);
-    animation: cardAppear 0.6s ease forwards;
 }
 
-@keyframes cardAppear {
+@keyframes fadeInCard {
     to {
         opacity: 1;
         transform: translateY(0);
     }
+}
+
+/* Retrasos escalonados para cada tarjeta */
+#servicios-container .col-md-3:nth-child(1) {
+    animation-delay: 0.1s;
+}
+
+#servicios-container .col-md-3:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+#servicios-container .col-md-3:nth-child(3) {
+    animation-delay: 0.3s;
+}
+
+#servicios-container .col-md-3:nth-child(4) {
+    animation-delay: 0.4s;
+}
+
+/* Añade más si necesitas más columnas */
+
+/*--------------------------------------------*/
+
+/* Estilos para el loader */
+@keyframes pulse {
+    0% {
+        opacity: 0.6;
+    }
+
+    50% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0.6;
+    }
+}
+
+.custom-loader-text {
+    animation: pulse 1.5s infinite;
+    color: #8C6E5F;
+}
+
+.spinner-grow {
+    color: #8C6E5F;
+    width: 2rem;
+    height: 2rem; 
+}
+
+/* Separacion de las tarjetas que estan debajo */
+.col-md-3 {
+    margin-bottom: 20px;
 }

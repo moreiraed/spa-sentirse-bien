@@ -68,13 +68,5 @@ node_modules/
 # dataconnect generated files
 .dataconnect
 
-# Dependencias
-/workers/node_modules
-node_modules
-
-# Archivos de configuración locales de Wrangler (Cloudflare)
-.wrangler/
-
-# VScode
 .vscode
 
