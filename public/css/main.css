@@ -1,9 +1,31 @@
+/* Estilos para Sticky Footer con Flexbox */
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+#main-content {
+    flex-grow: 1;
+}
+
 .carousel-item img {
     max-height: 590px;
     /* o la altura que prefieras */
     object-fit: cover;
     /* recorta imagen para que encaje */
     width: 100%;
+}
+
+.btn-outline-success {
+    border-color: white;
+    color: white;
+}
+
+.btn-outline-success:hover {
+    background-color: #8C6E5F;
+    border-color: #8C6E5F;
+    color: white;
 }
 
 .btn-success {
@@ -21,56 +43,6 @@
 .show>.btn-success.dropdown-toggle {
     background-color: #6F5448 !important;
     border-color: #6F5448 !important;
-}
-
-/* ---- Nav ---- */
-
-.transparent-navbar {
-    background-color: rgba(0, 0, 0, 0.4);
-    /* fondo negro translúcido */
-    backdrop-filter: blur(6px);
-    /* desenfoque elegante */
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    /* sombra suave */
-    transition: background-color 0.3s ease;
-}
-
-.transparent-navbar .nav-link,
-.transparent-navbar .navbar-brand,
-.transparent-navbar .btn {
-    color: #fff !important;
-}
-
-.transparent-navbar .btn-outline-success {
-    border-color: #fff;
-    color: #fff;
-}
-
-.transparent-navbar .btn-outline-success:hover {
-    background-color: var(--color-button);
-    border-color: var(--color-button);
-}
-
-.transparent-navbar .btn-success {
-    background-color: var(--color-button);
-    border-color: var(--color-button);
-}
-
-.transparent-navbar .btn-success:hover {
-    background-color: #6F5448;
-    border-color: #6F5448;
-}
-
-.navbar-brand span {
-    line-height: 1;
-    position: relative;
-    top: 3px;
-}
-
-.playball-regular {
-    font-family: "Playball", cursive;
-    font-weight: 400;
-    font-style: normal;
 }
 
 /* ---- colores de "Servicios Populares" (index.html) ---- */
@@ -112,70 +84,3 @@
 .card-body .border-top {
     border-top: 2px solid var(--color-texto) !important;
 }
-
-/* ---- botones de servicios.html ---- */
-
-#services .btn-success {
-    background-color: var(--color-button);
-    border-color: var(--color-button);
-}
-
-#services .btn-success:hover {
-    background-color: #6F5448;
-    border-color: #6F5448;
-}
-
-/*----------------------------------------*/
-
-.icon-hover {
-    color: #fff;
-    transition: all 0.3s ease;
-    padding: 4px;
-}
-
-.icon-hover:hover {
-    color: #ccc;
-    transform: scale(1.1);
-}
-
-.hover-item {
-    border-radius: 4px;
-    transition: all 0.2s;
-    margin: 2px 4px;
-}
-
-.hover-item:hover {
-    background-color: #f8f9fa;
-    transform: translateX(3px);
-}
-
-.dropdown-menu {
-    border-radius: 8px;
-    border: none;
-    min-width: 200px;
-}
-
-/*---------------------------------------*/
-.auth-dependent {
-    opacity: 0;
-    transition: opacity 0.3s ease;
-}
-/*---------------------------------------*/
-
-/* --- footer ---*/
-
-.hover-scale {
-    transition: color 0.4s ease;
-}
-
-.hover-scale:hover {
-    color: #8C6E5F !important;
-}
-
-/*---------------------------------------*/
-.toast-header img {
-    width: 30px;
-    height: 30px;
-    object-fit: cover;
-}
-/*---------------------------------------*/
