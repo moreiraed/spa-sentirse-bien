@@ -1,7 +1,3 @@
-// src/contactForm.js
-import { db } from './firebase-config.js';
-import { collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
-
 document.addEventListener('DOMContentLoaded', function() {
   const contactForm = document.querySelector('.contact-form-container form');
   
@@ -30,23 +26,37 @@ document.addEventListener('DOMContentLoaded', function() {
           tipoConsulta: contactForm.querySelector('#consult-type').value,
           mensaje: contactForm.querySelector('#message').value.trim(),
           newsletter: contactForm.querySelector('#newsletter').checked,
-          fecha: serverTimestamp(), // Usamos la marca de tiempo del servidor
           estado: 'nuevo',
           atendido: false
         };
 
         // Validación básica
         if (!formData.nombre || !formData.email || !formData.mensaje) {
-          throw new Error('Por favor complete los campos requeridos');
+          throw new Error('Por favor, complete los campos requeridos');
         }
 
-        // Enviar a Firestore
-        const docRef = await addDoc(collection(db, "contactos"), formData);
+        // URL de tu backend en Render. ¡Debes reemplazar el placeholder!
+        const backendUrl = 'https://spa-sentirse-bien-backend-d9dd.onrender.com';
+
+        // Enviar a nuestro backend de Node.js
+        // La URL debe ser absoluta porque el frontend y el backend están en dominios diferentes.
+        const response = await fetch(`${backendUrl}/api/contact`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(formData),
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || 'Hubo un problema al enviar el mensaje.');
+        }
         
         // Mostrar notificación de éxito
         showToast('✅ Mensaje enviado con éxito. Nos pondremos en contacto pronto.', 'success');
         
-        // Resetear formulario (excepto el checkbox)
+        // Resetear formulario
         contactForm.reset();
         contactForm.querySelector('#newsletter').checked = true; // Mantener checked por defecto
         

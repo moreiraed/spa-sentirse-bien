@@ -67,6 +67,8 @@ node_modules/
 
 # dataconnect generated files
 .dataconnect
-
 .vscode
+
+# Ignorar backend
+Backend/
 
