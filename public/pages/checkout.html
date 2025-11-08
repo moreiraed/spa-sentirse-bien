@@ -1,0 +1,185 @@
+<div class="checkout-page-container">
+  <div class="container py-5">
+    <h1 id="checkout-title" class="section-title mb-4">Finalizar Compra</h1>
+
+    <div class="row g-5">
+      <div class="col-lg-8">
+        <ul class="nav nav-tabs nav-fill mb-4" id="checkoutTabs" role="tablist">
+          <li class="nav-item" role="presentation">
+            <button
+              class="nav-link active"
+              id="servicios-tab"
+              data-bs-toggle="tab"
+              data-bs-target="#servicios-pane"
+              type="button"
+              role="tab"
+              aria-controls="servicios-pane"
+              aria-selected="true"
+            >
+              <i class="bi bi-journal-album me-2"></i>Mis Servicios
+            </button>
+          </li>
+
+          <li class="nav-item" role="presentation">
+            <button
+              class="nav-link"
+              id="productos-tab"
+              data-bs-toggle="tab"
+              data-bs-target="#productos-pane"
+              type="button"
+              role="tab"
+              aria-controls="productos-pane"
+              aria-selected="false"
+            >
+              <i class="bi bi-bag me-2"></i>Mis Productos
+            </button>
+          </li>
+        </ul>
+
+        <div class="tab-content" id="checkoutTabContent">
+          <div
+            class="tab-pane fade show active"
+            id="servicios-pane"
+            role="tabpanel"
+            aria-labelledby="servicios-tab"
+          >
+            <div class="card service-card">
+              <div class="card-body">
+                <h5 class="card-title mb-3">Servicios en tu carrito</h5>
+                <div id="servicios-items-container">
+                  <p class="text-muted">Cargando carrito...</p>
+                </div>
+                <hr class="my-4" />
+                <h5 class="card-title mb-3">
+                  Selecciona Fecha y Hora del Turno
+                </h5>
+                <p class="text-muted small">
+                  La fecha y hora seleccionada se aplicará a todos los servicios
+                  en esta reserva. Recuerda: solo puedes reservar con 48hs de
+                  anticipación.
+                </p>
+                <div id="calendario-container">
+                  <input
+                    type="text"
+                    id="datepicker-checkout"
+                    class="form-control"
+                    placeholder="Selecciona una fecha y hora..."
+                  />
+                </div>
+                <hr class="my-4" />
+                <h5 class="card-title mb-3">Modalidad</h5>
+                <p class="text-muted">
+                  <i class="bi bi-info-circle me-2"></i>
+                  Todas las reservas de servicios son para "Atención en Spa".
+                </p>
+                <div id="delivery-options-wrapper" style="display: none">
+                  <input
+                    class="form-check-input"
+                    type="radio"
+                    name="delivery"
+                    id="delivery-spa"
+                    value="in_spa"
+                    checked
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div
+            class="tab-pane fade"
+            id="productos-pane"
+            role="tabpanel"
+            aria-labelledby="productos-tab"
+          >
+            <div class="card service-card">
+              <div class="card-body">
+                <h5 class="card-title mb-3">Productos en tu carrito</h5>
+                <div id="productos-items-container">
+                  <p class="text-muted">Cargando productos...</p>
+                </div>
+                <hr class="my-4" />
+                <div class="d-flex justify-content-between fw-bold mb-2">
+                  <span>Subtotal Productos:</span>
+                  <span id="productos-subtotal">$0</span>
+                </div>
+                <div class="d-flex justify-content-between text-success">
+                  <span>Descuento Productos:</span>
+                  <span id="productos-descuento">-$0</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-4">
+        <div class="card service-card" style="position: sticky; top: 100px">
+          <div class="card-body">
+            <h4 class="card-title mb-3">Método de Pago</h4>
+            <div id="payment-options-wrapper" class="mb-4">
+              <div class="form-check">
+                <input
+                  class="form-check-input"
+                  type="radio"
+                  name="payment"
+                  id="payment-debit"
+                  value="debit_card"
+                />
+                <label
+                  class="form-check-label"
+                  for="payment-debit"
+                  id="payment-debit-label"
+                >
+                  Tarjeta de Débito (15% OFF)
+                </label>
+              </div>
+              <div class="form-check">
+                <input
+                  class="form-check-input"
+                  type="radio"
+                  name="payment"
+                  id="payment-cash"
+                  value="cash"
+                />
+                <label
+                  class="form-check-label"
+                  for="payment-cash"
+                  id="payment-cash-label"
+                >
+                  Efectivo
+                </label>
+              </div>
+            </div>
+
+            <hr />
+
+            <h4 class="card-title mb-4">Resumen de Pago</h4>
+            <ul class="list-unstyled mb-4">
+              <li class="d-flex justify-content-between mb-2">
+                <span>Subtotal:</span>
+                <span id="resumen-subtotal">$0</span>
+              </li>
+              <li class="d-flex justify-content-between mb-2 text-success">
+                <span>Descuento:</span>
+                <span id="resumen-descuento">-$0</span>
+              </li>
+              <li class="d-flex justify-content-between fw-bold h5 mb-0">
+                <span>Total:</span>
+                <span id="resumen-total">$0</span>
+              </li>
+            </ul>
+
+            <div class="alert alert-info small" id="reserva-reglas-alert">
+              Selecciona un método de pago.
+            </div>
+
+            <button class="btn-confirmar w-100" id="btn-confirmar-checkout">
+              Confirmar Reserva
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,246 +1,290 @@
 :root {
-    --accent-color: #8C6E5F;
-    --color-secundario-fondo: #D9D2C5;
-    --color-titulo: #4F463B;
-    --color-texto: #706558;
-    --color-button: #8C6E5F;
+  --color-main-background: #f5f0e6;
+  --color-secondary-background: #d9d2c5;
+  --color-third-background: #e6dac8;
+  --color-btn: #8c6e5f;
+  --color-btn-hover: #6f5448;
+  --color-title: #4f463b;
+  --color-text: #706558;
+  --color-separator: #4f463b;
 }
 
-body {
-    background-color: #F5F0E6 !important;
-    padding-top: 70px;
+.service-page-container {
+  background-color: var(--color-main-background);
+  padding-top: 80px;
 }
 
-.especial{
-    font-family: 'Quicksand', sans-serif;
+.service-page-container .section-title {
+  position: relative;
+  margin-bottom: 3rem;
+  color: var(--color-title);
 }
 
-.section-title {
-    position: relative;
-    margin-bottom: 3rem;
-    color: var(--color-titulo);
+.service-page-container .section-title:after {
+  content: "";
+  position: absolute;
+  bottom: -15px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 3px;
+  background: var(--color-btn);
 }
 
-.section-title:after {
-    content: "";
-    position: absolute;
-    bottom: -15px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 80px;
-    height: 3px;
-    background: var(--accent-color);
+.service-page-container .filter-buttons {
+  display: flex;
+  flex-wrap: wrap; /* Permite que los botones se ajusten en varias filas si es necesario */
+  justify-content: center; /* Centra los botones horizontalmente */
+  gap: 10px; /* Espacio entre los botones */
+  margin-bottom: 30px;
 }
 
-.filter-buttons {
-    display: flex;
-    flex-wrap: wrap;
-    /* Permite que los botones se ajusten en varias filas si es necesario */
-    justify-content: center;
-    /* Centra los botones horizontalmente */
-    gap: 10px;
-    /* Espacio entre los botones */
-    margin-bottom: 30px;
+.service-page-container .filter-btn {
+  background-color: var(--color-main-background);
+  color: var(--color-btn);
+  border: 2px solid var(--color-btn);
+  padding: 10px 25px;
+  border-radius: 30px;
+  font-weight: 600;
+  transition: all 0.3s;
+  cursor: pointer;
 }
 
-.filter-btn {
-    background-color: white;
-    color: var(--color-button);
-    border: 2px solid var(--color-button);
-    padding: 10px 25px;
-    border-radius: 30px;
-    font-weight: 600;
-    transition: all 0.3s;
+.service-page-container .filter-btn:hover,
+.service-page-container .filter-btn.active {
+  background-color: var(--color-btn);
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-.filter-btn:hover,
-.filter-btn.active {
-    background-color: var(--color-button);
-    color: white;
+/* Mejora visual para las tarjetas de servicio */
+.service-page-container .service-card {
+  border: none;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  transition: transform 0.3s, box-shadow 0.3s;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background-color: var(--color-secondary-background);
 }
 
-@media (max-width: 768px) {
-    .filter-btn {
-        font-size: 14px;
-        /* Disminuye el tamaño del texto en pantallas pequeñas */
-        padding: 8px 16px;
-        /* Ajusta el padding para que los botones no sean tan grandes */
-    }
+.service-page-container .service-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
 }
 
-@media (max-width: 480px) {
-    .filter-buttons {
-        flex-direction: column;
-        /* Cambia a columna en pantallas muy pequeñas */
-        align-items: center;
-        /* Alinea los botones al centro */
-    }
+.service-page-container .service-card .card-img-top {
+  height: 200px;
+  object-fit: cover;
 }
 
-.service-category {
-    display: none;
+.service-page-container .service-card .card-body {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
 }
 
-.service-category.active {
-    display: block;
-    animation: fadeIn 0.5s ease;
+.service-page-container .service-card .card-title {
+  color: var(--color-title);
+  font-weight: 600;
+  margin-bottom: 1rem;
 }
 
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-    }
-
-    to {
-        opacity: 1;
-    }
+.service-page-container .service-card .card-text {
+  color: var(--color-text);
+  margin-bottom: 1.5rem;
+  flex-grow: 1;
 }
 
-.yoga-card {
-    background-color: rgba(255, 255, 255, 0.9);
-    border-radius: 15px;
-    padding: 30px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+.service-page-container .service-card hr {
+  border-top: 2px solid var(--color-separator);
+  margin: 1.5rem 0;
 }
 
-.yoga-features i {
-    color: var(--color-button);
-    font-size: 1.5rem;
-    margin-right: 10px;
+.service-page-container .service-card .service-price {
+  color: var(--color-btn);
+  font-weight: 700;
+  font-size: 1.25rem;
 }
 
-/* ---- carrusel de "Carrusel Yoga e Hidromasaje" (servicios.html) ---- */
-
-.wellness-slide {
-    border-radius: 15px;
-    overflow: hidden;
+.service-page-container .btn-reservar,
+#btn-confirmar-reserva {
+  background-color: var(--color-btn);
+  color: white;
+  border: none;
+  border-radius: 20px;
+  padding: 12px 25px;
+  font-weight: 600;
+  transition: all 0.3s;
+  width: 100%;
+  max-width: none;
+  margin-top: auto;
 }
 
-.carousel-indicators button {
-    background-color: white;
+.service-page-container .btn-reservar:hover {
+  background-color: var(--color-btn-hover);
+  transform: scale(1.05);
 }
 
-.carousel-control-prev-icon,
-.carousel-control-next-icon {
-    background-color: rgba(255, 255, 255, 0.3);
-    border-radius: 50%;
-    padding: 20px;
+/* Nuevo loader personalizado */
+.service-page-container .custom-loader {
+  width: 80px;
+  height: 80px;
+  margin: 2rem auto;
+  position: relative;
+}
+.checkout-page-container {
+  /* "Empuja" el contenido hacia abajo para que no quede detrás del nav */
+  padding-top: 100px;
 }
 
-/* Estilos para la tarjeta de agregar */
-.add-service-card {
-    border-style: dashed !important;
-    border-color: #ced4da !important;
-    background-color: rgba(248, 249, 250, 0.5);
-    transition: all 0.25s ease;
+.service-page-container.custom-loader:before,
+.service-page-container .custom-loader:after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  border: 6px solid transparent;
+  border-top-color: var(--color-btn);
+  animation: spin 1.5s linear infinite;
 }
 
-.add-service-card:hover {
-    border-color: #0d6efd !important;
-    background-color: rgba(13, 110, 253, 0.05);
-    transform: translateY(-3px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+.service-page-container .custom-loader:after {
+  border-top-color: var(--color-btn-hover);
+  animation: spin 2s linear infinite;
 }
 
-.add-service-card .add-service-content {
-    transition: all 0.25s ease;
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
-.add-service-card:hover .add-service-content {
-    transform: scale(1.05);
-}
-
-.add-service-card:hover .bi-plus-lg {
-    color: #0d6efd !important;
-}
-
-/* Asegurar consistencia visual */
-.add-service-card {
-    min-height: 380px;
-    /* Igual que las otras tarjetas */
-    border-radius: 0.5rem !important;
-}
-
-/* Efecto para hacer evidente que es clickeable */
-.add-service-card:hover .add-service-content h5 {
-    color: #0d6efd !important; 
-}
-
-/* Animación al cambiar filtros */
-#servicios-container {
-    opacity: 0;
-    transition: opacity 0.5s ease;
-    min-height: 300px;
-    /* Para evitar saltos de layout */
-}
-
-#servicios-container.loading {
-    opacity: 0.5;
-    pointer-events: none; 
-}
-
-/* Efecto para cada tarjeta individual (opcional) */
-#servicios-container .col-md-3 {
-    animation: fadeInCard 0.5s ease forwards;
-    opacity: 0;
-    transform: translateY(20px);
-}
-
-@keyframes fadeInCard {
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-/* Retrasos escalonados para cada tarjeta */
-#servicios-container .col-md-3:nth-child(1) {
-    animation-delay: 0.1s;
-}
-
-#servicios-container .col-md-3:nth-child(2) {
-    animation-delay: 0.2s;
-}
-
-#servicios-container .col-md-3:nth-child(3) {
-    animation-delay: 0.3s;
-}
-
-#servicios-container .col-md-3:nth-child(4) {
-    animation-delay: 0.4s;
-}
-
-/* Añade más si necesitas más columnas */
-
-/*--------------------------------------------*/
-
-/* Estilos para el loader */
+/* Animación de escalado para el loader */
 @keyframes pulse {
-    0% {
-        opacity: 0.6;
-    }
+  0% {
+    transform: scale(0.95);
+    opacity: 0.7;
+  }
 
-    50% {
-        opacity: 1;
-    }
+  50% {
+    transform: scale(1.05);
+    opacity: 1;
+  }
 
-    100% {
-        opacity: 0.6;
-    }
+  100% {
+    transform: scale(0.95);
+    opacity: 0.7;
+  }
 }
 
-.custom-loader-text {
-    animation: pulse 1.5s infinite;
-    color: #8C6E5F;
+.service-page-container .loader-text {
+  color: var(--color-btn);
+  font-weight: 600;
+  margin-top: 1rem;
+  text-align: center;
+  animation: pulse 2s ease-in-out infinite;
 }
 
-.spinner-grow {
-    color: #8C6E5F;
-    width: 2rem;
-    height: 2rem; 
+/* Animación para las cards */
+.service-page-container .service-card {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: cardAppear 0.6s ease forwards;
 }
 
-/* Separacion de las tarjetas que estan debajo */
-.col-md-3 {
-    margin-bottom: 20px;
+@keyframes cardAppear {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ---- -- Cards Yoga e Hidromasaje -- -----*/
+.service-page-container .yoga-card {
+  background-color: rgba(255, 255, 255, 0.9);
+  border-radius: 15px;
+  padding: 30px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.service-page-container .yoga-features i {
+  color: var(--color-btn);
+  font-size: 1.5rem;
+  margin-right: 10px;
+}
+
+/* ---- -- Carrusel Yoga e Hidromasaje -- ---- */
+.service-page-container .wellness-slide {
+  border-radius: 15px;
+  overflow: hidden;
+}
+
+.service-page-container .carousel-indicators button {
+  background-color: white;
+}
+
+.service-page-container .carousel-control-prev-icon,
+.service-page-container .carousel-control-next-icon {
+  background-color: rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  padding: 20px;
+}
+
+/* ============================================= */
+/* --- Estilos de Impresión para Comprobante --- */
+/* ============================================= */
+
+@media print {
+  /* Ocultar todo lo que NO es el comprobante */
+  body > *:not(#paymentSimulationModal),
+  .modal-header,
+  .modal-footer {
+    display: none !important;
+  }
+
+  /* Asegurarse de que el modal y el comprobante sean visibles */
+  .modal,
+  .modal-dialog,
+  .modal-content,
+  .modal-body,
+  #payment-success,
+  #receipt-content {
+    display: block !important;
+    visibility: visible !important;
+    width: 100% !important;
+    position: static !important;
+    overflow: visible !important;
+    box-shadow: none !important;
+    border: none !important;
+    background: #fff !important;
+    color: #000 !important;
+  }
+
+  /* Quitar márgenes y asegurar que ocupe toda la página */
+  body,
+  .modal,
+  .modal-dialog {
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  /* Limpiar la vista de éxito para que solo se imprima el recibo */
+  #payment-success .text-center {
+    display: none !important;
+  }
+  #payment-success > p {
+    display: none !important;
+  }
+
+  #receipt-content {
+    border: none !important;
+  }
 }

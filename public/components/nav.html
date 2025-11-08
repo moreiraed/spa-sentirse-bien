@@ -1,0 +1,104 @@
+<!-- ----------------------- Nav ----------------------- -->
+<nav class="navbar navbar-expand-lg navbar-dark fixed-top custom-navbar">
+  <div class="container">
+    <!-- Logo -->
+    <a
+      class="navbar-brand d-flex align-items-center"
+      href="#"
+      data-spa-link="home"
+    >
+      <img src="assets/icon/logo.png" alt="Spa Logo" width="60" class="me-2" />
+      <span class="text-light fs-2 playball-regular">Spa Sentirse Bien</span>
+    </a>
+
+    <!-- Botón hamburguesa para móviles -->
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#navbarNav"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <!-- Enlaces -->
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto align-items-center">
+        <li class="nav-item">
+          <a
+            class="nav-link px-3 fw-semibold active text-light nav-animated-link"
+            href="#"
+            data-spa-link="home"
+            >Inicio</a
+          >
+        </li>
+        <li class="nav-item">
+          <a
+            class="nav-link px-3 fw-semibold text-light nav-animated-link"
+            href="#"
+            data-spa-link="servicios"
+            >Servicios</a
+          >
+        </li>
+        <li class="nav-item">
+          <a
+            class="nav-link px-3 fw-semibold text-light nav-animated-link"
+            href="#"
+            data-spa-link="productos"
+            >Productos</a
+          >
+        </li>
+        <li class="nav-item">
+          <a
+            class="nav-link px-3 fw-semibold text-light nav-animated-link"
+            href="#"
+            data-spa-link="contacto"
+            >Contacto</a
+          >
+        </li>
+
+        <!-- Contenedor unificado para auth (siempre presente) -->
+        <li class="nav-item mt-2 mt-lg-0" id="navAuthContainer">
+          <!-- Skeleton loader (se muestra por defecto) -->
+          <div class="auth-skeleton" id="authSkeleton">
+            <div class="skeleton-avatar"></div>
+          </div>
+
+          <!-- Botones de login/register (ocultos por defecto) -->
+          <div
+            class="auth-buttons d-flex gap-2 align-items-center"
+            id="authButtons"
+            style="display: none"
+          >
+            <a
+              href="#"
+              class="nav-link px-2 fw-semibold text-light d-flex align-items-center nav-link"
+              data-bs-toggle="modal"
+              data-bs-target="#loginModal"
+            >
+              <i class="bi bi-box-arrow-in-right me-1"></i> Iniciar sesión
+            </a>
+            <a
+              href="#"
+              class="nav-link px-2 fw-semibold text-light d-flex align-items-center nav-link"
+              data-bs-toggle="modal"
+              data-bs-target="#registerModal"
+            >
+              <i class="bi bi-person-plus me-1"></i> Crear cuenta
+            </a>
+          </div>
+
+          <!-- Dropdown del usuario (oculto por defecto) -->
+          <div class="auth-user" id="authUser" style="display: none">
+            <!-- Aquí se cargará dinámicamente el dropdown del usuario -->
+          </div>
+        </li>
+        <li class="nav-item ">
+          <a class="nav-link" href="#checkout">
+            <i class="bi bi-cart-fill fs-3 checkout-icon"></i>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>

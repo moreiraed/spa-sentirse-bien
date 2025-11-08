@@ -1,0 +1,198 @@
+/* Estilos generales para los modales de autenticación */
+.auth-modal .modal-content {
+    border-radius: 0.75rem;
+    overflow: hidden;
+    border: none;
+}
+
+/* Panel de branding */
+.auth-brand-panel {
+    background: linear-gradient(135deg, #8C6E5F 0%, #C1A18F 100%);
+    min-height: 450px;
+}
+
+/* INPUT y LABEL ANIMACIÓN */
+.form-group {
+    position: relative;
+    margin-bottom: 1.5rem;
+}
+
+.custom-input {
+    width: 100%;
+    border: 1px solid #ddd;
+    border-radius: 0.5rem;
+    padding: 1.2rem 0.75rem 0.4rem;
+    font-size: 1rem;
+    background: transparent;
+    transition: border-color 0.3s ease;
+    z-index: 1;
+}
+
+.custom-input:focus {
+    border-color: #8C6E5F;
+    outline: none;
+    box-shadow: none;
+}
+
+.floating-label {
+    position: absolute;
+    top: 1rem;
+    left: 0.75rem;
+    color: #aaa;
+    font-size: 1rem;
+    pointer-events: none;
+    background: white;
+    padding: 0 0.25rem;
+    transition: all 0.2s ease;
+    z-index: 2;
+}
+
+/* Mantener label arriba cuando hay texto */
+.custom-input:focus~.floating-label,
+.custom-input.has-value~.floating-label {
+    top: -0.6rem;
+    left: 0.6rem;
+    font-size: 0.75rem;
+    color: #8C6E5F;
+}
+
+/* Botón ojo para contraseña */
+.toggle-password {
+    position: absolute;
+    top: 50%;
+    right: 0.75rem;
+    transform: translateY(-50%);
+    background: transparent;
+    border: none;
+    color: #aaa;
+    z-index: 3;
+    cursor: pointer;
+}
+
+.toggle-password:hover {
+    color: #8C6E5F;
+}
+
+/* Estilos para botones de autenticación */
+.auth-submit-btn {
+    background-color: #8C6E5F;
+    border: none;
+    color: white;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.auth-submit-btn:hover:not(:disabled) {
+    background-color: #A07D6D;
+    color: white;
+    transform: translateY(-2px);
+}
+
+.auth-submit-btn:disabled {
+    background-color: #8C6E5F;
+    color: white;
+    opacity: 0.8;
+    transform: none;
+    cursor: not-allowed;
+}
+
+/* Loader para botones */
+.btn-loading {
+    color: transparent !important;
+}
+
+.btn-loading::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    margin: -10px 0 0 -10px;
+    border: 2px solid transparent;
+    border-top: 2px solid #fff;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/* Estilos para los íconos de redes sociales */
+.social-btn {
+    width: 34px;
+    height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #dee2e6;
+}
+
+.social-btn:hover {
+    background-color: #f8f9fa;
+    border-color: #8C6E5F;
+}
+
+/* Responsive */
+@media (max-width: 767.98px) {
+    .auth-brand-panel {
+        display: none !important;
+    }
+}
+
+/* Agrega estos estilos al final de auth-modals.css */
+
+/* Loader para botones - corregido */
+.btn-loading {
+    position: relative;
+    color: transparent !important;
+}
+
+.btn-loading::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    margin: -10px 0 0 -10px;
+    border: 2px solid transparent;
+    border-top: 2px solid #fff;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+/* Asegurar que el loader del login esté bien posicionado */
+#loginLoader {
+    position: absolute !important;
+    left: 50% !important;
+    top: 50% !important;
+    margin-left: -10px !important;
+    margin-top: -10px !important;
+}
+
+/* Floating labels corregido */
+.custom-input:focus~.floating-label,
+.custom-input.has-value~.floating-label {
+    top: -0.5rem;
+    left: 0.75rem;
+    font-size: 0.75rem;
+    color: #8C6E5F;
+    background: white;
+    padding: 0 0.25rem;
+    z-index: 10;
+}
+
+/* Asegurar que los botones estén deshabilitados visualmente */
+.auth-submit-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none !important;
+}

@@ -1,0 +1,106 @@
+<div class="product-page-container">
+
+  <div class="container py-5">
+    
+    <div class="row mb-4 align-items-center">
+      <div class="col-12" style="position: relative;">
+        <h1 class="section-title">Nuestros Productos</h1>
+        <div id="admin-controls-container" style="position: absolute; right: 0.75rem; top: 50%; transform: translateY(-50%);"></div>
+      </div>
+    </div>
+
+    <div class="row mb-4 align-items-center">
+
+      <div class="col-md-5 mb-2">
+        <div class="modern-search-bar">
+          <i class="bi bi-search"></i>
+          <input type="search" id="search-input" class="form-control" placeholder="Buscar por nombre...">
+        </div>
+      </div>
+
+      <div class="col-md-3 mb-2">
+        <select id="filter-type" class="form-select modern-filter-pill">
+          <option value="">Filtrar por tipo</option>
+        </select>
+      </div>
+
+      <div class="col-md-3 mb-2">
+        <select id="filter-category" class="form-select modern-filter-pill">
+          <option value="">Filtrar por categoría</option>
+        </select>
+      </div>
+
+      <div class="col-md-1 mb-2 text-center">
+        <button class="btn modern-clear-btn" id="clear-filters-btn" title="Limpiar filtros">
+          <i class="bi bi-arrow-counterclockwise"></i>
+        </button>
+      </div>
+    </div>
+
+    <div class="col-12 text-center d-none" id="products-loader">
+      <div class="spinner-border text-success" role="status">
+        <span class="visually-hidden">Cargando...</span>
+      </div>
+    </div>
+
+    <div id="products-grid" class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4"></div>
+
+    <div class="modal fade" id="productModal" tabindex="-1" aria-labelledby="productModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="productModalLabel">Nuevo Producto</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form id="product-form">
+              <input type="hidden" id="product-id">
+
+              <div class="mb-3">
+                <label for="product-name" class="form-label">Nombre</label>
+                <input type="text" class="form-control" id="product-name" required>
+              </div>
+              <div class="mb-3">
+                <label for="product-description" class="form-label">Descripción</label>
+                <textarea class="form-control" id="product-description" rows="3"></textarea>
+              </div>
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label for="product-price" class="form-label">Precio</label>
+                  <input type="number" class="form-control" id="product-price" step="0.01" min="0" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label for="product-stock" class="form-label">Stock</label>
+                  <input type="number" class="form-control" id="product-stock" min="0" required>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label for="product-type" class="form-label">Tipo</label>
+                  <input type="text" class="form-control" id="product-type" placeholder="Ej: Estética">
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label for="product-category" class="form-label">Categoría</label>
+                  <input type="text" class="form-control" id="product-category" placeholder="Ej: Skincare">
+                </div>
+              </div>
+              <div class="mb-3">
+                <label for="product-image-file" class="form-label">Subir Imagen de Producto</label>
+                <input class="form-control" type="file" id="product-image-file" accept="image/png, image/jpeg, image/webp">
+                <input type="hidden" id="product-image-url">
+                <div id="image-preview-wrapper" class="mt-2" style="display: none;">
+                  <small>Imagen actual:</small><br>
+                  <img id="image-preview" src="" alt="Vista previa" style="max-height: 100px; border-radius: 8px;">
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="submit" class="btn btn-primary" id="save-product-btn">Guardar</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

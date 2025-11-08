@@ -1,0 +1,303 @@
+/* css/productos.css - Versión Optimizada */
+
+.product-page-container {
+    background-color: var(--color-main-background);
+    padding-top: 80px;
+    min-height: 100vh;
+}
+
+/* === Título de Sección === */
+.product-page-container .section-title {
+    position: relative;
+    margin-bottom: 3rem;
+    color: var(--color-title);
+    text-align: center;
+}
+
+.product-page-container .section-title:after {
+    content: "";
+    position: absolute;
+    bottom: -15px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 3px;
+    background: var(--color-btn);
+}
+
+/* === Contenedor de Filtros === */
+.product-page-container .filters-container {
+    background-color: var(--color-third-background);
+    border-radius: 15px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.product-page-container .filter-row {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+/* === Barra de Búsqueda === */
+.product-page-container .modern-search-bar {
+    position: relative;
+    width: 100%;
+    flex: 1;
+    min-width: 250px;
+}
+
+.product-page-container .modern-search-bar .bi-search {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--color-btn);
+    z-index: 3;
+    pointer-events: none;
+    font-size: 1.1rem;
+}
+
+.product-page-container .modern-search-bar .form-control {
+    border-radius: 30px;
+    border: 2px solid var(--color-btn);
+    background-color: var(--color-main-background);
+    color: var(--color-text);
+    padding: 12px 1rem 12px 3rem;
+    font-weight: 600;
+    transition: all 0.3s;
+    width: 100%;
+}
+
+.product-page-container .modern-search-bar .form-control:focus {
+    box-shadow: 0 0 0 0.25rem rgba(140, 110, 95, 0.25);
+    border-color: var(--color-btn-hover);
+    background-color: white;
+    transform: translateY(-2px);
+}
+
+.product-page-container .modern-search-bar .form-control::placeholder {
+    color: var(--color-btn);
+    opacity: 0.8;
+}
+
+/* === Filtros Select === */
+.product-page-container .modern-filter-pill {
+    background-color: var(--color-main-background);
+    color: var(--color-btn);
+    border: 2px solid var(--color-btn);
+    padding: 12px 25px;
+    border-radius: 30px;
+    font-weight: 600;
+    transition: all 0.3s;
+    cursor: pointer;
+    min-width: 180px;
+    
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%238C6E5F' class='bi bi-chevron-down' viewBox='0 0 16 16'%3E%3Cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+}
+
+.product-page-container .modern-filter-pill:hover,
+.product-page-container .modern-filter-pill:focus {
+    background-color: var(--color-secondary-background);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+    border-color: var(--color-btn-hover);
+}
+
+.product-page-container .modern-filter-pill:focus {
+    box-shadow: 0 0 0 0.25rem rgba(140, 110, 95, 0.25);
+    background-color: white;
+}
+
+/* === Botón Limpiar Filtros === */
+.product-page-container .modern-clear-btn {
+    background-color: var(--color-main-background);
+    border: 2px solid var(--color-btn);
+    color: var(--color-btn);
+    border-radius: 30px;
+    padding: 12px 20px;
+    font-weight: 600;
+    transition: all 0.3s;
+    cursor: pointer;
+    min-width: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.product-page-container .modern-clear-btn:hover {
+    background-color: var(--color-btn);
+    color: white;
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* === Tarjetas de Producto === */
+.product-page-container .product-card {
+    border: none;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    transition: transform 0.3s, box-shadow 0.3s;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background-color: var(--color-secondary-background);
+    opacity: 0;
+    transform: translateY(20px);
+    animation: cardAppear 0.6s ease forwards;
+}
+
+.product-page-container .product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+}
+
+.product-page-container .product-card .card-img-top {
+    height: 200px;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.product-page-container .product-card:hover .card-img-top {
+    transform: scale(1.05);
+}
+
+.product-page-container .product-card .card-body {
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.product-page-container .product-card .card-title {
+    color: var(--color-title);
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.product-page-container .product-card .card-text {
+    color: var(--color-text);
+    margin-bottom: 1.5rem;
+    flex-grow: 1;
+    line-height: 1.5;
+}
+
+.product-page-container .product-card hr {
+    border-top: 2px solid var(--color-separator);
+    margin: 1.5rem 0;
+    opacity: 0.3;
+}
+
+.product-page-container .product-card .product-price {
+    color: var(--color-btn);
+    font-weight: 700;
+    font-size: 1.25rem;
+}
+
+/* === Botón Agregar al Carrito === */
+.product-page-container .btn-add-to-cart-styled {
+    background-color: var(--color-btn);
+    color: white;
+    border: none;
+    border-radius: 20px;
+    padding: 12px 25px;
+    font-weight: 600;
+    transition: all 0.3s;
+    width: 100%;
+    margin-top: auto;
+}
+
+.product-page-container .btn-add-to-cart-styled:hover {
+    background-color: var(--color-btn-hover);
+    transform: scale(1.05);
+}
+
+.product-page-container .btn-add-to-cart-styled:disabled {
+    background-color: var(--color-text);
+    transform: none;
+    cursor: not-allowed;
+}
+
+/* === Controles de Admin === */
+.product-page-container .admin-controls-placeholder {
+    border-top: 1px solid rgba(79, 70, 59, 0.1);
+    padding-top: 1rem;
+}
+
+.product-page-container .edit-btn,
+.product-page-container .delete-btn {
+    border-radius: 20px;
+    font-weight: 600;
+    transition: all 0.3s;
+    font-size: 0.875rem;
+}
+
+.product-page-container .edit-btn:hover {
+    background-color: var(--color-btn);
+    border-color: var(--color-btn);
+    color: white;
+    transform: translateY(-2px);
+}
+
+.product-page-container .delete-btn:hover {
+    transform: translateY(-2px);
+}
+
+/* === Loader y Estados === */
+.product-page-container .custom-loader {
+    width: 80px;
+    height: 80px;
+    margin: 2rem auto;
+    position: relative;
+}
+
+.product-page-container .custom-loader:before,
+.product-page-container .custom-loader:after {
+    content: "";
+    position: absolute;
+    border-radius: 50%;
+    border: 6px solid transparent;
+    border-top-color: var(--color-btn);
+    animation: spin 1.5s linear infinite;
+}
+
+.product-page-container .custom-loader:after {
+    border-top-color: var(--color-btn-hover);
+    animation: spin 2s linear infinite;
+}
+
+.product-page-container .empty-state {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: var(--color-text);
+}
+
+/* === Animaciones === */
+@keyframes cardAppear { to { opacity: 1; transform: translateY(0); } }
+@keyframes spin { 100% { transform: rotate(360deg); } }
+
+/* === Responsive === */
+@media (max-width: 768px) {
+    .product-page-container { padding-top: 100px; }
+    .product-page-container .filters-container { padding: 1rem; }
+    .product-page-container .filter-row { gap: 10px; }
+    .product-page-container .modern-search-bar,
+    .product-page-container .modern-filter-pill { min-width: 100%; }
+    .product-page-container .modern-clear-btn { min-width: 50px; padding: 10px 15px; }
+    .product-page-container .product-card .card-body { padding: 1rem; }
+}
+
+@media (max-width: 576px) {
+    .product-page-container .filter-row { flex-direction: column; }
+    .product-page-container .modern-search-bar,
+    .product-page-container .modern-filter-pill,
+    .product-page-container .modern-clear-btn { width: 100%; }
+}
