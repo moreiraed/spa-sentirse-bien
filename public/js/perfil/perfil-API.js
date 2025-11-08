@@ -1,4 +1,4 @@
-import { supabase } from "../../core/supabase.js";
+import { supabase } from "../core/supabase.js";
 
 export class ProfileAPI {
   async loadUserFromSupabase(userId) {

@@ -1,5 +1,5 @@
-import { showToast } from "../../auth/auth-utils.js";
-import { supabase } from "../../core/supabase.js";
+import { showToast } from "../auth/auth-utils.js";
+import { supabase } from "../core/supabase.js";
 
 export class ProfileSecurity {
   constructor() {

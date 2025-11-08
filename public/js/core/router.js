@@ -256,7 +256,7 @@ export class Router {
   }
 
   initProfilePage() {
-    import("../modules/perfil/perfil.js")
+    import("../perfil/perfil-manager.js")
       .then((module) => {
         module.initProfilePage();
       })
