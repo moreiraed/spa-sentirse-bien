@@ -1,8 +1,9 @@
 import { ProfileValidator } from "./perfil-validador.js";
-import { ProfileUI } from "./perfil-UI.js";
+import { ProfileUI } from "./perfil-ui.js";
 import { ProfileAPI } from "./perfil-API.js";
 import { ProfileSecurity } from "./perfil-seguridad.js";
 import { showToast } from "../../auth/auth-utils.js";
+
 export class ProfileManager {
   constructor() {
     this.validator = new ProfileValidator();
