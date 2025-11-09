@@ -1,4 +1,3 @@
-// modules/auth/AuthManager.js
 import { supabase } from "../core/supabase.js";
 import { loadUserProfile, createUserProfile } from "./auth-profile.js";
 import { updateAuthUI, showAuthLoader } from "./auth-UI.js";
@@ -123,7 +122,7 @@ export class AuthManager {
   }
 
   isProtectedPage(page) {
-    const protectedPages = ["perfil", "reservas", "admin"];
+    const protectedPages = ["perfil", "reservas", "admin", "ventas"];
     return protectedPages.includes(page);
   }
 

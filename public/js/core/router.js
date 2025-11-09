@@ -11,6 +11,7 @@ export class Router {
       checkout: "./pages/checkout.html",
       reservas: "./pages/mis-reservas.html",
       admin: "./pages/admin.html",
+      ventas: "./pages/ventas.html",
       privacidad: "./pages/privacidad.html",
       terminos: "./pages/terminos.html",
       misproductos: "./pages/mis-productos.html",
@@ -143,7 +144,13 @@ export class Router {
   }
 
   requiresAuth(page) {
-    const protectedPages = ["perfil", "checkout", "reservas", "admin"];
+    const protectedPages = [
+      "perfil",
+      "checkout",
+      "reservas",
+      "admin",
+      "ventas",
+    ];
     return protectedPages.includes(page);
   }
 
@@ -228,6 +235,9 @@ export class Router {
         break;
       case "admin":
         this.initAdminPage();
+      case "ventas":
+        this.initVentasPage();
+        break;
       case "productos":
         this.initProductsPage();
         break;
@@ -256,6 +266,16 @@ export class Router {
       })
       .catch((error) => {
         console.error("Error inicializando página de admin:", error);
+      });
+  }
+
+  initVentasPage() {
+    import("../ventas/ventas-manager.js")
+      .then((module) => {
+        module.initVentasPage();
+      })
+      .catch((error) => {
+        console.error("Error inicializando página de ventas:", error);
       });
   }
 

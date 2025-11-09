@@ -1,0 +1,183 @@
+<div class="admin-page-container">
+    <div class="container py-5 mt-5 admin-panel">
+        <div class="admin-header fade-in">
+            <div class="d-flex justify-content-between align-items-center flex-wrap">
+                <h1 class="h2 mb-3 mb-md-0">
+                    <i class="bi bi-graph-up me-2"></i>Panel de Ventas
+                </h1>
+                <div class="admin-stats-card">
+                    <i class="bi bi-currency-dollar me-2"></i>
+                    <span id="sales-stats">Cargando estadísticas...</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navegación de ventas -->
+        <ul class="nav nav-tabs mb-4 admin-tabs" id="salesTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="informes-tab" data-bs-toggle="tab" data-bs-target="#informes"
+                    type="button" role="tab">
+                    <i class="bi bi-file-bar-graph me-2"></i>Informes de Ventas
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="stock-tab" data-bs-toggle="tab" data-bs-target="#stock" type="button"
+                    role="tab">
+                    <i class="bi bi-box-seam me-2"></i>Control de Stock
+                </button>
+            </li>
+        </ul>
+
+        <!-- Contenido de las pestañas -->
+        <div class="tab-content fade-in" id="salesTabContent">
+
+            <!-- Pestaña de Informes de Ventas -->
+            <div class="tab-pane fade show active" id="informes" role="tabpanel">
+                <!-- Filtros de Fecha -->
+                <div class="filter-controls mb-4">
+                    <div class="row g-3">
+                        <div class="col-md-3">
+                            <label for="fecha-inicio" class="form-label">Fecha Inicio</label>
+                            <input type="date" class="form-control" id="fecha-inicio">
+                        </div>
+                        <div class="col-md-3">
+                            <label for="fecha-fin" class="form-label">Fecha Fin</label>
+                            <input type="date" class="form-control" id="fecha-fin">
+                        </div>
+                        <div class="col-md-3">
+                            <label for="tipo-filtro" class="form-label">Tipo</label>
+                            <select class="form-select" id="tipo-filtro">
+                                <option value="todos">Todos los tipos</option>
+                                <option value="servicio">Servicios</option>
+                                <option value="producto">Productos</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3 d-flex align-items-end">
+                            <button class="btn btn-admin-primary w-100" id="btn-generar-informe">
+                                <i class="bi bi-file-earmark-text me-2"></i>Generar Informe
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Resumen de Ventas -->
+                <div class="row mb-4">
+                    <div class="col-md-3">
+                        <div class="card bg-primary text-white">
+                            <div class="card-body">
+                                <h5 class="card-title">Total Ventas</h5>
+                                <h3 id="total-ventas" class="card-text">$0</h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card bg-success text-white">
+                            <div class="card-body">
+                                <h5 class="card-title">Efectivo</h5>
+                                <h3 id="total-efectivo" class="card-text">$0</h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card bg-info text-white">
+                            <div class="card-body">
+                                <h5 class="card-title">Débito</h5>
+                                <h3 id="total-debito" class="card-text">$0</h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card bg-warning text-white">
+                            <div class="card-body">
+                                <h5 class="card-title">Crédito</h5>
+                                <h3 id="total-credito" class="card-text">$0</h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tabla de Detalle de Ventas -->
+                <div class="admin-table">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="mb-0">Detalle de Ventas</h5>
+                        <button class="btn btn-admin-outline" id="btn-exportar-informe">
+                            <i class="bi bi-download me-2"></i>Exportar
+                        </button>
+                    </div>
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Fecha</th>
+                                <th>Cliente</th>
+                                <th>Tipo</th>
+                                <th>Producto/Servicio</th>
+                                <th>Cantidad</th>
+                                <th>Precio Unit.</th>
+                                <th>Subtotal</th>
+                                <th>Método Pago</th>
+                                <th>Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody id="detalle-ventas-body">
+                            <tr>
+                                <td colspan="9" class="text-center py-5">
+                                    <div class="spinner-border text-primary" role="status">
+                                        <span class="visually-hidden">Cargando...</span>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Pestaña de Control de Stock -->
+            <div class="tab-pane fade" id="stock" role="tabpanel">
+                <div class="d-flex justify-content-between align-items-center mb-4 filter-controls">
+                    <h5 class="mb-0 text-title">
+                        <i class="bi bi-box-seam me-2"></i>Control de Inventario
+                    </h5>
+                    <div class="btn-group">
+                        <button class="btn btn-admin-outline dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                            Filtrar por Categoría
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><button class="dropdown-item filter-stock-btn" data-filter="all">Todos</button></li>
+                            <li><button class="dropdown-item filter-stock-btn" data-filter="bajo">Stock Bajo</button>
+                            </li>
+                            <li><button class="dropdown-item filter-stock-btn" data-filter="agotado">Agotados</button>
+                            </li>
+                        </ul>
+                        <button class="btn btn-admin-primary ms-2" id="btn-exportar-stock">
+                            <i class="bi bi-file-earmark-excel me-2"></i>Exportar Stock
+                        </button>
+                    </div>
+                </div>
+
+                <div class="admin-table">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Producto</th>
+                                <th>Categoría</th>
+                                <th>Stock Actual</th>
+                                <th>Estado</th>
+                                <th>Última Actualización</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="stock-table-body">
+                            <tr>
+                                <td colspan="6" class="text-center py-5">
+                                    <div class="spinner-border text-primary" role="status">
+                                        <span class="visually-hidden">Cargando...</span>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

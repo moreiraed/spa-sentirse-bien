@@ -43,6 +43,17 @@ function updateUserDropdownInfo(authManager) {
     const isAdmin = authManager.currentUser.rol === "admin";
     adminLinkItem.style.display = isAdmin ? "block" : "none";
   }
+
+  // Mostrar/ocultar panel de ventas - CORREGIDO
+  const ventasLink = document.getElementById("ventas-link-item");
+  if (ventasLink) {
+    // CORRECCIÓN: usar authManager.currentUser en lugar de user
+    ventasLink.style.display =
+      authManager.currentUser.rol === "ventas" ||
+      authManager.currentUser.rol === "admin"
+        ? "block"
+        : "none";
+  }
 }
 
 function setupLogoutListener(authManager) {

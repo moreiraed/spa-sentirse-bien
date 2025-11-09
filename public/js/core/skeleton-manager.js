@@ -3,6 +3,7 @@ class SkeletonManager {
     this.skeletons = {
       perfil: this.getProfileSkeleton(),
       admin: this.getAdminSkeleton(),
+      ventas: this.getAdminSkeleton(),
       reservas: this.getReservasSkeleton(),
     };
   }
