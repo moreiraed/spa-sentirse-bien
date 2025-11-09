@@ -155,7 +155,6 @@ function handlePayNowClick(bookingId) {
   let discountAmount = 0; // Por defecto es 0
 
   if (hoursRemaining >= 48) {
-    
     discountAmount = priceToPay * 0.15; // 1. Calcular el 15%
     priceToPay = priceToPay - discountAmount; // 2. Restar el 15% del total
     console.log("¡Descuento de 48hs aplicado!");
@@ -163,17 +162,16 @@ function handlePayNowClick(bookingId) {
 
   // Guardar estado para el modal
   currentBookingToPay = bookingToPay;
-  finalPaymentAmount = priceToPay; // Ahora 'priceToPay' es correcto
 
   // Preparamos el objeto de desglose para la UI
-  const priceDetails = {
+  finalPaymentDetails = {
     subtotal: bookingToPay.subtotal,
     discountAmount: discountAmount, // Ahora 'discountAmount' es correcto
     priceToPay: priceToPay,
   };
 
   // Llamar a la UI para mostrar el modal con el desglose
-  ui.showPaymentModal(paymentModal, priceDetails);
+  ui.showPaymentModal(paymentModal, finalPaymentDetails);
 }
 
 /**
