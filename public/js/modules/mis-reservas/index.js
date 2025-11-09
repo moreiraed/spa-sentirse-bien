@@ -1,5 +1,5 @@
 // public/js/modules/mis-reservas/index.js
-import { supabase } from '../../core/supabase.js';
+import { supabase } from "../../core/supabase.js";
 import * as api from "./api.js";
 import * as ui from "./ui.js";
 
@@ -135,34 +135,45 @@ async function loadUserBookings() {
 
 /**
  * Lógica de Negocio: Se dispara al hacer clic en "Pagar Ahora".
+ * Decide el precio (Regla 48hs) y muestra el modal.
  */
 function handlePayNowClick(bookingId) {
-  // (Esta función es correcta como está en tu archivo)
-  // ...
   const bookingToPay = moduleBookings.find(
     (b) => b.id.toString() === bookingId
   );
-  if (!bookingToPay) return;
+  if (!bookingToPay) {
+    console.error("No se encontró la reserva para pagar.");
+    return;
+  }
 
-  // (Lógica de 48hs)
+  // REGLA 3: Descuento de 48hs
   const now = new Date();
   const appointmentTime = new Date(bookingToPay.appointment_datetime);
   const hoursRemaining = (appointmentTime - now) / 3600000;
+
   let priceToPay = bookingToPay.subtotal;
-  let discountAmount = 0;
+  let discountAmount = 0; // Por defecto es 0
+
   if (hoursRemaining >= 48) {
-    discountAmount = priceToPay * 0.85;
-    priceToPay = priceToPay - discountAmount;
+    
+    discountAmount = priceToPay * 0.15; // 1. Calcular el 15%
+    priceToPay = priceToPay - discountAmount; // 2. Restar el 15% del total
+    console.log("¡Descuento de 48hs aplicado!");
   }
 
+  // Guardar estado para el modal
   currentBookingToPay = bookingToPay;
-  finalPaymentDetails = {
+  finalPaymentAmount = priceToPay; // Ahora 'priceToPay' es correcto
+
+  // Preparamos el objeto de desglose para la UI
+  const priceDetails = {
     subtotal: bookingToPay.subtotal,
-    discountAmount: discountAmount,
+    discountAmount: discountAmount, // Ahora 'discountAmount' es correcto
     priceToPay: priceToPay,
   };
 
-  ui.showPaymentModal(paymentModal, finalPaymentDetails);
+  // Llamar a la UI para mostrar el modal con el desglose
+  ui.showPaymentModal(paymentModal, priceDetails);
 }
 
 /**
