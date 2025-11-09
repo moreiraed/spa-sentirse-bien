@@ -13,6 +13,7 @@ export class Router {
       admin: "./pages/admin.html",
       privacidad: "./pages/privacidad.html",
       terminos: "./pages/terminos.html",
+      misproductos: "./pages/mis-productos.html",
     };
     this.currentPage = "home";
     this.isNavigating = false;
@@ -239,6 +240,9 @@ export class Router {
       case "reservas":
         this.initMisReservasPage();
         break;
+      case "misproductos":
+        this.initMisProductosPage();
+        break;
 
       // Agregar más casos según sea necesario
     }
@@ -272,6 +276,16 @@ export class Router {
       })
       .catch((error) => {
         console.error("Error inicializando página de contacto:", error);
+      });
+  }
+
+  initMisProductosPage() {
+    import("../modules/mis-productos.js")
+      .then((module) => {
+        module.initMisProductosPage();
+      })
+      .catch((error) => {
+        console.error("Error inicializando página de Mis Productos:", error);
       });
   }
 

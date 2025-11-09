@@ -60,7 +60,7 @@ class App {
   }
 
   isProtectedPage(page) {
-    const protectedPages = ["perfil", "reservas", "admin"];
+    const protectedPages = ["perfil", "reservas", "admin", "misproductos"];
     return protectedPages.includes(page);
   }
 

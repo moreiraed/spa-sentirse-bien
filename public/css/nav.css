@@ -18,8 +18,18 @@
     transition: color 0.3s ease;
 }
 
-.checkout-icon{
- color: white;
+/* Hover del carrito */
+.checkout-icon {
+    color: white;
+    transition: all 0.3s ease;
+    padding: 8px;
+    border-radius: 8px;
+}
+
+.checkout-icon:hover {
+    background-color: #ffffff;
+    color: #000 !important;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
 .nav-animated-link::after {
