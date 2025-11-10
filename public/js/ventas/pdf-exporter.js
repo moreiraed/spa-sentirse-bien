@@ -149,6 +149,206 @@ export class PDFExporter {
     this.mostrarToast("PDF exportado correctamente", "success");
   }
 
+  generarPDFStock(productos, filtros = {}) {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+
+    const pageWidth = doc.internal.pageSize.getWidth();
+    let yPosition = 20;
+
+    // Título
+    doc.setFontSize(18);
+    doc.setFont("helvetica", "bold");
+    doc.text("INFORME DE STOCK", pageWidth / 2, yPosition, {
+      align: "center",
+    });
+    yPosition += 10;
+
+    // Filtros aplicados
+    doc.setFontSize(10);
+    doc.setFont("helvetica", "normal");
+
+    let infoFiltros = "Todos los productos";
+    if (
+      filtros.busqueda ||
+      filtros.stock !== "todos" ||
+      filtros.categoria !== "todos"
+    ) {
+      infoFiltros = "Filtros aplicados: ";
+      const filtrosAplicados = [];
+
+      if (filtros.busqueda)
+        filtrosAplicados.push(`Búsqueda: "${filtros.busqueda}"`);
+      if (filtros.stock !== "todos")
+        filtrosAplicados.push(
+          `Stock: ${this.traducirFiltroStock(filtros.stock)}`
+        );
+      if (filtros.categoria !== "todos")
+        filtrosAplicados.push(`Categoría: ${filtros.categoria}`);
+
+      infoFiltros += filtrosAplicados.join(", ");
+    }
+
+    doc.text(infoFiltros, pageWidth / 2, yPosition, { align: "center" });
+    yPosition += 10;
+
+    // Resumen
+    doc.setFont("helvetica", "bold");
+    doc.text("RESUMEN", 14, yPosition);
+    yPosition += 8;
+
+    doc.setFont("helvetica", "normal");
+    const totalProductos = productos.length;
+    const agotados = productos.filter((p) => (p.stock || 0) === 0).length;
+    const stockBajo = productos.filter(
+      (p) => (p.stock || 0) > 0 && (p.stock || 0) <= 5
+    ).length;
+    const disponibles = productos.filter((p) => (p.stock || 0) > 5).length;
+
+    doc.text(`Total productos: ${totalProductos}`, 20, yPosition);
+    yPosition += 6;
+    doc.text(`Agotados: ${agotados}`, 20, yPosition);
+    yPosition += 6;
+    doc.text(`Stock bajo: ${stockBajo}`, 20, yPosition);
+    yPosition += 6;
+    doc.text(`Disponibles: ${disponibles}`, 20, yPosition);
+    yPosition += 15;
+
+    // Encabezados de la tabla
+    const headers = [
+      "Producto",
+      "Categoría",
+      "Stock",
+      "Estado",
+      "Fecha Creación",
+      "Última Actualización",
+    ];
+    const columnWidths = [45, 35, 15, 20, 25, 25];
+    let xPosition = 10;
+
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(9);
+
+    // Dibujar encabezados
+    headers.forEach((header, index) => {
+      doc.text(header, xPosition, yPosition);
+      xPosition += columnWidths[index];
+    });
+
+    yPosition += 6;
+
+    // Línea separadora
+    doc.setLineWidth(0.5);
+    doc.line(10, yPosition, pageWidth - 10, yPosition);
+    yPosition += 10;
+
+    // Datos de la tabla
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(8);
+
+    productos.forEach((producto, index) => {
+      // Verificar si necesita nueva página
+      if (yPosition > 250) {
+        doc.addPage();
+        yPosition = 20;
+
+        // Redibujar encabezados en nueva página
+        xPosition = 10;
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(9);
+        headers.forEach((header, index) => {
+          doc.text(header, xPosition, yPosition);
+          xPosition += columnWidths[index];
+        });
+        yPosition += 16;
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(8);
+      }
+
+      xPosition = 10;
+
+      // Producto
+      let textoProducto = producto.name;
+      if (textoProducto.length > 30)
+        textoProducto = textoProducto.substring(0, 27) + "...";
+      doc.text(textoProducto, xPosition, yPosition);
+      xPosition += columnWidths[0];
+
+      // Categoría
+      let textoCategoria = producto.type || "Sin categoría";
+      if (textoCategoria.length > 20)
+        textoCategoria = textoCategoria.substring(0, 17) + "...";
+      doc.text(textoCategoria, xPosition, yPosition);
+      xPosition += columnWidths[1];
+
+      // Stock
+      doc.text((producto.stock || 0).toString(), xPosition, yPosition);
+      xPosition += columnWidths[2];
+
+      // Estado
+      const estado = this.getStockStatus(producto.stock);
+      doc.text(estado, xPosition, yPosition);
+      xPosition += columnWidths[3];
+
+      // Fecha Creación
+      doc.text(
+        new Date(producto.created_at).toLocaleDateString(),
+        xPosition,
+        yPosition
+      );
+      xPosition += columnWidths[4];
+
+      // Última Actualización
+      const fechaActualizacion = producto.updated_at
+        ? new Date(producto.updated_at).toLocaleDateString()
+        : "N/A";
+      doc.text(fechaActualizacion, xPosition, yPosition);
+
+      yPosition += 6;
+    });
+
+    // Pie de página
+    const totalPaginas = doc.internal.getNumberOfPages();
+    for (let i = 1; i <= totalPaginas; i++) {
+      doc.setPage(i);
+      doc.setFontSize(8);
+      doc.setFont("helvetica", "italic");
+      doc.text(
+        `Página ${i} de ${totalPaginas} - Generado el ${new Date().toLocaleDateString()}`,
+        pageWidth / 2,
+        290,
+        { align: "center" }
+      );
+    }
+
+    // Guardar PDF
+    const nombreArchivo = `informe-stock-${
+      new Date().toISOString().split("T")[0]
+    }.pdf`;
+    doc.save(nombreArchivo);
+
+    this.mostrarToast("PDF de stock exportado correctamente", "success");
+  }
+
+  getStockStatus(stock) {
+    if (stock === 0 || !stock) return "Agotado";
+    if (stock <= 5) return "Stock Bajo";
+    return "Disponible";
+  }
+
+  traducirFiltroStock(filtro) {
+    switch (filtro) {
+      case "agotado":
+        return "Agotado";
+      case "bajo":
+        return "Stock Bajo";
+      case "disponible":
+        return "Disponible";
+      default:
+        return filtro;
+    }
+  }
+
   formatearFecha(fechaString) {
     const [year, month, day] = fechaString.split("-");
     return `${day}/${month}/${year}`;

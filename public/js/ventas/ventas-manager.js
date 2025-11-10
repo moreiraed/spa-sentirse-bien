@@ -6,6 +6,11 @@ export class VentasManager {
   constructor() {
     this.stockManager = new StockManager();
     this.pdfExporter = new PDFExporter();
+    this.ventasActuales = null;
+    this.filtrosVentas = {
+      busqueda: "",
+      tipo: "todos",
+    };
     this.init();
   }
 
@@ -37,6 +42,24 @@ export class VentasManager {
       ?.addEventListener("click", () => {
         this.stockManager.exportarStock();
       });
+
+    document
+      .getElementById("buscador-ventas")
+      ?.addEventListener("input", (e) => {
+        this.filtrosVentas.busqueda = e.target.value.toLowerCase();
+        this.aplicarFiltrosVentas();
+      });
+
+    document
+      .getElementById("limpiar-filtros-ventas")
+      ?.addEventListener("click", () => {
+        this.limpiarFiltrosVentas();
+      });
+
+    document.getElementById("tipo-filtro")?.addEventListener("change", (e) => {
+      this.filtrosVentas.tipo = e.target.value;
+      this.aplicarFiltrosVentas();
+    });
 
     // Filtros de stock
     document.querySelectorAll(".filter-stock-btn").forEach((btn) => {
@@ -77,6 +100,10 @@ export class VentasManager {
       if (!fechaInicio || !fechaFin) return;
 
       const bookings = await this.obtenerVentasPorFecha(fechaInicio, fechaFin);
+
+      // Guardar ventas actuales para filtrar
+      this.ventasActuales = bookings;
+
       this.procesarDatosVentas(bookings);
       this.renderizarDetalleVentas(bookings);
     } catch (error) {
@@ -101,6 +128,10 @@ export class VentasManager {
       this.mostrarLoading(true);
 
       const bookings = await this.obtenerVentasPorFecha(fechaInicio, fechaFin);
+
+      // Guardar ventas actuales para filtrar
+      this.ventasActuales = bookings;
+
       this.procesarDatosVentas(bookings);
       this.renderizarDetalleVentas(bookings);
 
@@ -110,6 +141,64 @@ export class VentasManager {
       this.mostrarToast("Error al generar el informe", "danger");
     } finally {
       this.mostrarLoading(false);
+    }
+  }
+
+  // Métodos para filtrar ventas
+  aplicarFiltrosVentas() {
+    // Si no hay datos cargados, no hacer nada
+    if (!this.ventasActuales) return;
+
+    let ventasFiltradas = [...this.ventasActuales];
+
+    // Aplicar filtro de búsqueda
+    if (this.filtrosVentas.busqueda) {
+      ventasFiltradas = ventasFiltradas.filter((booking) => {
+        const cliente = booking.users
+          ? `${booking.users.nombre || ""} ${booking.users.apellido || ""} ${
+              booking.users.email || ""
+            }`.toLowerCase()
+          : "";
+        const productos =
+          booking.booking_products
+            ?.map((bp) => bp.products?.name?.toLowerCase() || "")
+            .join(" ") || "";
+
+        return (
+          cliente.includes(this.filtrosVentas.busqueda) ||
+          productos.includes(this.filtrosVentas.busqueda)
+        );
+      });
+    }
+
+    // Aplicar filtro de tipo
+    if (this.filtrosVentas.tipo !== "todos") {
+      ventasFiltradas = ventasFiltradas.filter((booking) => {
+        if (this.filtrosVentas.tipo === "producto") {
+          return booking.delivery_method === "product_purchase";
+        } else if (this.filtrosVentas.tipo === "servicio") {
+          return booking.delivery_method === "in_spa";
+        }
+        return true;
+      });
+    }
+
+    this.renderizarDetalleVentas(ventasFiltradas);
+  }
+
+  limpiarFiltrosVentas() {
+    this.filtrosVentas = {
+      busqueda: "",
+      tipo: "todos",
+    };
+
+    // Resetear inputs
+    document.getElementById("buscador-ventas").value = "";
+    document.getElementById("tipo-filtro").value = "todos";
+
+    // Mostrar todas las ventas
+    if (this.ventasActuales) {
+      this.renderizarDetalleVentas(this.ventasActuales);
     }
   }
 
