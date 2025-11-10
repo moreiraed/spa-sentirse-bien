@@ -1,21 +1,37 @@
 // public/js/modules/mis-pedidos.js
 import { supabase } from "../core/supabase.js";
 
-// El ID del contenedor principal en tu mis-pedidos.html
-const CONTAINER_ID = "productos-container";
+const CONTAINER_ID = "pedidos-list-container"; 
+let modulePedidos = [];
+let pedidoModal = null;
 
 /**
  * Función principal llamada por el Router
  */
 export function initMisPedidosPage() {
-  console.log("Inicializando página Mis Pedidos");
+  console.log("Inicializando página Mis Pedidos (v4 - Totales Abajo)");
+
+  const modalEl = document.getElementById('pedidoDetalleModal');
+  if (modalEl) {
+    pedidoModal = new bootstrap.Modal(modalEl);
+  }
 
   const refreshBtn = document.getElementById("refreshBtn");
   if (refreshBtn) {
     refreshBtn.addEventListener("click", loadMisPedidos);
   }
 
-  // Carga inicial
+  const container = document.getElementById(CONTAINER_ID);
+  if (container) {
+    container.addEventListener('click', (e) => {
+      const detalleBtn = e.target.closest('.btn-ver-detalles');
+      if (detalleBtn) {
+        const pedidoId = detalleBtn.dataset.pedidoId;
+        showPedidoModal(pedidoId);
+      }
+    });
+  }
+
   loadMisPedidos();
 }
 
@@ -25,8 +41,8 @@ export function initMisPedidosPage() {
 async function loadMisPedidos() {
   try {
     showLoadingState();
-
     const pedidos = await fetchMisPedidos();
+    modulePedidos = pedidos; 
 
     if (pedidos.length === 0) {
       showEmptyState();
@@ -41,7 +57,7 @@ async function loadMisPedidos() {
 
 /**
  * API: Busca en Supabase los pedidos del usuario
- * (Solo donde appointment_datetime ES NULL)
+ * (MODIFICADO: Pide 'subtotal')
  */
 async function fetchMisPedidos() {
   const { data: { user } } = await supabase.auth.getUser();
@@ -50,12 +66,15 @@ async function fetchMisPedidos() {
   }
 
   const { data, error } = await supabase
-    .from('bookings') // La tabla de "recibos"
+    .from('bookings')
     .select(`
       id,
       created_at,
+      subtotal,           
+      discount_applied, 
       total_price,
-      status,
+      payment_method, 
+      status,  
       booking_products (
         quantity,
         price_at_purchase,
@@ -66,8 +85,8 @@ async function fetchMisPedidos() {
       )
     `)
     .eq('user_id', user.id)
-    .is('appointment_datetime', null) // <-- ¡EL FILTRO CLAVE!
-    .order('created_at', { ascending: false }); // Los más nuevos primero
+    .is('appointment_datetime', null)
+    .order('created_at', { ascending: false });
 
   if (error) {
     console.error("Error fetching orders:", error);
@@ -76,67 +95,81 @@ async function fetchMisPedidos() {
   return data;
 }
 
-// --- FUNCIONES DE RENDERIZADO ---
+// --- FUNCIONES DE RENDERIZADO (Lista) ---
 
 function renderPedidos(pedidos) {
   const container = document.getElementById(CONTAINER_ID);
   if (!container) return;
 
-  // Usamos un Acordeón de Bootstrap para los pedidos
   container.innerHTML = `
-    <div class="col-12">
-      <div class="accordion" id="pedidosAccordion">
-        ${pedidos.map((pedido, index) => renderPedidoCard(pedido, index)).join("")}
-      </div>
-    </div>
+    <ul class="list-group list-group-flush">
+      ${pedidos.map(renderPedidoRow).join("")}
+    </ul>
   `;
 }
 
-function renderPedidoCard(pedido, index) {
+function renderPedidoRow(pedido) {
   const fechaPedido = new Date(pedido.created_at).toLocaleDateString();
   const totalPedido = formatPrice(pedido.total_price);
-  
-  // (V2) Esto usará 'status' para "Procesando", "Enviado", etc.
-  // Por ahora, usamos el 'status' o un texto por defecto.
   const estado = pedido.status || 'Pendiente'; 
 
   return `
-    <div class="accordion-item">
-      <h2 class="accordion-header" id="heading-${pedido.id}">
-        <button 
-          class="accordion-button ${index > 0 ? 'collapsed' : ''}" 
-          type="button" 
-          data-bs-toggle="collapse" 
-          data-bs-target="#collapse-${pedido.id}" 
-          aria-expanded="${index === 0 ? 'true' : 'false'}" 
-          aria-controls="collapse-${pedido.id}"
-        >
-          <div class="d-flex justify-content-between w-100 me-3">
-            <span><strong>Pedido #${pedido.id}</strong></span>
-            <span class="d-none d-md-block">Fecha: ${fechaPedido}</span>
-            <span>Total: ${totalPedido}</span>
-            <span class="badge ${getEstadoBadgeClass(estado)}">${estado}</span>
-          </div>
-        </button>
-      </h2>
-      <div 
-        id="collapse-${pedido.id}" 
-        class="accordion-collapse collapse ${index === 0 ? 'show' : ''}" 
-        aria-labelledby="heading-${pedido.id}" 
-        data-bs-parent="#pedidosAccordion"
-      >
-        <div class="accordion-body">
-          <ul class="list-group list-group-flush">
-            ${pedido.booking_products.map(renderProductoDetalle).join("")}
-          </ul>
-        </div>
+    <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
+      <div class="me-3 mb-2 mb-md-0">
+        <strong class="d-block">Pedido #${pedido.id}</strong>
+        <small class="text-muted">Fecha: ${fechaPedido}</small>
       </div>
-    </div>
+      <div class="me-3 mb-2 mb-md-0">
+        <span class="badge ${getEstadoBadgeClass(estado)}">${estado}</span>
+      </div>
+      <div class="me-3 mb-2 mb-md-0">
+        <strong>Total: ${totalPedido}</strong>
+      </div>
+      <div>
+        <button class="btn btn-outline-primary btn-sm btn-ver-detalles" data-pedido-id="${pedido.id}">
+          <i class="bi bi-eye me-1"></i> Ver Detalles
+        </button>
+      </div>
+    </li>
   `;
 }
 
-function renderProductoDetalle(item) {
-  const producto = item.products; // El objeto 'products' anidado
+// --- FUNCIÓN DEL MODAL (MODIFICADA) ---
+
+function showPedidoModal(pedidoId) {
+  const pedido = modulePedidos.find(p => p.id.toString() === pedidoId);
+  if (!pedido) {
+    console.error("No se encontró el pedido con ID:", pedidoId);
+    return;
+  }
+
+  // Rellenar campos de Info General (arriba)
+  document.getElementById('pedidoDetalleModalLabel').textContent = `Detalles del Pedido #${pedido.id}`;
+  document.getElementById('modal-fecha').textContent = new Date(pedido.created_at).toLocaleString('es-AR', { dateStyle: 'long', timeStyle: 'short' });
+  document.getElementById('modal-pago').textContent = formatPaymentMethod(pedido.payment_method);
+  
+  const estadoBadge = document.getElementById('modal-estado');
+  const estado = pedido.status || 'Pendiente';
+  estadoBadge.textContent = estado;
+  estadoBadge.className = `badge ${getEstadoBadgeClass(estado)}`;
+
+  // Rellenar la lista de productos
+  const listaProductosEl = document.getElementById('modal-productos-lista');
+  listaProductosEl.innerHTML = pedido.booking_products.map(renderProductoDetalleModal).join("");
+
+  // --- RELLENAR CAMPOS DE TOTALES (abajo) ---
+  document.getElementById('modal-subtotal').textContent = formatPrice(pedido.subtotal || 0);
+  document.getElementById('modal-descuento').textContent = `-${formatPrice(pedido.discount_applied || 0)}`;
+  document.getElementById('modal-total').textContent = formatPrice(pedido.total_price || 0);
+  // --- FIN ---
+
+  if (pedidoModal) {
+    pedidoModal.show();
+  }
+}
+
+function renderProductoDetalleModal(item) {
+  const producto = item.products;
   const imageUrl = producto.image_url || './assets/img/default-service.webp';
   
   return `
@@ -155,13 +188,13 @@ function renderProductoDetalle(item) {
 }
 
 
-// --- FUNCIONES DE ESTADO (las que ya tenías) ---
+// --- FUNCIONES DE ESTADO (sin cambios) ---
 
 function showLoadingState() {
   const container = document.getElementById(CONTAINER_ID);
   if (container) {
     container.innerHTML = `
-      <div class="col-12 text-center py-5">
+      <div class="text-center py-5">
         <div class="spinner-border text-primary" role="status">
           <span class="visually-hidden">Cargando...</span>
         </div>
@@ -175,7 +208,7 @@ function showEmptyState() {
   const container = document.getElementById(CONTAINER_ID);
   if (container) {
     container.innerHTML = `
-      <div class="col-12 text-center py-5">
+      <div class="text-center py-5">
         <i class="bi bi-cart-x display-1 text-muted"></i>
         <h4 class="mt-3 text-muted">No tienes pedidos</h4>
         <p class="text-muted">Los productos que compres aparecerán aquí.</p>
@@ -184,7 +217,6 @@ function showEmptyState() {
         </a>
       </div>
     `;
-    // No necesitas el listener de SPA-link si tu router ya maneja los 'href'
   }
 }
 
@@ -192,7 +224,7 @@ function showErrorState(message) {
   const container = document.getElementById(CONTAINER_ID);
   if (container) {
     container.innerHTML = `
-      <div class="col-12 text-center py-5">
+      <div class="text-center py-5">
         <i class="bi bi-exclamation-triangle display-1 text-danger"></i>
         <h4 class="mt-3 text-danger">Error al cargar pedidos</h4>
         <p class="text-muted">${message || "Intenta nuevamente más tarde."}</p>
@@ -205,7 +237,7 @@ function showErrorState(message) {
   }
 }
 
-// --- FUNCIONES HELPER (las que ya tenías) ---
+// --- FUNCIONES HELPER ---
 
 function getEstadoBadgeClass(estado) {
   const estados = {
@@ -219,10 +251,19 @@ function getEstadoBadgeClass(estado) {
 }
 
 function formatPrice(price) {
-  return new Intl.NumberFormat("es-AR", {
+  return new Intl.NumberFormat("es-AR", { 
     style: "currency",
-    currency: "ARS", // O la moneda que uses
+    currency: "ARS", 
     minimumFractionDigits: 0,
     maximumFractionDigits: 0,
   }).format(price);
+}
+
+function formatPaymentMethod(method) {
+  const methods = {
+    'debit_card': 'Tarjeta de Débito',
+    'cash': 'Efectivo',
+    'product_purchase': 'N/A'
+  };
+  return methods[method] || method;
 }
