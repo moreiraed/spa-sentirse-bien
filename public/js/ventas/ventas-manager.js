@@ -1,14 +1,18 @@
 import { supabase } from "../core/supabase.js";
+import { StockManager } from "./stock-manager.js";
+import { PDFExporter } from "./pdf-exporter.js";
 
 export class VentasManager {
   constructor() {
+    this.stockManager = new StockManager();
+    this.pdfExporter = new PDFExporter();
     this.init();
   }
 
   init() {
     this.setupEventListeners();
     this.cargarDatosIniciales();
-    this.cargarControlStock();
+    this.stockManager.cargarControlStock();
     this.cargarCategoriasFiltro();
   }
 
@@ -31,13 +35,13 @@ export class VentasManager {
     document
       .getElementById("btn-exportar-stock")
       ?.addEventListener("click", () => {
-        this.exportarStock();
+        this.stockManager.exportarStock();
       });
 
     // Filtros de stock
     document.querySelectorAll(".filter-stock-btn").forEach((btn) => {
       btn.addEventListener("click", (e) => {
-        this.filtrarStock(e.target.dataset.filter);
+        this.stockManager.filtrarStock(e.target.dataset.filter);
       });
     });
   }
@@ -72,32 +76,11 @@ export class VentasManager {
 
       if (!fechaInicio || !fechaFin) return;
 
-      const { data: bookings, error } = await supabase
-        .from("bookings")
-        .select(
-          `
-        *,
-        booking_products (
-          *,
-          products (*)
-        ),
-        payments (*),
-        users (nombre, apellido, email)
-      `
-        )
-        .eq("delivery_method", "product_purchase") // SOLO product_purchase
-        .neq("delivery_method", "in_spa") // EXCLUIR in_spa
-        .gte("created_at", `${fechaInicio}T00:00:00`)
-        .lte("created_at", `${fechaFin}T23:59:59`)
-        .order("created_at", { ascending: false });
-
-      if (error) throw error;
-
+      const bookings = await this.obtenerVentasPorFecha(fechaInicio, fechaFin);
       this.procesarDatosVentas(bookings);
       this.renderizarDetalleVentas(bookings);
     } catch (error) {
       console.error("Error cargando estadísticas iniciales:", error);
-      // Mostrar estado vacío
       this.mostrarEstadoVacio();
     }
   }
@@ -117,27 +100,7 @@ export class VentasManager {
       // Mostrar loading
       this.mostrarLoading(true);
 
-      // Construir consulta base - SOLO product_purchase
-      const { data: bookings, error } = await supabase
-        .from("bookings")
-        .select(
-          `
-        *,
-        booking_products (
-          *,
-          products (*)
-        ),
-        payments (*),
-        users (nombre, apellido, email)
-      `
-        )
-        .eq("delivery_method", "product_purchase")
-        .gte("created_at", `${fechaInicio}T00:00:00`)
-        .lte("created_at", `${fechaFin}T23:59:59`)
-        .order("created_at", { ascending: false });
-
-      if (error) throw error;
-
+      const bookings = await this.obtenerVentasPorFecha(fechaInicio, fechaFin);
       this.procesarDatosVentas(bookings);
       this.renderizarDetalleVentas(bookings);
 
@@ -148,6 +111,30 @@ export class VentasManager {
     } finally {
       this.mostrarLoading(false);
     }
+  }
+
+  // Método para obtener ventas por fecha
+  async obtenerVentasPorFecha(fechaInicio, fechaFin) {
+    const { data: bookings, error } = await supabase
+      .from("bookings")
+      .select(
+        `
+        *,
+        booking_products (
+          *,
+          products (*)
+        ),
+        payments (*),
+        users (nombre, apellido, email)
+      `
+      )
+      .eq("delivery_method", "product_purchase")
+      .gte("created_at", `${fechaInicio}T00:00:00`)
+      .lte("created_at", `${fechaFin}T23:59:59`)
+      .order("created_at", { ascending: false });
+
+    if (error) throw error;
+    return bookings || [];
   }
 
   // Método para cargar categorías en el filtro
@@ -232,10 +219,9 @@ export class VentasManager {
     let totalCredito = 0;
 
     bookings.forEach((booking) => {
-      // if (booking.status === 'completed') {
       totalVentas += parseFloat(booking.total_price || 0);
 
-      // Sumar por método de pago - CORREGIR NOMBRES
+      // Sumar por método de pago
       if (booking.payment_method === "cash") {
         totalEfectivo += parseFloat(booking.total_price || 0);
       } else if (booking.payment_method === "debit_card") {
@@ -275,7 +261,7 @@ export class VentasManager {
     bookings.forEach((booking) => {
       // Filtrar solo bookings de productos (product_purchase)
       if (booking.delivery_method !== "product_purchase") {
-        return; // Saltar servicios del spa
+        return;
       }
 
       // Para cada producto en el booking
@@ -284,7 +270,7 @@ export class VentasManager {
         if (tipoFiltro && tipoFiltro !== "todos") {
           const categoriaProducto = item.products?.category;
           if (categoriaProducto !== tipoFiltro) {
-            return; // Saltar productos que no coincidan con la categoría
+            return;
           }
         }
 
@@ -293,7 +279,6 @@ export class VentasManager {
 
         // Formatear fecha considerando la zona horaria
         const fecha = new Date(booking.created_at);
-        // Ajustar a zona horaria local y obtener solo la fecha
         const fechaAjustada = new Date(
           fecha.getTime() + fecha.getTimezoneOffset() * 60000
         );
@@ -303,7 +288,7 @@ export class VentasManager {
           year: "numeric",
         });
 
-        // Obtener nombre del cliente o email (limitado)
+        // Obtener nombre del cliente o email
         let cliente = "N/A";
         if (booking.users) {
           if (booking.users.nombre && booking.users.apellido) {
@@ -363,98 +348,6 @@ export class VentasManager {
     }
 
     tbody.innerHTML = html;
-  }
-
-  async cargarControlStock() {
-    try {
-      // Mostrar loading
-      const tbody = document.getElementById("stock-table-body");
-      if (tbody) {
-        tbody.innerHTML = `
-          <tr>
-            <td colspan="6" class="text-center py-5">
-              <div class="spinner-border text-primary" role="status">
-                <span class="visually-hidden">Cargando...</span>
-              </div>
-            </td>
-          </tr>
-        `;
-      }
-
-      // Obtener productos con stock
-      const { data: products, error } = await supabase
-        .from("products")
-        .select("*")
-        .order("stock", { ascending: true });
-
-      if (error) throw error;
-
-      this.renderizarControlStock(products);
-    } catch (error) {
-      console.error("Error cargando control de stock:", error);
-      this.mostrarToast("Error al cargar el control de stock", "danger");
-    }
-  }
-
-  renderizarControlStock(products) {
-    const tbody = document.getElementById("stock-table-body");
-
-    if (!products || products.length === 0) {
-      tbody.innerHTML = `
-        <tr>
-          <td colspan="6" class="text-center py-4 text-muted">
-            No hay productos en inventario
-          </td>
-        </tr>
-      `;
-      return;
-    }
-
-    const html = products
-      .map((product) => {
-        const stockStatus = this.getStockStatus(product.stock);
-        const statusClass = this.getStockStatusClass(stockStatus);
-
-        return `
-        <tr>
-          <td>${product.name}</td>
-          <td>${product.category || "Sin categoría"}</td>
-          <td>${product.stock || 0}</td>
-          <td><span class="badge ${statusClass}">${stockStatus}</span></td>
-          <td>${new Date(product.created_at).toLocaleDateString()}</td>
-          <td>
-            <button class="btn btn-table btn-admin-outline btn-sm" onclick="ventasManager.actualizarStock('${
-              product.id
-            }')">
-              <i class="bi bi-arrow-clockwise"></i>
-            </button>
-          </td>
-        </tr>
-      `;
-      })
-      .join("");
-
-    tbody.innerHTML = html;
-  }
-
-  // CORREGIDO: Solo usa stock ya que no tienes min_stock
-  getStockStatus(stock) {
-    if (stock === 0 || !stock) return "Agotado";
-    if (stock <= 5) return "Stock Bajo";
-    return "Disponible";
-  }
-
-  getStockStatusClass(status) {
-    switch (status) {
-      case "Agotado":
-        return "badge-admin";
-      case "Stock Bajo":
-        return "badge-ventas";
-      case "Disponible":
-        return "badge-professional";
-      default:
-        return "badge-user";
-    }
   }
 
   // NUEVO MÉTODO: Traducir métodos de pago
@@ -539,177 +432,11 @@ export class VentasManager {
         return;
       }
 
-      this.generarPDF(fechaInicio, fechaFin);
+      this.pdfExporter.generarPDF(fechaInicio, fechaFin);
     } catch (error) {
       console.error("Error exportando informe:", error);
       this.mostrarToast("Error al exportar el informe", "danger");
     }
-  }
-
-  async generarPDF(fechaInicio, fechaFin) {
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF();
-
-    const pageWidth = doc.internal.pageSize.getWidth();
-    let yPosition = 20;
-
-    // Título
-    doc.setFontSize(18);
-    doc.setFont("helvetica", "bold");
-    doc.text("INFORME DE VENTAS", pageWidth / 2, yPosition, {
-      align: "center",
-    });
-    yPosition += 10;
-
-    // Fechas
-    doc.setFontSize(12);
-    doc.setFont("helvetica", "normal");
-    doc.text(
-      `Período: ${this.formatearFecha(fechaInicio)} - ${this.formatearFecha(
-        fechaFin
-      )}`,
-      pageWidth / 2,
-      yPosition,
-      { align: "center" }
-    );
-    yPosition += 15;
-
-    // Resumen de ventas
-    doc.setFont("helvetica", "bold");
-    doc.text("RESUMEN DE VENTAS", 14, yPosition);
-    yPosition += 8;
-
-    doc.setFont("helvetica", "normal");
-    const totalVentas = document.getElementById("total-ventas").textContent;
-    const totalEfectivo = document.getElementById("total-efectivo").textContent;
-    const totalDebito = document.getElementById("total-debito").textContent;
-    const totalCredito = document.getElementById("total-credito").textContent;
-
-    doc.text(`Total Ventas: ${totalVentas}`, 20, yPosition);
-    yPosition += 6;
-    doc.text(`Efectivo: ${totalEfectivo}`, 20, yPosition);
-    yPosition += 6;
-    doc.text(`Débito: ${totalDebito}`, 20, yPosition);
-    yPosition += 6;
-    doc.text(`Crédito: ${totalCredito}`, 20, yPosition);
-    yPosition += 15;
-
-    // Encabezados de la tabla
-    const headers = [
-      "Fecha",
-      "Cliente",
-      "Categoría",
-      "Producto",
-      "Cant",
-      "P.Unit",
-      "Subtotal",
-      "Pago",
-      "Estado",
-    ];
-    const columnWidths = [18, 25, 22, 33, 10, 16, 16, 16, 16];
-    let xPosition = 10;
-
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(9);
-
-    // Dibujar encabezados
-    headers.forEach((header, index) => {
-      doc.text(header, xPosition, yPosition);
-      xPosition += columnWidths[index];
-    });
-
-    yPosition += 6;
-
-    // Línea separadora
-    doc.setLineWidth(0.5);
-    doc.line(10, yPosition, pageWidth - 10, yPosition);
-    yPosition += 10;
-
-    // Datos de la tabla
-    doc.setFont("helvetica", "normal");
-    doc.setFontSize(8);
-
-    const filas = document.querySelectorAll("#detalle-ventas-body tr");
-
-    filas.forEach((fila) => {
-      // Verificar si necesita nueva página
-      if (yPosition > 250) {
-        doc.addPage();
-        yPosition = 20;
-
-        // Redibujar encabezados en nueva página
-        xPosition = 10;
-        doc.setFont("helvetica", "bold");
-        doc.setFontSize(9);
-        headers.forEach((header, index) => {
-          doc.text(header, xPosition, yPosition);
-          xPosition += columnWidths[index];
-        });
-        yPosition += 16;
-        doc.setFont("helvetica", "normal");
-        doc.setFontSize(8);
-      }
-
-      const celdas = fila.querySelectorAll("td");
-      xPosition = 10;
-
-      celdas.forEach((celda, index) => {
-        let texto = celda.textContent.trim();
-
-        // Acortar texto largo para que quepa en las columnas
-        if (index === 1 && texto.length > 15)
-          texto = texto.substring(0, 12) + "...";
-        if (index === 2 && texto.length > 12)
-          texto = texto.substring(0, 10) + "..."; // Categoría
-        if (index === 3 && texto.length > 20)
-          texto = texto.substring(0, 17) + "..."; // Producto
-
-        doc.text(texto, xPosition, yPosition);
-        xPosition += columnWidths[index];
-      });
-
-      yPosition += 6;
-    });
-
-    // Pie de página
-    const totalPaginas = doc.internal.getNumberOfPages();
-    for (let i = 1; i <= totalPaginas; i++) {
-      doc.setPage(i);
-      doc.setFontSize(8);
-      doc.setFont("helvetica", "italic");
-      doc.text(
-        `Página ${i} de ${totalPaginas} - Generado el ${new Date().toLocaleDateString()}`,
-        pageWidth / 2,
-        290,
-        { align: "center" }
-      );
-    }
-
-    // Guardar PDF
-    const nombreArchivo = `informe-ventas-${fechaInicio}-a-${fechaFin}.pdf`;
-    doc.save(nombreArchivo);
-
-    this.mostrarToast("PDF exportado correctamente", "success");
-  }
-
-  formatearFecha(fechaString) {
-    const [year, month, day] = fechaString.split("-");
-    return `${day}/${month}/${year}`;
-  }
-
-  exportarStock() {
-    // Implementar exportación de stock
-    this.mostrarToast("Exportación de stock en desarrollo", "info");
-  }
-
-  filtrarStock(filter) {
-    // Implementar filtrado de stock
-    this.mostrarToast(`Filtrando por: ${filter}`, "info");
-  }
-
-  actualizarStock(productId) {
-    // Implementar actualización de stock
-    this.mostrarToast("Actualización de stock en desarrollo", "info");
   }
 
   mostrarToast(mensaje, tipo) {
