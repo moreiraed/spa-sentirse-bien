@@ -53,9 +53,13 @@ export function renderBookings(bookings, container) {
     );
     const payButton = clone.querySelector('[data-id="btn-pay-now"]');
 
+    // ===================================================
+    // ¡ESTE ES EL BLOQUE DE LÓGICA COMPLETO!
+    // ===================================================
     if (booking.payment_status === "paid") {
       paymentBadge.textContent = "Pagado";
       paymentBadge.classList.add("bg-success");
+      // Mostrar el precio final que se pagó (con descuento si aplicó)
       clone.querySelector('[data-id="booking-total"]').textContent =
         formatPrice(booking.total_price);
     } else if (booking.payment_method === "cash") {
@@ -69,20 +73,35 @@ export function renderBookings(bookings, container) {
       } else {
         paymentBadge.textContent = "Pendiente de Pago";
         paymentBadge.classList.add("bg-warning");
+        // Mostrar el botón
         payButton.style.display = "block";
         payButton.setAttribute("data-booking-id", booking.id);
       }
     }
+    // ===================================================
 
     // Rellenar Items (servicios)
     const itemsList = clone.querySelector('[data-id="items-list"]');
     booking.booking_items.forEach((item) => {
       const li = document.createElement("li");
       li.className = "list-group-item d-flex justify-content-between";
+
+      // Lógica para mostrar profesional
       const title = item.services ? item.services.title : "Servicio eliminado";
-      li.innerHTML = `<span>${title}</span> <strong>${formatPrice(
-        item.price_at_purchase
-      )}</strong>`;
+      let profName = "Profesional no asignado";
+      if (item.professionals && item.professionals.users) {
+        profName = `${item.professionals.users.nombre} ${
+          item.professionals.users.apellido || ""
+        }`;
+      }
+
+      li.innerHTML = `
+        <span class="d-flex flex-column">
+          <span>${title}</span>
+          <small class="text-muted">con: ${profName}</small>
+        </span>
+        <strong>${formatPrice(item.price_at_purchase)}</strong>
+      `;
       itemsList.appendChild(li);
     });
 
@@ -140,18 +159,14 @@ export function showModalLoader(modalInstance) {
  * NUEVA: Muestra la vista de Éxito y el Comprobante.
  */
 export function showPaymentSuccess(booking, priceDetails) {
-  // Ocultar formulario y loader
+  // ... (código para ocultar loader y mostrar 'payment-success')
   document.getElementById("payment-form").style.display = "none";
   document.getElementById("payment-loader").style.display = "none";
-
-  // Mostrar vista de éxito
   document.getElementById("payment-success").style.display = "block";
-
-  // Ocultar botones de "Pagar", mostrar botones de "Imprimir"
   document.getElementById("footer-pay-view").style.display = "none";
   document.getElementById("footer-success-view").style.display = "block";
 
-  // Generar el HTML del comprobante
+  // --- MODIFICACIÓN: Generar el HTML del comprobante ---
   const receiptContainer = document.getElementById("receipt-content");
   receiptContainer.innerHTML = `
     <p><strong>Reserva #:</strong> ${booking.id}</p>
@@ -162,14 +177,29 @@ export function showPaymentSuccess(booking, priceDetails) {
     <p><strong>Detalle:</strong></p>
     <ul class="list-unstyled">
       ${booking.booking_items
-        .map(
-          (item) => `
-        <li class="d-flex justify-content-between">
-          <span>${item.services ? item.services.title : "Servicio"}</span>
-          <span>${formatPrice(item.price_at_purchase)}</span>
-        </li>
-      `
-        )
+        .map((item) => {
+          // 1. Obtener el título del servicio
+          const title = item.services ? item.services.title : "Servicio";
+
+          // 2. OBTENER EL NOMBRE DEL PROFESIONAL (Lógica actualizada)
+          let profName = "Profesional no asignado";
+          if (item.professionals && item.professionals.users) {
+            profName = `${item.professionals.users.nombre} ${
+              item.professionals.users.apellido || ""
+            }`.trim();
+          }
+
+          // 3. Renderizar el HTML
+          return `
+          <li class="d-flex justify-content-between mb-2">
+            <span class="d-flex flex-column">
+              <span>${title}</span>
+              <small class="text-muted">con: ${profName}</small>
+            </span>
+            <span>${formatPrice(item.price_at_purchase)}</span>
+          </li>
+        `;
+        })
         .join("")}
     </ul>
     <hr>

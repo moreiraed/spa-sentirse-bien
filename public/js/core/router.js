@@ -1,4 +1,5 @@
 import { serviciosManager } from "../modules/services/index.js";
+import { getProfessionalsForService } from "../modules/professionals/api.js";
 
 export class Router {
   constructor() {
@@ -150,7 +151,7 @@ export class Router {
       "reservas",
       "admin",
       "ventas",
-      "pedidos"
+      "pedidos",
     ];
     return protectedPages.includes(page);
   }
@@ -406,70 +407,131 @@ export class Router {
       return;
     }
 
-    // 2. Obtener la info del servicio (Tu lógica unificada)
+    // 2. Obtener la info del servicio
     let servicioInfo;
     const servicioDataJSON = button.getAttribute("data-servicio");
     const servicioId = button.getAttribute("data-servicio-id");
 
     try {
       if (servicioDataJSON) {
-        // Lógica estática (Yoga, etc.)
         const data = JSON.parse(servicioDataJSON);
-        // Aseguramos un formato consistente
         servicioInfo = {
           id: data.id || `static-${data.title.toLowerCase().replace(" ", "-")}`,
-          title: data.title,
-          price: parseFloat(data.price),
-          duration: data.duration || null,
-          isGrupal: true,
+          ...data,
         };
       } else if (servicioId) {
-        // Lógica dinámica (Supabase)
         servicioInfo = serviciosManager.getServicioById(Number(servicioId));
-        if (!servicioInfo) {
-          throw new Error("Servicio dinámico no encontrado.");
-        }
-        // Convertimos el objeto de Supabase a un objeto plano
-        servicioInfo = {
-          id: servicioInfo.id,
-          title: servicioInfo.title,
-          price: parseFloat(servicioInfo.price),
-          duration: servicioInfo.duration,
-          isGrupal: false,
-        };
-      } else {
-        throw new Error("El botón no tiene datos del servicio.");
       }
 
-      // --- LÓGICA DE CARRITO DE SERVICIOS  ---
+      if (!servicioInfo) {
+        throw new Error("Información del servicio no encontrada.");
+      }
 
-      // 3. Obtener el carrito de SERVICIOS
+      // 3. Mostrar el modal
+      const modalEl = document.getElementById("professionalSelectorModal");
+      const modal =
+        bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
+
+      document.getElementById("modal-service-name").textContent =
+        servicioInfo.title;
+      const listContainer = document.getElementById(
+        "professional-list-container"
+      );
+      listContainer.innerHTML =
+        '<div class="text-center"><div class="spinner-border text-success"></div></div>';
+
+      modal.show();
+
+      // 4. Buscar los profesionales en la API
+      const professionals = await getProfessionalsForService(
+        servicioInfo.title
+      );
+
+      // 5. Renderizar la lista de profesionales
+      if (!professionals || professionals.length === 0) {
+        listContainer.innerHTML =
+          '<p class="text-muted">No se encontraron profesionales disponibles para este servicio.</p>';
+      } else {
+        // --- ESTE ES EL BLOQUE QUE FALTABA ---
+        listContainer.innerHTML = ""; // Limpiar loader
+
+        professionals.forEach((prof) => {
+          try {
+            const profElement = document.createElement("a");
+            profElement.href = "#";
+            profElement.className =
+              "list-group-item list-group-item-action professional-select-btn";
+
+            // Lógica de nombre robusta
+            let nombre = `Profesional #${prof.id}`;
+            if (prof.users && prof.users.nombre) {
+              nombre = `${prof.users.nombre} ${
+                prof.users.apellido || ""
+              }`.trim();
+            }
+
+            profElement.innerHTML = `
+            <div class="d-flex w-100 justify-content-between">
+              <h6 class="mb-1">${nombre}</h6>
+              <small>${prof.experience_years || 0} años exp.</small>
+            </div>
+            <p class="mb-1 small text-muted">${
+              prof.specialty || "Especialista"
+            }</p>
+          `;
+
+            // Acción final: Añadir al carrito
+            profElement.addEventListener("click", (e) => {
+              e.preventDefault();
+              this.addServiceToCart(servicioInfo, prof.id);
+              modal.hide();
+            });
+
+            listContainer.appendChild(profElement);
+          } catch (renderError) {
+            console.error(
+              "[DEBUG] ¡Error al renderizar un profesional!:",
+              renderError,
+              prof
+            );
+          }
+        });
+      }
+    } catch (error) {
+      console.error("Error en handleReservaClick (profesionales):", error);
+      this.showSafeToast(`Error: ${error.message}`, "danger");
+    }
+  }
+
+  addServiceToCart(servicioInfo, professionalId) {
+    try {
       const carritoJSON = localStorage.getItem("carritoServicios");
       let carrito = carritoJSON ? JSON.parse(carritoJSON) : [];
 
-      // 4. (Opcional) Verificar si el item ya está en el carrito
-      const yaExiste = carrito.find((item) => item.id === servicioInfo.id);
+      // Adjuntamos el ID del profesional al item del carrito
+      const itemConProfesional = {
+        ...servicioInfo,
+        professional_id: professionalId,
+      };
+
+      const yaExiste = carrito.find(
+        (item) => item.id === itemConProfesional.id
+      );
       if (yaExiste) {
-        this.showSafeToast("El servicio ya está en tu carrito", "info");
-        return;
+        this.showSafeToast("Este servicio ya está en tu carrito", "info");
+        return; // Detener la función
       }
 
-      // 5. Añadir el nuevo servicio al carrito
-      carrito.push(servicioInfo);
-
-      // 6. Guardar el carrito de SERVICIOS actualizado
+      carrito.push(itemConProfesional);
       localStorage.setItem("carritoServicios", JSON.stringify(carrito));
 
-      // 7. Mostrar notificación de éxito
       this.showSafeToast(`${servicioInfo.title} añadido al carrito`, "success");
     } catch (error) {
-      console.error("Error en handleReservaClick:", error);
-      this.showSafeToast(
-        `Error al añadir al carrito: ${error.message}`,
-        "danger"
-      );
+      console.error("Error en addServiceToCart:", error);
+      this.showSafeToast("Error al añadir al carrito.", "danger");
     }
   }
+
   initMisReservasPage() {
     import("../modules/mis-reservas/index.js") // <-- El archivo que crearemos
       .then((module) => {

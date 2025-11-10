@@ -63,73 +63,7 @@
     <!-- Custom JS -->
     <script type="module" src="js/app.js"></script>
 
-    <div class="modal fade" id="paymentSimulationModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Simulación de Pago</h5>
-                </div>
-                <div class="modal-body">
-
-                    <div id="payment-form">
-                        <p>Estás a punto de pagar con Tarjeta de Débito.</p>
-                        <ul class="list-group mb-3">
-                            <li class="list-group-item d-flex justify-content-between">
-                                <span>Subtotal (Precio completo):</span>
-                                <strong id="modal-subtotal">$0</strong>
-                            </li>
-                            <li class="list-group-item d-flex justify-content-between text-success">
-                                <span>Ahorro (48hs):</span>
-                                <strong id="modal-discount">-$0</strong>
-                            </li>
-                            <li class="list-group-item d-flex justify-content-between fs-4">
-                                <strong>Total a Pagar:</strong>
-                                <strong id="modal-total-amount">$0</strong>
-                            </li>
-                        </ul>
-                        <div class="mb-3">
-                            <label class="form-label">Nombre (ficticio)</label>
-                            <input type="text" class="form-control" value="Juan Perez">
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Nro. Tarjeta (ficticio)</label>
-                            <input type="text" class="form-control" value="**** **** **** 1234">
-                        </div>
-                    </div>
-
-                    <div id="payment-loader" style="display: none; text-align: center; padding: 2rem;">
-                        <div class="spinner-border text-success" style="width: 3rem; height: 3rem;"></div>
-                        <p class="mt-3">Procesando pago...</p>
-                    </div>
-
-                    <div id="payment-success" style="display: none;">
-                        <div class="text-center mb-3">
-                            <i class="bi bi-check-circle-fill text-success" style="font-size: 3rem;"></i>
-                            <h4 class="mt-2">¡Pago Completado!</h4>
-                        </div>
-                        <p>Tu reserva ha sido pagada con éxito.</p>
-                        <div id="receipt-content" class="border p-3 rounded">
-                        </div>
-                    </div>
-
-                </div>
-
-                <div class="modal-footer" id="payment-footer-controls">
-                    <div id="footer-pay-view">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                        <button type="button" class="btn btn-success" id="btn-modal-pagar">Pagar Ahora</button>
-                    </div>
-                    <div id="footer-success-view" style="display: none;">
-                        <button type="button" class="btn btn-outline-secondary" id="btn-print-receipt">
-                            <i class="bi bi-printer me-2"></i>Imprimir
-                        </button>
-                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cerrar</button>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-    </div>
+   >
     </div>
 </body>
 

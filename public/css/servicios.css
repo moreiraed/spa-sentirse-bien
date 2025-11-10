@@ -243,48 +243,29 @@
 /* ============================================= */
 
 @media print {
-  /* Ocultar todo lo que NO es el comprobante */
-  body > *:not(#paymentSimulationModal),
-  .modal-header,
-  .modal-footer {
-    display: none !important;
+  
+  /* 1. Ocultar todo en la página por defecto */
+  body * {
+    visibility: hidden !important;
   }
 
-  /* Asegurarse de que el modal y el comprobante sean visibles */
-  .modal,
-  .modal-dialog,
-  .modal-content,
-  .modal-body,
-  #payment-success,
-  #receipt-content {
-    display: block !important;
+  /* 2. Mostrar SOLAMENTE el div del comprobante y todo su contenido */
+  #receipt-content,
+  #receipt-content * {
     visibility: visible !important;
+  }
+
+  /* 3. Ajustar el comprobante para que ocupe toda la página de impresión */
+  #receipt-content {
+    position: absolute !important;
+    left: 0 !important;
+    top: 0 !important;
     width: 100% !important;
-    position: static !important;
-    overflow: visible !important;
-    box-shadow: none !important;
+    margin: 0 !important;
+    padding: 15px !important;
     border: none !important;
+    /* Aseguramos que el fondo y color sean legibles */
     background: #fff !important;
     color: #000 !important;
-  }
-
-  /* Quitar márgenes y asegurar que ocupe toda la página */
-  body,
-  .modal,
-  .modal-dialog {
-    margin: 0 !important;
-    padding: 0 !important;
-  }
-
-  /* Limpiar la vista de éxito para que solo se imprima el recibo */
-  #payment-success .text-center {
-    display: none !important;
-  }
-  #payment-success > p {
-    display: none !important;
-  }
-
-  #receipt-content {
-    border: none !important;
   }
 }
