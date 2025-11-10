@@ -42,7 +42,6 @@ export class ProfileUI {
           : "bg-secondary"
       }`;
     }
-
   }
 
   generateInitials(user) {
@@ -92,11 +91,13 @@ export class ProfileUI {
     document.getElementById("email").value = user.email || "";
     document.getElementById("telefono").value = user.telefono || "";
     document.getElementById("dni").value = user.dni || "";
+    document.getElementById("direccion").value = user.direccion || "";
   }
 
   showTab(tabName) {
     document.getElementById("datos-personales-panel").classList.add("d-none");
     document.getElementById("seguridad-panel").classList.add("d-none");
+    document.getElementById("tarjetas-panel").classList.add("d-none");
 
     const selectedPanel = document.getElementById(`${tabName}-panel`);
     if (selectedPanel) {
@@ -104,16 +105,25 @@ export class ProfileUI {
     }
   }
 
-  showButtonLoading(button, isLoading) {
+  showButtonLoading(
+    button,
+    isLoading,
+    loadingText = "Guardando...",
+    normalText = null
+  ) {
     const buttonText = button.querySelector(".btn-text");
     const buttonLoader = button.querySelector(".btn-loader");
 
     if (isLoading) {
-      buttonText.textContent = "Guardando...";
+      buttonText.textContent = loadingText;
       buttonLoader.classList.remove("d-none");
       button.disabled = true;
     } else {
-      buttonText.textContent = "Guardar cambios";
+      // Si no se proporciona normalText, usar el texto original del botón
+      buttonText.textContent =
+        normalText ||
+        button.getAttribute("data-original-text") ||
+        "Guardar cambios";
       buttonLoader.classList.add("d-none");
       button.disabled = false;
     }

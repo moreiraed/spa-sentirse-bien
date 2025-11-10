@@ -16,6 +16,9 @@
                             data-profile-tab="datos-personales">
                             <i class="bi bi-person me-2"></i>Datos Personales
                         </a>
+                        <a href="#" class="list-group-item list-group-item-action" data-profile-tab="tarjetas">
+                            <i class="bi bi-credit-card me-2"></i>Mis Tarjetas
+                        </a>
                         <a href="#" class="list-group-item list-group-item-action" data-profile-tab="seguridad">
                             <i class="bi bi-shield-lock me-2"></i>Seguridad
                         </a>
@@ -59,6 +62,10 @@
                                 <div class="col-md-6 mb-3">
                                     <label for="dni" class="form-label">DNI</label>
                                     <input type="text" class="form-control" id="dni">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="direccion" class="form-label">Dirección</label>
+                                    <input type="text" class="form-control" id="direccion" placeholder="Calle, número">
                                 </div>
                             </div>
 
@@ -110,6 +117,73 @@
                             <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteAccountModal">
                                 Eliminar mi cuenta
                             </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Panel de Mis Tarjetas -->
+                <div class="card shadow-sm d-none" id="tarjetas-panel">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0"><i class="bi bi-credit-card me-2"></i>Mis Tarjetas</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-4">
+                            <h6 class="border-bottom pb-2">Tarjetas guardadas</h6>
+                            <div id="tarjetas-list" class="row">
+                                <div class="col-12">
+                                    <div class="text-center py-4">
+                                        <i class="bi bi-credit-card-2-front display-4 text-muted mb-3"></i>
+                                        <p class="text-muted">No tienes tarjetas guardadas</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                
+                        <div class="border-top pt-4">
+                            <h6 class="border-bottom pb-2">Agregar nueva tarjeta</h6>
+                            <form id="add-card-form">
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="card-number" class="form-label">Número de tarjeta</label>
+                                        <input type="text" class="form-control" id="card-number" placeholder="1234 5678 9012 3456"
+                                            maxlength="19">
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="card-holder" class="form-label">Nombre del titular</label>
+                                        <input type="text" class="form-control" id="card-holder">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-3 mb-3">
+                                        <label for="card-expiry" class="form-label">Vencimiento</label>
+                                        <input type="text" class="form-control" id="card-expiry" placeholder="MM/AA" maxlength="5">
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                        <label for="card-cvv" class="form-label">CVV</label>
+                                        <input type="text" class="form-control" id="card-cvv" placeholder="123" maxlength="3">
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                        <label for="card-type" class="form-label">Tipo</label>
+                                        <select class="form-select" id="card-type">
+                                            <option value="debito">Débito</option>
+                                            <option value="credito">Crédito</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                        <label for="card-brand" class="form-label">Marca</label>
+                                        <select class="form-select" id="card-brand">
+                                            <option value="visa">Visa</option>
+                                            <option value="mastercard">Mastercard</option>
+                                            <option value="amex">American Express</option>
+                                            <option value="other">Otra</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn btn-primary" data-original-text="Agregar tarjeta">
+                                    <span class="btn-text">Agregar tarjeta</span>
+                                    <span class="btn-loader d-none spinner-border spinner-border-sm"></span>
+                                </button>
+                            </form>
                         </div>
                     </div>
                 </div>
