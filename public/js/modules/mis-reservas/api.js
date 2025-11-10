@@ -19,6 +19,7 @@ export async function fetchUserBookings(userId) {
       )
     `)
     .eq('user_id', userId)
+    .not('appointment_datetime', 'is', null)
     .order('appointment_datetime', { ascending: true });
 
   if (error) {

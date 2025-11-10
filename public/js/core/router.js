@@ -14,7 +14,7 @@ export class Router {
       ventas: "./pages/ventas.html",
       privacidad: "./pages/privacidad.html",
       terminos: "./pages/terminos.html",
-      misproductos: "./pages/mis-productos.html",
+      pedidos: "./pages/mis-pedidos.html",
     };
     this.currentPage = "home";
     this.isNavigating = false;
@@ -150,6 +150,7 @@ export class Router {
       "reservas",
       "admin",
       "ventas",
+      "pedidos"
     ];
     return protectedPages.includes(page);
   }
@@ -250,8 +251,8 @@ export class Router {
       case "reservas":
         this.initMisReservasPage();
         break;
-      case "misproductos":
-        this.initMisProductosPage();
+      case "pedidos":
+        this.initMisPedidosPage();
         break;
 
       // Agregar más casos según sea necesario
@@ -299,13 +300,13 @@ export class Router {
       });
   }
 
-  initMisProductosPage() {
-    import("../modules/mis-productos.js")
+  initMisPedidosPage() {
+    import("../modules/mis-pedidos.js")
       .then((module) => {
-        module.initMisProductosPage();
+        module.initMisPedidosPage();
       })
       .catch((error) => {
-        console.error("Error inicializando página de Mis Productos:", error);
+        console.error("Error inicializando página de Mis Pedidos:", error);
       });
   }
 

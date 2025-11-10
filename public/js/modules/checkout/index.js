@@ -1,5 +1,5 @@
 // public/js/modules/checkout/index.js
-// VERSIÓN FUSIONADA (Lo mejor de "index-viejo.js" y "index.js")
+// VERSIÓN FUSIONADA (CON REDIRECCIÓN CORREGIDA)
 
 // 1. IMPORTAR TODOS LOS MÓDULOS
 import * as ui from "./ui.js";
@@ -19,13 +19,10 @@ let serviceContext;
 let productCartItems = [];
 let productContext;
 let activeTab = 'servicios';
-
-// --- FUSIÓN: Variable del calendario (de index.js) ---
 let selectedDateTime = null;
 
 /**
  * FUNCIÓN PRINCIPAL (Llamada por el Router)
- * (Lógica de index-viejo.js + initCalendar)
  */
 export function initCheckoutPage() {
   // 1. Cargar el carrito de SERVICIOS
@@ -40,45 +37,43 @@ export function initCheckoutPage() {
   const productSubtotal = ui.renderProductCartItems(productCartItems);
   productContext = new ReservationContext(productSubtotal);
 
-  // --- FUSIÓN: Inicializar el calendario (de index.js) ---
+  // 3. Inicializar el calendario
   initCalendar();
   
-  // 3. Configurar los listeners
+  // 4. Configurar los listeners
   setupListeners();
 
-  // 4. Calcular y mostrar los totales iniciales
+  // 5. Calcular y mostrar los totales iniciales
   updatePaymentStrategy();
   updateTotals();
   updateProductTotalsUI(); 
 
-  // 5. Validar estado inicial
+  // 6. Validar estado inicial
   const { payment_method } = ui.getFormValues();
-  // --- FUSIÓN: Usar la validación con fecha (de index.js) ---
   ui.validateBusinessRules(payment_method, null, selectedDateTime);
 }
 
 /**
- * Configura los listeners para PESTAÑAS, PAGOS, BOTÓN y CANTIDADES.
- * (Lógica de index-viejo.js + listener de borrado de servicios)
+ * Configura los listeners
  */
 function setupListeners() {
-  // --- Listeners de Pestañas (de index-viejo.js) ---
+  // Listeners de Pestañas
   const tabButtons = document.querySelectorAll('#checkoutTabs button[data-bs-toggle="tab"]');
   tabButtons.forEach(tab => {
     tab.addEventListener('shown.bs.tab', handleTabChange);
   });
 
-  // --- Listener de Métodos de Pago (Unificado) ---
+  // Listener de Métodos de Pago
   const radioInputs = document.querySelectorAll('#payment-options-wrapper input[name="payment"]');
   radioInputs.forEach((input) => {
     input.addEventListener("change", handlePaymentChange);
   });
 
-  // --- Listener del Botón Principal (Unificado) ---
+  // Listener del Botón Principal
   const confirmButton = document.getElementById("btn-confirmar-checkout");
   confirmButton.addEventListener("click", handleConfirmCheckout);
   
-  // --- Listeners de Carrito de Productos (de index-viejo.js) ---
+  // Listeners de Carrito de Productos
   const productContainer = document.getElementById("productos-items-container");
   if (productContainer) {
     productContainer.addEventListener("change", (e) => {
@@ -94,7 +89,7 @@ function setupListeners() {
     });
   }
   
-  // --- FUSIÓN: Listener de Carrito de Servicios (de index.js) ---
+  // Listener de Carrito de Servicios
   const serviceContainer = document.getElementById("servicios-items-container");
   if (serviceContainer) {
     serviceContainer.addEventListener("click", handleRemoveServiceClick);
@@ -102,24 +97,18 @@ function setupListeners() {
 }
 
 /**
- * NUEVO (de index.js): Se dispara al hacer clic en el contenedor de items de SERVICIOS.
- * (Adaptado para que funcione con la lógica de index-viejo.js)
+ * (Listener de borrado de servicios)
  */
 function handleRemoveServiceClick(event) {
   const deleteButton = event.target.closest(".btn-remove-item");
   if (!deleteButton) return; 
 
   const itemId = deleteButton.getAttribute("data-item-id");
-
-  // 1. Filtrar el array local
   serviceCartItems = serviceCartItems.filter(
     (item) => item.id.toString() !== itemId.toString()
   );
-
-  // 2. Actualizar localStorage
   localStorage.setItem("carritoServicios", JSON.stringify(serviceCartItems));
 
-  // 3. Refrescar la UI (lógica adaptada de index-viejo.js)
   const newServiceSubtotal = ui.renderCartItems(serviceCartItems);
   serviceContext.subtotal = newServiceSubtotal;
   
@@ -134,8 +123,7 @@ function handleRemoveServiceClick(event) {
 }
 
 /**
- * (de index-viejo.js): Se dispara CADA VEZ que el usuario cambia de pestaña.
- * (Modificado para usar la validación con fecha)
+ * (Listener de cambio de pestaña)
  */
 function handleTabChange(event) {
   activeTab = event.target.id === 'servicios-tab' ? 'servicios' : 'productos';
@@ -143,7 +131,6 @@ function handleTabChange(event) {
 
   const confirmButton = document.getElementById("btn-confirmar-checkout");
   
-  // 1. Actualizar etiquetas de descuento y texto del botón
   if (activeTab === 'servicios') {
     ui.updatePaymentLabels('servicios');
     confirmButton.innerHTML = "Confirmar Reserva";
@@ -152,41 +139,27 @@ function handleTabChange(event) {
     confirmButton.innerHTML = "Confirmar Compra";
   }
 
-  // 2. Recalcular y mostrar el total de la pestaña activa en el resumen principal
   updateTotals();
   
-  // 3. Validar el estado
   const { payment_method } = ui.getFormValues();
-  // --- FUSIÓN: Usar la validación con fecha (true para productos) ---
   const dateToValidate = (activeTab === 'servicios') ? selectedDateTime : true;
   ui.validateBusinessRules(payment_method, null, dateToValidate);
 }
 
 /**
- * (de index-viejo.js): Se dispara CADA VEZ que el usuario cambia una opción de PAGO.
- * (Modificado para usar la validación con fecha)
+ * (Listener de cambio de pago)
  */
 function handlePaymentChange() {
   const { payment_method } = ui.getFormValues();
-
-  // 1. Validar reglas de negocio
-  // --- FUSIÓN: Usar la validación con fecha (true para productos) ---
   const dateToValidate = (activeTab === 'servicios') ? selectedDateTime : true;
   ui.validateBusinessRules(payment_method, null, dateToValidate);
-
-  // 2. Actualizar AMBAS estrategias (servicios y productos)
   updatePaymentStrategy();
-
-  // 3. Recalcular y mostrar el total (solo de la pestaña activa)
   updateTotals();
-  
-  // 4. Recalcular también el sub-resumen de productos
   updateProductTotalsUI();
 }
 
 /**
- * (de index-viejo.js): Se dispara al cambiar cantidad o eliminar un PRODUCTO.
- * (Sin cambios)
+ * (Listener de cambio en carrito de productos)
  */
 function handleProductCartChange(productId, newQuantity) {
   const quantity = parseInt(newQuantity);
@@ -215,13 +188,12 @@ function handleProductCartChange(productId, newQuantity) {
 }
 
 /**
- * (de index-viejo.js): Aplica la estrategia correcta a CADA contexto.
- * (Sin cambios)
+ * (Helper: Actualiza estrategias de pago)
  */
 function updatePaymentStrategy() {
   const { payment_method } = ui.getFormValues();
 
-  // 1. Estrategia de SERVICIOS
+  // Estrategia de SERVICIOS
   if (payment_method === "debit_card") {
     serviceContext.setStrategy(new DebitCardStrategy());
   } else if (payment_method === "cash") {
@@ -230,7 +202,7 @@ function updatePaymentStrategy() {
     serviceContext.setStrategy(new NoDiscountStrategy());
   }
 
-  // 2. Estrategia de PRODUCTOS
+  // Estrategia de PRODUCTOS
   if (payment_method === "cash") {
     productContext.setStrategy(new ProductCashStrategy());
   } else if (payment_method === "debit_card") {
@@ -241,8 +213,7 @@ function updatePaymentStrategy() {
 }
 
 /**
- * (de index-viejo.js): Recalcula el RESUMEN PRINCIPAL (derecha).
- * (Sin cambios)
+ * (Helper: Actualiza el Resumen de Pago)
  */
 function updateTotals() {
   let subtotal = 0;
@@ -269,8 +240,7 @@ function updateTotals() {
 }
 
 /**
- * (de index-viejo.js): Recalcula la UI INTERNA de la pestaña de productos.
- * (Sin cambios)
+ * (Helper: Actualiza UI interna de productos)
  */
 function updateProductTotalsUI() {
   const { discountAmount, newTotal } = productContext.calculateTotal();
@@ -281,8 +251,7 @@ function updateProductTotalsUI() {
 }
 
 /**
- * (de index-viejo.js): Decide qué función llamar basado en 'activeTab'.
- * (Sin cambios)
+ * (Handler: Botón principal de Confirmar)
  */
 function handleConfirmCheckout() {
   if (activeTab === 'servicios') {
@@ -293,14 +262,12 @@ function handleConfirmCheckout() {
 }
 
 /**
- * (de index-viejo.js): Lógica para confirmar SÓLO SERVICIOS.
- * (Modificado para incluir la fecha)
+ * (Lógica de API: Confirmar Servicios)
  */
 async function handleConfirmServices() {
   console.log("Confirmando RESERVA de servicios...");
   const { delivery_method, payment_method } = ui.getFormValues();
 
-  // --- FUSIÓN: Usar la validación con fecha ---
   if (!ui.validateBusinessRules(payment_method, delivery_method, selectedDateTime)) {
     showSafeToast("Por favor, corrige los errores en tu pedido.", "danger");
     return;
@@ -322,8 +289,7 @@ async function handleConfirmServices() {
     discount_applied: discountAmount,
     total_price: newTotal,
     payment_method: payment_method,
-    delivery_method: delivery_method, // 'in_spa'
-    // --- FUSIÓN: Añadir la fecha de la reserva (de index.js) ---
+    delivery_method: delivery_method,
     appointment_datetime: selectedDateTime ? selectedDateTime.toISOString() : null
   };
 
@@ -337,7 +303,7 @@ async function handleConfirmServices() {
     if (result.success) {
       showSafeToast("¡Reserva creada con éxito!", "success");
       localStorage.removeItem("carritoServicios");
-      window.location.hash = "#reservas"; // Cambiado de #home a #reservas
+      window.location.hash = "#reservas"; 
     } else {
       throw new Error("La API de guardado de servicios no tuvo éxito.");
     }
@@ -350,14 +316,12 @@ async function handleConfirmServices() {
 }
 
 /**
- * (de index-viejo.js): Lógica para confirmar SÓLO PRODUCTOS.
- * (Sin cambios)
+ * (Lógica de API: Confirmar Productos)
  */
 async function handleConfirmProducts() {
   console.log("Confirmando COMPRA de productos...");
   const { payment_method } = ui.getFormValues();
 
-  // (Validación simple, 'true' para la fecha)
   if (!ui.validateBusinessRules(payment_method, null, true)) {
     showSafeToast("Por favor, selecciona un método de pago.", "danger");
     return;
@@ -392,7 +356,13 @@ async function handleConfirmProducts() {
     if (result.success) {
       showSafeToast("¡Compra de productos realizada con éxito!", "success");
       localStorage.removeItem("carritoProductos");
-      window.location.hash = "#reservas"; // Cambiado de #home a #reservas
+      
+      // ----------------------------------------------------
+      // --- ¡AQUÍ ESTÁ EL CAMBIO! ---
+      // ----------------------------------------------------
+      window.location.hash = "#pedidos"; // <-- CORREGIDO
+      // ----------------------------------------------------
+
     } else {
       throw new Error("La API de guardado de productos no tuvo éxito.");
     }
@@ -405,7 +375,7 @@ async function handleConfirmProducts() {
 }
 
 /**
- * NUEVO (de index.js): Inicializa Flatpickr
+ * (Helper: Inicializa Calendario)
  */
 function initCalendar() {
   const minDate = new Date().fp_incr(2);
@@ -417,15 +387,13 @@ function initCalendar() {
     minuteIncrement: 30,
     onChange: function (selectedDates) {
       selectedDateTime = selectedDates[0];
-      // Llamamos a la función de refresco del archivo viejo
       handlePaymentChange(); 
     },
   });
 }
 
 /**
- * Función helper para mostrar notificaciones (toast) de forma segura.
- * (Sin cambios)
+ * (Helper: Muestra Toasts)
  */
 function showSafeToast(message, type = "info") {
   if (typeof window.showToast === "function") {
