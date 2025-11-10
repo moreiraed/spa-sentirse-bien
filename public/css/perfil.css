@@ -187,3 +187,228 @@
     background: linear-gradient(135deg, #ffc107 0%, #ffd54f 100%);
     color: #000;
 }
+
+/* Estilos específicos para tarjetas en el perfil */
+.tarjeta-credito-container {
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    border-radius: 16px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 1px solid rgba(164, 141, 120, 0.2);
+    overflow: hidden;
+    position: relative;
+}
+
+.tarjeta-credito-container:hover {
+    box-shadow: 0 12px 25px rgba(164, 141, 120, 0.15);
+    border-color: rgba(164, 141, 120, 0.4);
+}
+
+/* Body específico para tarjetas */
+.tarjeta-credito-body {
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%) !important;
+    border: none;
+    overflow: hidden;
+    transition: box-shadow 0.3s ease;
+    position: relative;
+    z-index: 1;
+}
+
+/* Logos de tarjetas */
+.card-logo {
+    width: 48px;
+    height: 30px;
+    border-radius: 4px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.card-logo.visa {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%231A1F71' d='M9.5 8.5h5v7h-5z'/%3E%3Cpath fill='%23F7A600' d='M18.5 8.5h-5v7h5z'/%3E%3C/svg%3E");
+}
+
+.card-logo.mastercard {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Ccircle fill='%23FF5F00' cx='9.5' cy='12' r='4.5'/%3E%3Ccircle fill='%23EB001B' cx='14.5' cy='12' r='4.5'/%3E%3C/svg%3E");
+}
+
+.card-logo.amex {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%230078D7' d='M6 8.5h12v7H6z'/%3E%3C/svg%3E");
+}
+
+.card-logo.other {
+    background: linear-gradient(135deg, #6c757d 0%, #868e96 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+/* Número de tarjeta estilizado */
+.card-number-display {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    font-family: 'Courier New', monospace;
+    letter-spacing: 2px;
+    border-radius: 8px;
+    padding: 0.75rem;
+}
+
+/* Badges para tipo de tarjeta */
+.badge-credito {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+    color: white;
+    font-size: 0.7rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+}
+
+.badge-debito {
+    background: linear-gradient(135deg, #007bff 0%, #17a2b8 100%);
+    color: white;
+    font-size: 0.7rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+}
+
+/* Tarjeta con borde punteado para estado vacío */
+.border-dashed {
+    border: 2px dashed #dee2e6 !important;
+    background: transparent !important;
+    transition: all 0.3s ease;
+}
+
+.border-dashed:hover {
+    border-color: #A48D78 !important;
+    background: rgba(164, 141, 120, 0.05) !important;
+}
+
+/* Animación para cuando se agrega una tarjeta */
+.tarjeta-added {
+    animation: cardPulse 0.6s ease-in-out;
+}
+
+@keyframes cardPulse {
+    0% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.7);
+    }
+
+    50% {
+        transform: scale(1.02);
+        box-shadow: 0 0 0 10px rgba(40, 167, 69, 0);
+    }
+
+    100% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(40, 167, 69, 0);
+    }
+}
+
+/* Estados de las tarjetas por marca */
+.tarjeta-credito-container.visa {
+    border-left: 4px solid #1A1F71;
+}
+
+.tarjeta-credito-container.mastercard {
+    border-left: 4px solid #EB001B;
+}
+
+.tarjeta-credito-container.amex {
+    border-left: 4px solid #0078D7;
+}
+
+.tarjeta-credito-container.other {
+    border-left: 4px solid #6c757d;
+}
+
+/* Botón de eliminar tarjeta */
+.btn-eliminar-tarjeta {
+    border: 1px solid #dc3545;
+    color: #dc3545;
+    transition: all 0.3s ease;
+    border-radius: 6px;
+    padding: 0.25rem 0.5rem;
+}
+
+.btn-eliminar-tarjeta:hover {
+    background-color: #dc3545;
+    color: white;
+    transform: scale(1.05);
+}
+
+/* Efecto de gradiente sutil en el fondo de las tarjetas */
+.tarjeta-credito-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg,
+            rgba(164, 141, 120, 0.8) 0%,
+            rgba(139, 115, 85, 0.6) 50%,
+            rgba(164, 141, 120, 0.8) 100%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: 2;
+}
+
+.tarjeta-credito-container:hover::before {
+    opacity: 1;
+}
+
+/* Mejora visual para el texto del titular */
+.text-truncate {
+    max-width: 150px;
+}
+
+/* Estilos para el estado de tarjeta principal/secundaria */
+.badge-tarjeta-estado {
+    background: linear-gradient(135deg, #6c757d 0%, #868e96 100%) !important;
+    font-size: 0.65rem;
+    padding: 0.2rem 0.4rem;
+    border-radius: 4px;
+}
+
+/* Responsive para tarjetas */
+@media (max-width: 768px) {
+    .tarjeta-credito-container {
+        margin-bottom: 1rem;
+    }
+
+    .card-logo {
+        width: 40px;
+        height: 25px;
+    }
+
+    .card-number-display {
+        font-size: 0.9rem;
+        padding: 0.5rem;
+    }
+
+    .text-truncate {
+        max-width: 120px;
+    }
+}
+
+/* Efecto de brillo sutil al hacer hover */
+.tarjeta-credito-container::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg,
+            transparent,
+            rgba(255, 255, 255, 0.4),
+            transparent);
+    transition: left 0.5s ease;
+    z-index: 1;
+}
+
+.tarjeta-credito-container:hover::after {
+    left: 100%;
+}
