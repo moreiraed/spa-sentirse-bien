@@ -1,5 +1,5 @@
 // public/js/modules/checkout/service-checkout.js
-// GESTOR DE CHECKOUT DE SERVICIOS
+// GESTOR DE CHECKOUT DE SERVICIOS (Adaptado al nuevo context.js)
 
 import * as ui from "./ui.js";
 import * as api from "./api.js";
@@ -29,7 +29,7 @@ export function initServiceCheckout() {
 
   // 4. Calcular y mostrar los totales iniciales (si la pestaña de servicios está activa)
   if (document.getElementById('servicios-tab').classList.contains('active')) {
-    updateServicePaymentStrategy();
+    updateServicePaymentStrategy(); // <-- ¡CAMBIO! Adaptado a setStrategies
     updateServiceTotals();
     validateServiceRules();
   }
@@ -67,7 +67,7 @@ function handleRemoveServiceClick(event) {
   const newServiceSubtotal = ui.renderCartItems(serviceCartItems);
   serviceContext.subtotal = newServiceSubtotal;
 
-  updateServiceTotals();
+  updateServiceTotals(); // ¡CAMBIO! Esta función ahora usa el contexto
   validateServiceRules();
 
   showSafeToast("Servicio eliminado del carrito", "info");
@@ -79,20 +79,31 @@ export function handleServicePaymentChange() {
   updateServiceTotals();
 }
 
+// --- ¡CAMBIO IMPORTANTE! ---
 function updateServicePaymentStrategy() {
   const { payment_method } = ui.getFormValues();
+  let strategy; // La estrategia individual
 
   if (payment_method === "debit_card") {
-    serviceContext.setStrategy(new DebitCardStrategy());
+    strategy = new DebitCardStrategy();
   } else if (payment_method === "cash") {
-    serviceContext.setStrategy(new CashStrategy());
+    strategy = new CashStrategy();
   } else {
-    serviceContext.setStrategy(new NoDiscountStrategy());
+    strategy = new NoDiscountStrategy();
   }
+  
+  // ¡CAMBIO! Ahora pasamos un array de estrategias
+  serviceContext.setStrategies([strategy]);
 }
 
+// --- ¡CAMBIO IMPORTANTE! ---
 export function updateServiceTotals() {
-  const { discountAmount, newTotal } = serviceContext.calculateTotal();
+  const { payment_method } = ui.getFormValues();
+
+  // ¡CAMBIO! Pasamos el contexto al calcular
+  const context = { payment_method: payment_method };
+  const { discountAmount, newTotal } = serviceContext.calculateTotal(context);
+  
   ui.updateTotalsUI({
     subtotal: serviceContext.subtotal,
     discountAmount: discountAmount,
@@ -105,6 +116,7 @@ function validateServiceRules() {
   return ui.validateBusinessRules(payment_method, delivery_method, selectedDateTime);
 }
 
+// --- ¡CAMBIO IMPORTANTE! ---
 export async function handleConfirmServices() {
   console.log("Confirmando RESERVA de servicios...");
 
@@ -122,13 +134,16 @@ export async function handleConfirmServices() {
   }
 
   const { payment_method, delivery_method } = ui.getFormValues();
-  const { discountAmount, newTotal } = serviceContext.calculateTotal();
+  
+  // ¡CAMBIO! Pasamos el contexto al calcular
+  const context = { payment_method: payment_method };
+  const { discountAmount, newTotal } = serviceContext.calculateTotal(context);
 
   const bookingData = {
     user_id: window.currentUser.id,
     subtotal: serviceContext.subtotal,
-    discount_applied: discountAmount,
-    total_price: newTotal,
+    discount_applied: discountAmount, // <-- Correcto (viene del nuevo context)
+    total_price: newTotal,            // <-- Correcto (viene del nuevo context)
     payment_method: payment_method,
     delivery_method: delivery_method,
     appointment_datetime: selectedDateTime ? selectedDateTime.toISOString() : null

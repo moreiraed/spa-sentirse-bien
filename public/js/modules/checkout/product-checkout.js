@@ -1,5 +1,5 @@
 // public/js/modules/checkout/product-checkout.js
-// GESTOR DE CHECKOUT DE PRODUCTOS
+// GESTOR DE CHECKOUT DE PRODUCTOS (¡Con descuentos acumulables!)
 
 import * as ui from "./ui.js";
 import * as api from "./api.js";
@@ -8,29 +8,41 @@ import {
   ProductCashStrategy,
   ProductDebitStrategy,
   NoDiscountStrategy,
-} from "../payment/product-strategies.js"; // <-- Importa de la nueva ubicación
+  ProductFrequentCustomerStrategy, // <-- ¡CAMBIO! Importamos la nueva estrategia
+} from "../payment/product-strategies.js"; 
 
 let productCartItems = [];
 let productContext;
+let isFrequentCustomer = false; // <-- ¡CAMBIO! Nuevo estado para el descuento
 
-export function initProductCheckout() {
-  // 1. Cargar el carrito de PRODUCTOS
+// --- ¡CAMBIO IMPORTANTE! ---
+// La inicialización ahora es asíncrona para esperar la info del usuario
+export async function initProductCheckout() {
+  // 1. Cargar el carrito
   const productCarritoJSON = localStorage.getItem("carritoProductos");
   productCartItems = productCarritoJSON ? JSON.parse(productCarritoJSON) : [];
   const productSubtotal = ui.renderProductCartItems(productCartItems);
   productContext = new ReservationContext(productSubtotal);
 
-  // 2. Configurar listeners
+  // 2. ¡CAMBIO! Verificar si el cliente es frecuente
+  // Solo lo verificamos si hay un usuario logueado
+  if (window.currentUser && window.currentUser.id) {
+    isFrequentCustomer = await api.isFrequentCustomer(window.currentUser.id);
+  } else {
+    isFrequentCustomer = false;
+  }
+  
+  // 3. Configurar listeners
   setupProductListeners();
 
-  // 3. Calcular y mostrar los totales iniciales (si la pestaña de productos está activa)
+  // 4. Calcular totales iniciales
   if (document.getElementById('productos-tab').classList.contains('active')) {
-    updateProductPaymentStrategy();
+    updateProductPaymentStrategy(); // <-- ¡CAMBIO! Adaptado a setStrategies
     updateProductTotals();
     validateProductRules();
   } else {
     // Aunque no esté activa, calculamos los descuentos para la UI interna
-    updateProductPaymentStrategy();
+    updateProductPaymentStrategy(); // <-- ¡CAMBIO! Adaptado a setStrategies
     updateProductTotalsUI();
   }
 }
@@ -87,7 +99,7 @@ function handleProductCartChange(productId, newQuantity) {
 
   const newProductSubtotal = ui.renderProductCartItems(productCartItems);
   productContext.subtotal = newProductSubtotal;
-  updateProductTotals(); // Actualiza el resumen de pago si la pestaña está activa
+  updateProductTotals(); // ¡CAMBIO! Esta función ahora usa el contexto
   validateProductRules();
 }
 
@@ -97,33 +109,68 @@ export function handleProductPaymentChange() {
   updateProductTotals();
 }
 
+// --- ¡CAMBIO IMPORTANTE! ---
 function updateProductPaymentStrategy() {
   const { payment_method } = ui.getFormValues();
+  
+  // 1. Creamos un array de estrategias
+  let strategies = [];
 
+  // 2. Añadimos la estrategia de Cliente Frecuente
+  // Esta se añade SIEMPRE. Su lógica interna ('calculate')
+  // decidirá si aplica el descuento o no, basado en el 'context.isFrequent'.
+  strategies.push(new ProductFrequentCustomerStrategy());
+
+  // 3. Añadimos la estrategia por método de pago
   if (payment_method === "cash") {
-    productContext.setStrategy(new ProductCashStrategy());
+    strategies.push(new ProductCashStrategy());
   } else if (payment_method === "debit_card") {
-    productContext.setStrategy(new ProductDebitStrategy());
+    strategies.push(new ProductDebitStrategy());
   } else {
-    productContext.setStrategy(new NoDiscountStrategy());
+    // Para 'credit_card' u otro
+    strategies.push(new NoDiscountStrategy());
   }
+  
+  // 4. Pasamos el array de estrategias al contexto
+  productContext.setStrategies(strategies);
 }
 
 // Actualiza el Resumen de Pago (Total, Subtotal, Descuento)
+// --- ¡CAMBIO IMPORTANTE! ---
 export function updateProductTotals() {
-  const { discountAmount, newTotal } = productContext.calculateTotal();
+  const { payment_method } = ui.getFormValues();
+  
+  // ¡CAMBIO! Creamos el contexto con toda la info necesaria
+  const context = {
+    payment_method: payment_method,
+    isFrequent: isFrequentCustomer // <-- Pasamos el estado del cliente
+  };
+  
+  // El contexto sumará los descuentos de ambas estrategias si aplican
+  const { discountAmount, newTotal } = productContext.calculateTotal(context);
+  
   ui.updateTotalsUI({
     subtotal: productContext.subtotal,
     discountAmount: discountAmount,
     newTotal: newTotal,
   });
-  // También actualiza la UI interna de la tarjeta de productos
+  // También actualiza la UI interna
   updateProductTotalsUI();
 }
 
 // Actualiza solo la UI interna del carrito de productos
+// --- ¡CAMBIO IMPORTANTE! ---
 function updateProductTotalsUI() {
-  const { discountAmount, newTotal } = productContext.calculateTotal();
+  const { payment_method } = ui.getFormValues();
+  
+  // ¡CAMBIO! Creamos el contexto
+  const context = {
+    payment_method: payment_method,
+    isFrequent: isFrequentCustomer
+  };
+  
+  const { discountAmount } = productContext.calculateTotal(context);
+  
   ui.updateProductTotalsUI({
     subtotal: productContext.subtotal,
     discountAmount: discountAmount,
@@ -136,6 +183,7 @@ function validateProductRules() {
   return ui.validateBusinessRules(payment_method, null, true);
 }
 
+// --- ¡CAMBIO IMPORTANTE! ---
 export async function handleConfirmProducts() {
   console.log("Confirmando COMPRA de productos...");
 
@@ -153,22 +201,29 @@ export async function handleConfirmProducts() {
   }
 
   const { payment_method } = ui.getFormValues();
-  const { discountAmount, newTotal } = productContext.calculateTotal();
+  
+  // ¡CAMBIO! Creamos el contexto para el cálculo final
+  const context = {
+    payment_method: payment_method,
+    isFrequent: isFrequentCustomer
+  };
+  const { discountAmount, newTotal } = productContext.calculateTotal(context);
 
   const purchaseData = {
     user_id: window.currentUser.id,
     subtotal: productContext.subtotal,
-    discount_applied: discountAmount,
-    total_price: newTotal,
+    discount_applied: discountAmount, // <-- Total de descuentos acumulados
+    total_price: newTotal,            // <-- Total final
     payment_method: payment_method,
     delivery_method: 'product_purchase', 
   };
-
+  
   const confirmBtn = document.getElementById("btn-confirmar-checkout");
   try {
     confirmBtn.disabled = true;
     confirmBtn.innerHTML = "Procesando Compra...";
     const result = await api.saveProductPurchase(purchaseData, productCartItems);
+    
     if (result.success) {
       showSafeToast("¡Compra de productos realizada con éxito!", "success");
       localStorage.removeItem("carritoProductos");

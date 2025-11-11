@@ -107,3 +107,40 @@ export async function saveProductPurchase(purchaseData, productItems) {
     return { success: false, error: error };
   }
 }
+
+/**
+ * Verifica si un usuario es cliente frecuente (3+ servicios en los últimos 30 días).
+ * @param {string} userId - El ID del usuario.
+ * @returns {boolean} - True si es cliente frecuente, false si no.
+ */
+export async function isFrequentCustomer(userId) {
+  if (!userId) {
+    console.log("isFrequentCustomer: No hay usuario, devolviendo false.");
+    return false;
+  }
+
+  try {
+    // 1. Calcular la fecha de hace 30 días
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
+    // 2. Consultar Supabase
+    const { count, error } = await supabase
+      .from("bookings")
+      .select("id", { count: "exact", head: true }) // head:true solo pide el conteo
+      .eq("user_id", userId) // Del usuario actual
+      .gte("created_at", thirtyDaysAgo.toISOString()) // En los últimos 30 días
+      .not("appointment_datetime", "is", null); // ¡Importante! Filtra solo SERVICIOS
+
+    if (error) {
+      console.error("Error al verificar cliente frecuente:", error);
+      return false;
+    }
+
+    console.log(`Verificación de cliente frecuente: ${count} servicios encontrados.`);
+    return count >= 3; [cite_start]// Cumple el requisito [cite: 5]
+  } catch (error) {
+    console.error("Error en la lógica de isFrequentCustomer:", error);
+    return false;
+  }
+}
