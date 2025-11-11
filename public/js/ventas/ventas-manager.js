@@ -4,6 +4,13 @@ import { PDFExporter } from "./pdf-exporter.js";
 
 export class VentasManager {
   constructor() {
+    // Verificar si estamos en la página de ventas
+    const currentPage = window.location.hash.replace("#", "");
+    if (currentPage !== "ventas") {
+      console.log("No en página de ventas, omitiendo inicialización");
+      return;
+    }
+
     this.stockManager = new StockManager();
     this.pdfExporter = new PDFExporter();
     this.ventasActuales = null;
