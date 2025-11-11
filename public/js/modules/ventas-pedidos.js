@@ -83,8 +83,8 @@ function buscarPedidos(terminoBusqueda) {
   }
 
   const termino = terminoBusqueda.toLowerCase();
-  
-  const pedidosFiltrados = modulePedidos.filter(pedido => {
+
+  const pedidosFiltrados = modulePedidos.filter((pedido) => {
     // Buscar por ID
     if (pedido.id.toString().includes(termino)) {
       return true;
@@ -94,14 +94,19 @@ function buscarPedidos(terminoBusqueda) {
     if (pedido.profiles) {
       const nombreCompleto = `${pedido.profiles.nombre || ""} ${
         pedido.profiles.apellido || ""
-      }`.toLowerCase().trim();
-      
+      }`
+        .toLowerCase()
+        .trim();
+
       if (nombreCompleto.includes(termino)) {
         return true;
       }
 
       // Buscar por email
-      if (pedido.profiles.email && pedido.profiles.email.toLowerCase().includes(termino)) {
+      if (
+        pedido.profiles.email &&
+        pedido.profiles.email.toLowerCase().includes(termino)
+      ) {
         return true;
       }
     }
@@ -122,7 +127,7 @@ function buscarPedidos(terminoBusqueda) {
   });
 
   renderPedidosVentas(pedidosFiltrados);
-  
+
   // Mostrar mensaje si no hay resultados
   const container = document.getElementById(CONTAINER_ID);
   if (pedidosFiltrados.length === 0 && container) {
@@ -136,11 +141,19 @@ function buscarPedidos(terminoBusqueda) {
         </button>
       </div>
     `;
-    
-    container.querySelector("#clearSearchBtn")?.addEventListener("click", () => {
-      document.getElementById("searchPedidosInput").value = "";
-      renderPedidosVentas(modulePedidos);
-    });
+
+    // CORRECCIÓN: Verificar que el elemento existe antes de intentar acceder a él
+    const clearSearchBtn = container.querySelector("#clearSearchBtn");
+    if (clearSearchBtn) {
+      clearSearchBtn.addEventListener("click", () => {
+        const searchInput = document.getElementById("searchPedidosInput");
+        // SOLUCIÓN: Solo intentar limpiar si el input existe
+        if (searchInput) {
+          searchInput.value = "";
+        }
+        renderPedidosVentas(modulePedidos);
+      });
+    }
   }
 }
 
