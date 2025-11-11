@@ -13,6 +13,7 @@ export class Router {
       reservas: "./pages/mis-reservas.html",
       admin: "./pages/admin.html",
       ventas: "./pages/ventas.html",
+      "ventas-pedidos": "./pages/ventas-pedidos.html",
       privacidad: "./pages/privacidad.html",
       terminos: "./pages/terminos.html",
       pedidos: "./pages/mis-pedidos.html",
@@ -151,6 +152,7 @@ export class Router {
       "reservas",
       "admin",
       "ventas",
+      "ventas-pedidos",
       "pedidos",
     ];
     return protectedPages.includes(page);
@@ -253,9 +255,49 @@ export class Router {
         this.initMisReservasPage();
         break;
       case "pedidos":
-        this.initMisPedidosPage();
+        // Verificar rol del usuario
+        if (window.currentUser && window.currentUser.rol === "ventas") {
+          // Cargar módulo de ventas para usuarios con rol ventas
+          import("../modules/ventas-pedidos.js")
+            .then((module) => {
+              module.initVentasPedidosPage();
+            })
+            .catch((error) => {
+              console.error(
+                "Error inicializando página de Ventas Pedidos:",
+                error
+              );
+            });
+        } else {
+          // Cargar módulo normal para usuarios regulares
+          import("../modules/mis-pedidos.js")
+            .then((module) => {
+              module.initMisPedidosPage();
+            })
+            .catch((error) => {
+              console.error(
+                "Error inicializando página de Mis Pedidos:",
+                error
+              );
+            });
+        }
         break;
-
+      case "ventas-pedidos":
+        if (window.currentUser && window.currentUser.rol === "ventas") {
+          import("../modules/ventas-pedidos.js")
+            .then((module) => {
+              module.initVentasPedidosPage();
+            })
+            .catch((error) => {
+              console.error(
+                "Error inicializando página de Ventas Pedidos:",
+                error
+              );
+            });
+        } else {
+          this.redirectToHome();
+        }
+        break;
       // Agregar más casos según sea necesario
     }
   }

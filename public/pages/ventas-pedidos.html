@@ -1,0 +1,74 @@
+<div class="my-product-page-container">
+    <div class="container py-4">
+        <div class="row">
+            <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h1 class="h3 mb-0">Gestión de Pedidos - Ventas</h1>
+                    <button class="btn btn-outline-secondary" id="refreshBtn">
+                        <i class="bi bi-arrow-clockwise"></i> Actualizar
+                    </button>
+                </div>
+
+                <div class="card">
+                    <div class="card-body">
+                        <div id="pedidos-list-container">
+                            <!-- Aquí se cargarán los pedidos -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Incluye el mismo modal de mis-pedidos.html -->
+<div class="modal fade" id="pedidoDetalleModal" tabindex="-1" aria-labelledby="pedidoDetalleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="pedidoDetalleModalLabel">Detalles del Pedido</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p><strong>Fecha:</strong> <span id="modal-fecha">--</span></p>
+                <p><strong>Cliente:</strong> <span id="modal-cliente">--</span></p>
+                <p><strong>Estado:</strong> <span id="modal-estado" class="badge bg-secondary">--</span></p>
+                <p><strong>Método de Pago:</strong> <span id="modal-pago">--</span></p>
+
+                <hr>
+
+                <h6 class="mb-3">Productos:</h6>
+                <ul class="list-group list-group-flush" id="modal-productos-lista">
+                </ul>
+
+                <hr class="mt-4">
+                <div class="row justify-content-end">
+                    <div class="col-md-6">
+                        <ul class="list-unstyled mb-0">
+                            <li class="d-flex justify-content-between">
+                                <span>Subtotal:</span>
+                                <span id="modal-subtotal">$0</span>
+                            </li>
+                            <li class="d-flex justify-content-between text-success">
+                                <span>Descuento:</span>
+                                <span id="modal-descuento" class="fw-bold">-$0</span>
+                            </li>
+                            <li class="d-flex justify-content-between fw-bold h5 mt-2">
+                                <span>Total:</span>
+                                <span id="modal-total">$0</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success btn-procesar-pago-modal" style="display: none;">
+                    <i class="bi bi-cash-coin me-1"></i> Procesar Pago
+                </button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
