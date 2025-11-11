@@ -189,3 +189,33 @@ export async function updateBookingStatus(bookingId, newStatus) {
 
   return { success: true, data };
 }
+
+/**
+ * Obtiene las tarjetas guardadas de un usuario.
+ * @param {string} userId - El ID del usuario.
+ * @returns {Array} - Una lista de tarjetas.
+ */
+export async function getSavedCards(userId) {
+  if (!userId) {
+    console.log("getSavedCards: No hay usuario, devolviendo array vacío.");
+    return [];
+  }
+
+  try {
+    const { data, error } = await supabase
+      .from("user_cards")
+      .select("id, ultimos4, marca, tipo, titular")
+      .eq("user_id", userId)
+      .eq("is_active", true);
+
+    if (error) {
+      console.error("Error al obtener tarjetas guardadas:", error);
+      throw error;
+    }
+    
+    return data || [];
+  } catch (error) {
+    console.error("Error en la lógica de getSavedCards:", error);
+    return [];
+  }
+}

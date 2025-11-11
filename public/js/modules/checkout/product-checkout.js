@@ -1,6 +1,6 @@
 // public/js/modules/checkout/product-checkout.js
 // GESTOR DE CHECKOUT DE PRODUCTOS (¡Con descuentos acumulables!)
-
+import { supabase } from "../../core/supabase.js";
 import * as ui from "./ui.js";
 import * as api from "./api.js";
 import { ReservationContext } from "./context.js";
@@ -39,6 +39,7 @@ export async function initProductCheckout() {
   if (document.getElementById('productos-tab').classList.contains('active')) {
     updateProductPaymentStrategy(); // <-- ¡CAMBIO! Adaptado a setStrategies
     updateProductTotals();
+    handleProductPaymentChange(); 
     validateProductRules();
   } else {
     // Aunque no esté activa, calculamos los descuentos para la UI interna
@@ -103,10 +104,37 @@ function handleProductCartChange(productId, newQuantity) {
   validateProductRules();
 }
 
-export function handleProductPaymentChange() {
+export async function handleProductPaymentChange() {
   validateProductRules();
   updateProductPaymentStrategy();
   updateProductTotals();
+
+  const { payment_method } = ui.getFormValues();
+  const isCardPayment =
+    payment_method === "debit_card" || payment_method === "credit_card";
+
+  if (isCardPayment) {
+    ui.toggleCardSelectionUI(true); // Muestra el contenedor
+
+    if (!window.currentUser) return;
+
+    try {
+      const cards = await api.getSavedCards(window.currentUser.id);
+      // ¡IMPORTANTE! Pasar el payment_method para filtrar
+      ui.renderSavedCards(cards, payment_method);
+
+      // Forzar validación inmediata después de renderizar
+      setTimeout(() => {
+        validateProductRules();
+      }, 100);
+    } catch (error) {
+      console.error("Error al cargar tarjetas:", error);
+      document.getElementById("saved-cards-container").innerHTML =
+        '<p class="text-danger small">Error al cargar tarjetas.</p>';
+    }
+  } else {
+    ui.toggleCardSelectionUI(false); // Oculta la UI de tarjetas
+  }
 }
 
 // --- ¡CAMBIO IMPORTANTE! ---
@@ -178,9 +206,42 @@ function updateProductTotalsUI() {
 }
 
 function validateProductRules() {
-  const { payment_method } = ui.getFormValues();
-  // El 'true' al final significa que no se requiere fecha
-  return ui.validateBusinessRules(payment_method, null, true);
+  const { payment_method, selected_card_id } = ui.getFormValues();
+  const baseValid = ui.validateBusinessRules(payment_method, null, true);
+
+  if (!baseValid) return false;
+
+  // ¡NUEVA VALIDACIÓN MEJORADA!
+  const isCardPayment =
+    payment_method === "debit_card" || payment_method === "credit_card";
+
+  if (isCardPayment) {
+    // Verificar si hay alguna tarjeta seleccionada (incluyendo la seleccionada por defecto)
+    const selectedCard = document.querySelector(
+      'input[name="saved_card"]:checked'
+    );
+
+    if (!selectedCard) {
+      const alertBox = document.getElementById("reserva-reglas-alert");
+      const confirmBtn = document.getElementById("btn-confirmar-checkout");
+
+      alertBox.innerHTML =
+        '<i class="bi bi-exclamation-triangle-fill me-2"></i>Por favor, selecciona una tarjeta o añade una nueva.';
+      alertBox.classList.add("alert-danger");
+      alertBox.classList.remove("alert-info");
+      confirmBtn.disabled = true;
+      return false;
+    }
+
+    // Si se seleccionó "nueva tarjeta", verificar que el formulario esté completo
+    if (selectedCard.value === "new") {
+      // Aquí podrías agregar validación para el formulario de nueva tarjeta
+      // Por ahora asumimos que está bien
+      console.log("Usuario eligió agregar nueva tarjeta");
+    }
+  }
+
+  return true;
 }
 
 // --- ¡CAMBIO IMPORTANTE! ---
