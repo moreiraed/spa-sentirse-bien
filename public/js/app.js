@@ -66,6 +66,8 @@ class App {
       "admin",
       "misproductos",
       "ventas",
+      "ventas-pedidos",
+      "pedidos",
     ];
     return protectedPages.includes(page);
   }

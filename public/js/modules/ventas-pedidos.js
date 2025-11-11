@@ -20,6 +20,9 @@ export function initVentasPedidosPage() {
     refreshBtn.addEventListener("click", loadTodosLosPedidos);
   }
 
+  // Inicializar buscador
+  initBuscador();
+
   const container = document.getElementById(CONTAINER_ID);
   if (container) {
     container.addEventListener("click", (e) => {
@@ -38,6 +41,107 @@ export function initVentasPedidosPage() {
   }
 
   loadTodosLosPedidos();
+}
+
+/**
+ * Inicializar el sistema de búsqueda
+ */
+function initBuscador() {
+  const searchInput = document.getElementById("searchPedidosInput");
+  const searchBtn = document.getElementById("searchPedidosBtn");
+
+  if (searchInput && searchBtn) {
+    // Buscar al hacer click en el botón
+    searchBtn.addEventListener("click", () => {
+      buscarPedidos(searchInput.value.trim());
+    });
+
+    // Buscar al presionar Enter
+    searchInput.addEventListener("keypress", (e) => {
+      if (e.key === "Enter") {
+        buscarPedidos(searchInput.value.trim());
+      }
+    });
+
+    // Buscar en tiempo real (opcional, descomenta si lo quieres)
+    searchInput.addEventListener("input", (e) => {
+      if (e.target.value.length === 0 || e.target.value.length >= 3) {
+        buscarPedidos(e.target.value.trim());
+      }
+    });
+  }
+}
+
+/**
+ * Función de búsqueda
+ */
+function buscarPedidos(terminoBusqueda) {
+  if (!terminoBusqueda) {
+    // Si no hay término, mostrar todos los pedidos
+    renderPedidosVentas(modulePedidos);
+    return;
+  }
+
+  const termino = terminoBusqueda.toLowerCase();
+  
+  const pedidosFiltrados = modulePedidos.filter(pedido => {
+    // Buscar por ID
+    if (pedido.id.toString().includes(termino)) {
+      return true;
+    }
+
+    // Buscar por nombre del cliente
+    if (pedido.profiles) {
+      const nombreCompleto = `${pedido.profiles.nombre || ""} ${
+        pedido.profiles.apellido || ""
+      }`.toLowerCase().trim();
+      
+      if (nombreCompleto.includes(termino)) {
+        return true;
+      }
+
+      // Buscar por email
+      if (pedido.profiles.email && pedido.profiles.email.toLowerCase().includes(termino)) {
+        return true;
+      }
+    }
+
+    // Buscar por método de pago
+    const metodoPago = formatPaymentMethod(pedido.payment_method).toLowerCase();
+    if (metodoPago.includes(termino)) {
+      return true;
+    }
+
+    // Buscar por estado
+    const estado = pedido.status.toLowerCase();
+    if (estado.includes(termino)) {
+      return true;
+    }
+
+    return false;
+  });
+
+  renderPedidosVentas(pedidosFiltrados);
+  
+  // Mostrar mensaje si no hay resultados
+  const container = document.getElementById(CONTAINER_ID);
+  if (pedidosFiltrados.length === 0 && container) {
+    container.innerHTML = `
+      <div class="text-center py-5">
+        <i class="bi bi-search display-1 text-muted"></i>
+        <h4 class="mt-3 text-muted">No se encontraron pedidos</h4>
+        <p class="text-muted">No hay resultados para "${terminoBusqueda}"</p>
+        <button class="btn btn-outline-primary mt-3" id="clearSearchBtn">
+          <i class="bi bi-arrow-left me-2"></i>Mostrar todos los pedidos
+        </button>
+      </div>
+    `;
+    
+    container.querySelector("#clearSearchBtn")?.addEventListener("click", () => {
+      document.getElementById("searchPedidosInput").value = "";
+      renderPedidosVentas(modulePedidos);
+    });
+  }
 }
 
 /**
@@ -98,32 +202,69 @@ async function fetchTodosLosPedidos() {
 }
 
 /**
- * Renderiza la lista de pedidos para ventas
+ * Renderiza la lista de pedidos para ventas (MODIFICADO para incluir buscador)
  */
 function renderPedidosVentas(pedidos) {
   const container = document.getElementById(CONTAINER_ID);
   if (!container) return;
 
-  container.innerHTML = `
-    <div class="table-responsive">
-      <table class="table table-hover">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Cliente</th>
-            <th>Fecha</th>
-            <th>Total</th>
-            <th>Método Pago</th>
-            <th>Estado</th>
-            <th>Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${pedidos.map(renderPedidoRowVentas).join("")}
-        </tbody>
-      </table>
-    </div>
-  `;
+  // Si no hay buscador en el HTML, lo agregamos
+  if (!container.querySelector('#searchPedidosInput')) {
+    container.innerHTML = `
+      <!-- Buscador -->
+      <div class="card mb-4">
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-8">
+              <input 
+                type="text" 
+                class="form-control" 
+                id="searchPedidosInput" 
+                placeholder="Buscar por ID, nombre, email, método de pago o estado..."
+              >
+            </div>
+            <div class="col-md-4">
+              <button class="btn btn-primary w-100" id="searchPedidosBtn">
+                <i class="bi bi-search me-2"></i>Buscar
+              </button>
+            </div>
+          </div>
+          <small class="text-muted mt-2 d-block">
+            Busca por número de pedido, nombre del cliente, email, método de pago o estado
+          </small>
+        </div>
+      </div>
+
+      <!-- Tabla de resultados -->
+      <div class="table-responsive">
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Cliente</th>
+              <th>Fecha</th>
+              <th>Total</th>
+              <th>Método Pago</th>
+              <th>Estado</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${pedidos.map(renderPedidoRowVentas).join("")}
+          </tbody>
+        </table>
+      </div>
+    `;
+
+    // Re-inicializar el buscador después de renderizar
+    initBuscador();
+  } else {
+    // Solo actualizar la tabla si el buscador ya existe
+    const tbody = container.querySelector('tbody');
+    if (tbody) {
+      tbody.innerHTML = pedidos.map(renderPedidoRowVentas).join("");
+    }
+  }
 }
 
 function renderPedidoRowVentas(pedido) {

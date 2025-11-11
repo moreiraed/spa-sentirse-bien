@@ -5,6 +5,8 @@ class SkeletonManager {
       admin: this.getAdminSkeleton(),
       ventas: this.getAdminSkeleton(),
       reservas: this.getReservasSkeleton(),
+      pedidos: this.getPedidosSkeleton(),
+      "ventas-pedidos": this.getVentasPedidosSkeleton(),
     };
   }
 
@@ -177,6 +179,117 @@ class SkeletonManager {
           </div>
         </div>
       </div>
+    `;
+  }
+
+  // Skeleton para Mis Pedidos (usuario normal)
+  getPedidosSkeleton() {
+    return `
+    <div class="pedidos-page-container">
+      <div class="container py-5 mt-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <div class="skeleton skeleton-text" style="width: 200px; height: 32px;"></div>
+          <div class="skeleton skeleton-button" style="width: 120px; height: 38px; border-radius: 4px;"></div>
+        </div>
+        
+        <div class="card">
+          <div class="card-body">
+            <ul class="list-group list-group-flush">
+              ${Array.from(
+                { length: 4 },
+                () => `
+                <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap py-3">
+                  <div class="me-3 mb-2 mb-md-0">
+                    <div class="skeleton skeleton-text mb-2" style="width: 150px; height: 20px;"></div>
+                    <div class="skeleton skeleton-text" style="width: 120px; height: 16px;"></div>
+                  </div>
+                  <div class="me-3 mb-2 mb-md-0">
+                    <div class="skeleton skeleton-badge" style="width: 80px; height: 24px; border-radius: 12px;"></div>
+                  </div>
+                  <div class="me-3 mb-2 mb-md-0">
+                    <div class="skeleton skeleton-text" style="width: 100px; height: 20px;"></div>
+                  </div>
+                  <div>
+                    <div class="skeleton skeleton-button" style="width: 120px; height: 32px; border-radius: 4px;"></div>
+                  </div>
+                </li>
+              `
+              ).join("")}
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    `;
+  }
+
+  // Skeleton para Ventas Pedidos (con tabla y buscador)
+  getVentasPedidosSkeleton() {
+    return `
+    <div class="ventas-pedidos-page-container">
+      <div class="container py-5 mt-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <div class="skeleton skeleton-text" style="width: 250px; height: 32px;"></div>
+          <div class="skeleton skeleton-button" style="width: 120px; height: 38px; border-radius: 4px;"></div>
+        </div>
+
+        <!-- Skeleton del buscador -->
+        <div class="card mb-4">
+          <div class="card-body">
+            <div class="row">
+              <div class="col-md-8">
+                <div class="skeleton skeleton-input" style="width: 100%; height: 38px;"></div>
+              </div>
+              <div class="col-md-4">
+                <div class="skeleton skeleton-button" style="width: 100%; height: 38px; border-radius: 4px;"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Skeleton de la tabla -->
+        <div class="card">
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="table table-hover">
+                <thead>
+                  <tr>
+                    <th><div class="skeleton skeleton-text" style="width: 60px; height: 20px;"></div></th>
+                    <th><div class="skeleton skeleton-text" style="width: 120px; height: 20px;"></div></th>
+                    <th><div class="skeleton skeleton-text" style="width: 100px; height: 20px;"></div></th>
+                    <th><div class="skeleton skeleton-text" style="width: 80px; height: 20px;"></div></th>
+                    <th><div class="skeleton skeleton-text" style="width: 120px; height: 20px;"></div></th>
+                    <th><div class="skeleton skeleton-text" style="width: 90px; height: 20px;"></div></th>
+                    <th><div class="skeleton skeleton-text" style="width: 150px; height: 20px;"></div></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${Array.from(
+                    { length: 6 },
+                    () => `
+                    <tr>
+                      <td><div class="skeleton skeleton-text" style="width: 80px; height: 16px;"></div></td>
+                      <td><div class="skeleton skeleton-text" style="width: 150px; height: 16px;"></div></td>
+                      <td><div class="skeleton skeleton-text" style="width: 100px; height: 16px;"></div></td>
+                      <td><div class="skeleton skeleton-text" style="width: 80px; height: 16px;"></div></td>
+                      <td><div class="skeleton skeleton-text" style="width: 100px; height: 16px;"></div></td>
+                      <td><div class="skeleton skeleton-badge" style="width: 70px; height: 24px; border-radius: 12px;"></div></td>
+                      <td>
+                        <div class="d-flex gap-2">
+                          <div class="skeleton skeleton-button" style="width: 34px; height: 34px; border-radius: 4px;"></div>
+                          <div class="skeleton skeleton-button" style="width: 120px; height: 34px; border-radius: 4px;"></div>
+                        </div>
+                      </td>
+                    </tr>
+                  `
+                  ).join("")}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
     `;
   }
 

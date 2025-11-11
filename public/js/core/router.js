@@ -256,7 +256,11 @@ export class Router {
         break;
       case "pedidos":
         // Verificar rol del usuario
-        if (window.currentUser && window.currentUser.rol === "ventas") {
+        if (
+          window.currentUser &&
+          (window.currentUser.rol === "ventas" ||
+            window.currentUser.rol === "admin")
+        ) {
           // Cargar módulo de ventas para usuarios con rol ventas
           import("../modules/ventas-pedidos.js")
             .then((module) => {
@@ -283,7 +287,12 @@ export class Router {
         }
         break;
       case "ventas-pedidos":
-        if (window.currentUser && window.currentUser.rol === "ventas") {
+        // Verificar que el usuario tenga rol de ventas
+        if (
+          window.currentUser &&
+          (window.currentUser.rol === "ventas" ||
+            window.currentUser.rol === "admin")
+        ) {
           import("../modules/ventas-pedidos.js")
             .then((module) => {
               module.initVentasPedidosPage();
@@ -295,6 +304,10 @@ export class Router {
               );
             });
         } else {
+          // Si no tiene permisos, redirigir al home
+          console.log(
+            "Usuario sin permisos para ventas-pedidos, redirigiendo..."
+          );
           this.redirectToHome();
         }
         break;

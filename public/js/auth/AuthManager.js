@@ -122,7 +122,14 @@ export class AuthManager {
   }
 
   isProtectedPage(page) {
-    const protectedPages = ["perfil", "reservas", "admin", "ventas"];
+    const protectedPages = [
+      "perfil",
+      "reservas",
+      "admin",
+      "ventas",
+      "ventas-pedidos",
+      "pedidos",
+    ];
     return protectedPages.includes(page);
   }
 
