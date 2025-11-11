@@ -7,6 +7,7 @@ export class ProfileValidator {
     this.setupDNIValidation();
     this.setupTelefonoValidation();
     this.setupNombreApellidoValidation();
+    this.setupDireccionValidation();
   }
 
   setupDNIValidation() {
@@ -64,6 +65,24 @@ export class ProfileValidator {
     });
   }
 
+  setupDireccionValidation() {
+    const direccionInput = document.getElementById("direccion");
+    if (!direccionInput) return;
+
+    direccionInput.addEventListener("input", (e) => {
+      let value = e.target.value;
+      // Permitir letras, números, espacios y caracteres comunes en direcciones
+      value = value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑüÜ0-9\s\-\#\,\.\°\']/g, "");
+      if (value.length > 200) value = value.substring(0, 200);
+      e.target.value = value;
+      this.validateDireccion(e.target);
+    });
+
+    direccionInput.addEventListener("blur", (e) =>
+      this.validateDireccion(e.target)
+    );
+  }
+
   validateDNI(input) {
     const value = input.value.trim();
     const isValid = value === "" || (value.length === 8 && /^\d+$/.test(value));
@@ -112,6 +131,17 @@ export class ProfileValidator {
     return isValid;
   }
 
+  validateDireccion(input) {
+    const value = input.value.trim();
+    const isValid = value === "" || (value.length >= 5 && value.length <= 200);
+    this.updateInputValidation(
+      input,
+      isValid,
+      value === "" ? "" : "La dirección debe tener entre 5 y 200 caracteres"
+    );
+    return isValid;
+  }
+
   updateInputValidation(input, isValid, message) {
     input.classList.remove("is-valid", "is-invalid");
 
@@ -138,12 +168,14 @@ export class ProfileValidator {
     const apellido = document.getElementById("apellido");
     const dni = document.getElementById("dni");
     const telefono = document.getElementById("telefono");
+    const direccion = document.getElementById("direccion");
 
     return (
       this.validateNombreApellido(nombre) &&
       this.validateNombreApellido(apellido) &&
       this.validateDNI(dni) &&
-      this.validateTelefono(telefono)
+      this.validateTelefono(telefono) &&
+      this.validateDireccion(direccion)
     );
   }
 
@@ -153,6 +185,7 @@ export class ProfileValidator {
       apellido: document.getElementById("apellido").value.trim(),
       telefono: document.getElementById("telefono").value.trim(),
       dni: document.getElementById("dni").value.trim(),
+      direccion: document.getElementById("direccion").value.trim(),
       updated_at: new Date().toISOString(),
     };
   }

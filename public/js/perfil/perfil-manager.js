@@ -49,10 +49,18 @@ export class ProfileManager {
     try {
       const user = window.currentUser;
 
-      if (user.id && (!user.nombre || !user.apellido)) {
+      if (user.id && (!user.nombre || !user.apellido || !user.direccion)) {
         const userData = await this.api.loadUserFromSupabase(user.id);
         if (userData) {
-          Object.assign(user, userData);
+          Object.assign(user, {
+            nombre: userData.nombre || user.nombre,
+            apellido: userData.apellido || user.apellido,
+            telefono: userData.telefono || user.telefono,
+            dni: userData.dni || user.dni,
+            direccion: userData.direccion || user.direccion,
+            email: userData.email || user.email,
+            rol: userData.rol || user.rol,
+          });
         }
       }
 
@@ -127,6 +135,7 @@ export class ProfileManager {
         user.id,
         profileData
       );
+
       Object.assign(user, updatedUser);
       window.currentUser = user;
 
