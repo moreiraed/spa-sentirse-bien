@@ -383,3 +383,22 @@ async function handleDeleteClick(productId) {
     alert('Error: ' + error.message);
   }
 }
+
+export async function updateBookingStatusInAdmin(bookingId, newStatus) {
+  try {
+    const result = await api.updateBookingStatus(bookingId, newStatus);
+    
+    if (newStatus === 'confirmed' || newStatus === 'paid') {
+      // El trigger se encargará de descontar el stock automáticamente
+      showSafeToast(`Estado actualizado a ${newStatus}. Stock descontado.`, "success");
+    } else {
+      showSafeToast(`Estado actualizado a ${newStatus}`, "success");
+    }
+    
+    return result;
+  } catch (error) {
+    console.error("Error al actualizar estado:", error);
+    showSafeToast("Error al actualizar estado: " + error.message, "danger");
+    throw error;
+  }
+}

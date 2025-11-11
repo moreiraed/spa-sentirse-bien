@@ -144,3 +144,48 @@ export async function isFrequentCustomer(userId) {
     return false;
   }
 }
+
+/**
+ * Confirma una compra de productos y actualiza el stock
+ * @param {string} bookingId - ID de la booking a confirmar
+ */
+export async function confirmProductPurchase(bookingId) {
+  try {
+    const { data, error } = await supabase.rpc(
+      "confirm_product_purchase",
+      { booking_id_input: bookingId }
+    );
+
+    if (error) {
+      console.error("Error al confirmar compra y actualizar stock:", error);
+      throw error;
+    }
+
+    console.log("Compra confirmada y stock actualizado:", data);
+    return { success: true };
+  } catch (error) {
+    console.error("Error en confirmProductPurchase:", error);
+    return { success: false, error: error.message };
+  }
+}
+
+/**
+ * Solo actualiza el estado y el trigger se encarga del stock
+ */
+export async function updateBookingStatus(bookingId, newStatus) {
+  const { data, error } = await supabase
+    .from("bookings")
+    .update({ 
+      status: newStatus,
+      updated_at: new Date().toISOString()
+    })
+    .eq("id", bookingId)
+    .select();
+
+  if (error) {
+    console.error("Error al actualizar estado de booking:", error);
+    throw error;
+  }
+
+  return { success: true, data };
+}

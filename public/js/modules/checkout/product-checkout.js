@@ -200,6 +200,12 @@ export async function handleConfirmProducts() {
     return;
   }
 
+   const stockValidation = await validateStockBeforePurchase(productCartItems);
+   if (!stockValidation.valid) {
+     showSafeToast(stockValidation.message, "danger");
+     return; // Detener la compra si no hay stock
+   }
+
   const { payment_method } = ui.getFormValues();
   
   // ¡CAMBIO! Creamos el contexto para el cálculo final
@@ -213,19 +219,39 @@ export async function handleConfirmProducts() {
     user_id: window.currentUser.id,
     subtotal: productContext.subtotal,
     discount_applied: discountAmount, // <-- Total de descuentos acumulados
-    total_price: newTotal,            // <-- Total final
+    total_price: newTotal, // <-- Total final
     payment_method: payment_method,
-    delivery_method: 'product_purchase', 
+    delivery_method: "product_purchase",
+    status: "pending", // Estado inicial
   };
   
   const confirmBtn = document.getElementById("btn-confirmar-checkout");
   try {
     confirmBtn.disabled = true;
     confirmBtn.innerHTML = "Procesando Compra...";
-    const result = await api.saveProductPurchase(purchaseData, productCartItems);
-    
+
+    // 1. Guardar la compra
+    const result = await api.saveProductPurchase(
+      purchaseData,
+      productCartItems
+    );
+
     if (result.success) {
-      showSafeToast("¡Compra de productos realizada con éxito!", "success");
+      // 2. Si el pago es inmediato (efectivo/débito), confirmar automáticamente
+      if (payment_method === "cash" || payment_method === "debit_card") {
+        await api.confirmProductPurchase(result.bookingId);
+        showSafeToast(
+          "¡Compra de productos realizada con éxito! Stock actualizado.",
+          "success"
+        );
+      } else {
+        // Para tarjeta de crédito, dejar como pending hasta confirmación
+        showSafeToast(
+          "¡Compra de productos procesada! Esperando confirmación de pago.",
+          "success"
+        );
+      }
+
       localStorage.removeItem("carritoProductos");
       window.location.hash = "#pedidos";
     } else {
@@ -233,9 +259,46 @@ export async function handleConfirmProducts() {
     }
   } catch (error) {
     console.error("Error al confirmar la compra:", error);
-    showSafeToast("Error al procesar tu compra. Intenta de nuevo.", "danger");
+
+    // Manejar error de stock insuficiente
+    if (error.message.includes("Stock insuficiente")) {
+      showSafeToast(
+        "Error: Stock insuficiente para algunos productos. Actualiza tu carrito.",
+        "danger"
+      );
+      // Recargar productos para mostrar stock actual
+      await applyFiltersAndRender();
+    } else {
+      showSafeToast("Error al procesar tu compra. Intenta de nuevo.", "danger");
+    }
+
     confirmBtn.disabled = false;
     confirmBtn.innerHTML = "Confirmar Compra";
+  }
+}
+
+async function validateStockBeforePurchase(cartItems) {
+  try {
+    for (const item of cartItems) {
+      const { data: product, error } = await supabase
+        .from("products")
+        .select("stock, name")
+        .eq("id", item.id)
+        .single();
+
+      if (error) throw error;
+
+      if (product.stock < item.quantity) {
+        return {
+          valid: false,
+          message: `Stock insuficiente para "${product.name}". Disponible: ${product.stock}, Solicitado: ${item.quantity}`,
+        };
+      }
+    }
+    return { valid: true };
+  } catch (error) {
+    console.error("Error validando stock:", error);
+    return { valid: false, message: "Error al verificar stock disponible" };
   }
 }
 
